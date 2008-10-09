@@ -2,10 +2,13 @@
 <!DOCTYPE Session SYSTEM "Session-3.8.dtd">
 <!-- eric3 session file for project tbedp -->
 <!-- This file was generated automatically, do not edit. -->
-<!-- Saved: 2008-10-09, 12:47:31 -->
+<!-- Saved: 2008-10-09, 17:09:15 -->
 <Session version="3.8">
   <Filenames>
+    <Filename cline="101" cindex="102">/home/filip/cued/tbed-parser/src/tbedp-trainer.py</Filename>
+    <Filename cline="12" cindex="11">/home/filip/cued/tbed-parser/src/trainer.py</Filename>
   </Filenames>
+  <ActiveWindow cline="12" cindex="11">/home/filip/cued/tbed-parser/src/trainer.py</ActiveWindow>
   <Breakpoints>
   </Breakpoints>
   <Watchpoints>
