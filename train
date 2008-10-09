@@ -1,12 +1,10 @@
 #!/bin/sh
 
+# load the experiment cofiguration
 source $1
 
-export TBEDP_EXPERIMENT_NAME=`date +%Y-%m-%d-%H.%M`
-export TBEDP_RESULTS_DIR=./results/$TBEDP_EXPERIMENT_NAME
-export TBEDP_TRAIN_DATA=./data/$TBEDP_DATA_FILE
-export TBEDP_OUT_PICKLE=$TBEDP_RESULTS_DIR/$TBEDP_DATA_FILE.pickle
-export TBEDP_OUT_RULES=$TBEDP_RESULTS_DIR/$TBEDP_DATA_FILE.rules
+# expand the paths
+source ./settings.path
 
 mkdir $TBEDP_RESULTS_DIR
 
@@ -18,6 +16,21 @@ time ./src/tbedp-trainer.py -v \
   --outRules=$TBEDP_OUT_RULES \
   --nGrams=$TBEDP_NGRAMS \
   --tplGrams=$TBEDP_TPLGRAMS
+  
+time ./src/tbedp-decoder.py -v \
+  --testData=$TBEDP_TEST_DATA_SEM \
+  --inPickle=$TBEDP_OUT_PICKLE \
+  --outSem=$TBEDP_OUT_SEM_HYP
+
+time ./src/tbedp-decoder.py -v \
+  --testData=$TBEDP_TEST_DATA_ASR \
+  --inPickle=$TBEDP_OUT_PICKLE \
+  --outSem=$TBEDP_OUT_ASR_HYP
+  
+./bin/cuedSemScore.pl $TBEDP_OUT_SEM_HYP $TBEDP_TEST_DATA_SEM
+./bin/cuedSemScore.pl $TBEDP_OUT_SEM_HYP $TBEDP_TEST_DATA_SEM > $TBEDP_OUT_SEM_HYP.rslt
+./bin/cuedSemScore.pl $TBEDP_OUT_ASR_HYP $TBEDP_TEST_DATA_SEM > $TBEDP_OUT_ASR_HYP.rslt
+
 date
 
 echo $1 > $TBEDP_RESULTS_DIR/settings

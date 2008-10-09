@@ -2,6 +2,7 @@
 
 from string import *
 import re
+import os.path
 from threading import *
 
 from copy import *
@@ -14,9 +15,10 @@ from rule import *
 from baseTD import *
 
 class Trainer(BaseTD):
-    def __init__(self, fos, fosa, tplGrams):
+    def __init__(self, fos, fosa, tplGrams ,tmpData):
         BaseTD.__init__(self, fos = fos, fosa = fosa)
         self.tplGrams = tplGrams
+        self.tmpData = tmpData
         return
 
     def findBestRule(self):
@@ -99,8 +101,8 @@ class Trainer(BaseTD):
             # apply the best rule on the training set
             self.applyBestRule(bestRule)
             
-            self.writeRules('rules.txt')
-            self.writePickle('rules.pickle')
+            self.writeRules(os.path.join(self.tmpData,'rules.txt'))
+            self.writePickle(os.path.join(self.tmpData,'rules.pickle'))
 
             bestRule, af = self.findBestRule()
             

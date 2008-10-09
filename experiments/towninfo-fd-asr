@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export TBEDP_TRN_DATA_FILE=debug200.sem
+export TBEDP_TRN_DATA_FILE=towninfo-train.asr
 export TBEDP_TST_SEM_FILE=towninfo-test.sem
 export TBEDP_TST_ASR_FILE=towninfo-test.asr
 export TBEDP_NGRAMS=1 

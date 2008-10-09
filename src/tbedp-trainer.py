@@ -15,6 +15,7 @@ trainData   = 'debug200.sem'
 
 nGrams = 2
 tplGrams = 1
+tmpData = ''
 
 outRules='results.rules'
 outPickle='results.pickle'
@@ -40,6 +41,7 @@ def usage():
              -h                 : print this help message and exit
              -v                 : produce verbose output
              --trainData=FILE   : CUED format dialogue acts {%s}
+             --tmpData=DIR      : directory for temporal data of the parser {%s}
              --outRules=FILE    : output rules file {%s}
              --outPickle=FILE   : output rules file with rules in Pickle format 
                                   suitable for Python pograms {%s}
@@ -47,7 +49,8 @@ def usage():
                                   (1 - unigrams, 2 - bigrams, 3 - trigrams) {%d}
              --tplGrams=NUMBER  : grams x grams used for triggers 
                                   (1 - just nGrams, 2 - 2xnGrams) {%d}
-    """ % (trainData, 
+    """ % (trainData,
+           tmpData, 
            outRules, 
            outPickle,
            nGrams,
@@ -61,7 +64,8 @@ try:
          "outRules=", 
          "outPickle=",
          "nGrams=",
-         "tplGrams="])
+         "tplGrams="         ,
+         "tmpData="])
          
 except getopt.GetoptError, exc:
     print("ERROR: " + exc.msg)
@@ -79,6 +83,8 @@ for o, a in opts:
         text = True
     elif o == "--trainData":
         trainData = a
+    elif o == "--tmpData":
+        tmpData = a
     elif o == "--outRules":
         outRules = a
     elif o == "--outPickle":
@@ -93,7 +99,7 @@ if verbose:
     print "TBED trainer"
     print "---------------------------------------------"
 
-trn = Trainer(fos = filterOutSlots, fosa = filterOutSpeechActs, tplGrams = tplGrams)
+trn = Trainer(fos = filterOutSlots, fosa = filterOutSpeechActs, tplGrams = tplGrams, tmpData = tmpData)
 
 trn.loadData(trainData, maxProcessedDAs, nGrams)
 
