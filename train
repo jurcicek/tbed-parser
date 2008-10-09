@@ -8,6 +8,10 @@ source ./settings.path
 
 mkdir $TBEDP_RESULTS_DIR
 
+echo $1 > $TBEDP_RESULTS_DIR/settings
+echo `date` >> $TBEDP_RESULTS_DIR/settings
+env | grep TBEDP | sort >> $TBEDP_RESULTS_DIR/settings
+
 date
 time ./src/tbedp-trainer.py -v \
   --tmpData=$TBEDP_RESULTS_DIR \
@@ -35,3 +39,5 @@ date
 
 echo $1 > $TBEDP_RESULTS_DIR/settings
 env | grep TBEDP | sort >> $TBEDP_RESULTS_DIR/settings
+
+echo `date` >> $TBEDP_RESULTS_DIR/settings
