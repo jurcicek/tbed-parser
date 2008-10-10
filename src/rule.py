@@ -54,10 +54,12 @@ class Rule:
         
         return ret
     
-    def setPerformance(self, af, acc, f):
+    def setPerformance(self, af, acc, f, prec, rec):
         self.af = af
         self.acc = acc
         self.f = f
+        self.prec = prec
+        self.rec = rec
         
     @classmethod
     def read(cls, nRules):

@@ -27,16 +27,21 @@ class Trainer(BaseTD):
         for da in self.das:
             rs = getRules(da, self.tplGrams)
             
-            for rule in rs:
-                self.rules[rule] = self.rules.get(rule,0) + 1
+            for r in rs:
+                self.rules[r] = self.rules.get(r,0) + 1
 
+        for r in self.rules:
+            r.occurence = self.rules[r]
+            
 ##        print rules.values()
-        self.rules = self.rules.keys()
-
+        print '---------------------------------------------------------'
         print 'Number of applicable rules %d: ' % len(self.rules)
+        print '---------------------------------------------------------'
         
+        self.rls = self.rules.keys()
+
         # apply each rule and measure the score
-        for rule in self.rules:
+        for rule in self.rls:
             Ha = Na = Hi = Ri = Ni = 0
             for da in self.das:
                 afterRuleDA = copy(da)
@@ -66,43 +71,97 @@ class Trainer(BaseTD):
                 f    = 0.0
                 af   = 0.0
                 
-            rule.setPerformance(af, acc, f)
+            rule.setPerformance(af, acc, f, prec, rec)
             
 ##            print rule, af, acc, f
         
         # sort rules accordin their performance and complexity
         
-        self.rules.sort(cmp=lambda x,y: x.cmpPlx(y))
+        self.rls.sort(cmp=lambda x,y: x.cmpPlx(y))
             
-        if len(self.rules) == 0:
+        if len(self.rls) == 0:
             print 'No applicable rules.'
             return None, 0.0
         else:
-            print 'Best: %s AF:%.2f Cplx:%d' % (self.rules[0], self.rules[0].af, self.rules[0].complexity())
+            print 'Best: %s AF:%.2f Cplx:%d Occ:%d' % (self.rls[0], self.rls[0].af, self.rls[0].complexity(), self.rules[self.rls[0]])
             for i in range(1,10):
-                print ' Opt: %s AF:%.2f Cplx:%d' % (self.rules[i], self.rules[i].af, self.rules[i].complexity())
+                print ' Opt: %s AF:%.2f Cplx:%d Occ:%d' % (self.rls[i], self.rls[i].af, self.rls[i].complexity(), self.rls[i].occurence)
         
-        return self.rules[0], self.rules[0].af
+        return self.selectBestRules(self.rls[:10])
 
     def applyBestRule(self, bestRule):
         for da in self.das:
             bestRule.apply(da)
     
+    def selectBestRules(self, bestRules):
+        br = []
+        br.append(bestRules[0])
+
+        if br[0].prec - br[0].rec > 2.0:
+            # there is too much higher precision than recall
+            # I have to encourage increase perferomance in recall because
+            # this learning is very defensive = 
+            # it slowly increases the recall
+            for i in range(1, len(bestRules)):
+                if bestRules[i].transformation.addSlot == None:
+                    continue
+                elif bestRules[i].transformation.speechAct != None:
+                    continue
+                elif bestRules[i].transformation.delSlot != None:
+                    continue
+                elif bestRules[i].af < self.prevAF:
+                    continue
+                elif bestRules[i].transformation.addSlot == bestRules[i-1].transformation.addSlot:
+                    # remove duplicates
+                    continue
+                    
+                br.append(bestRules[i])
+
+##        for r in br:
+##            print '<<<Slct: %s AF:%.2f Cplx:%d' % (r, r.af, r.complexity())
+        
+        br.reverse()
+        sr = []
+        # filter out the same (duplict) opperations
+        for i in range(0, len(br)):
+            ok = True
+            for j in range(i+1, len(br)):
+                if br[i].transformation.addSlot == br[j].transformation.addSlot:
+                    # remove duplicates
+                    ok = False
+                    break
+                
+            if ok:
+                sr.append(br[i])
+        
+        sr.reverse()
+        
+        for r in sr:
+            print 'Slct: %s AF:%.2f Cplx:%d' % (r, r.af, r.complexity())
+                
+        return sr
+    
     def train(self):
         self.bestRules = []
+        self.prevAF = 0
         
-        prevAF = 0
+        self.rulesPruningHiThreshold = 0
+        self.rulesPruningLowThreshold = 0
         
-        bestRule, af = self.findBestRule()
-
-        while prevAF < af - 0.1:
-            prevAF = af
-            self.bestRules.append(bestRule)
+        bestRules = self.findBestRule()
+        
+        while self.prevAF < bestRules[0].af - 0.01:
+            self.prevAF = bestRules[0].af
+            # store the selected rules
+            for r in bestRules:
+                self.bestRules.append(r)
+                
             # apply the best rule on the training set
-            self.applyBestRule(bestRule)
+            for r in bestRules:
+                self.applyBestRule(r)
             
             self.writeRules(os.path.join(self.tmpData,'rules.txt'))
             self.writePickle(os.path.join(self.tmpData,'rules.pickle'))
 
-            bestRule, af = self.findBestRule()
+            bestRules = self.findBestRule()
             
