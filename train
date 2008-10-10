@@ -13,7 +13,7 @@ echo `date` >> $TBEDP_RESULTS_DIR/settings
 env | grep TBEDP | sort >> $TBEDP_RESULTS_DIR/settings
 
 date
-time python -m cProfile -o profile.txt ./src/tbedp-trainer.py -v \
+time ./src/tbedp-trainer.py -v \
   --tmpData=$TBEDP_RESULTS_DIR \
   --trainData=$TBEDP_TRAIN_DATA \
   --outPickle=$TBEDP_OUT_PICKLE \
