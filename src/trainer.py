@@ -69,7 +69,7 @@ class Trainer(BaseTD):
                 prec = 0.0
                 rec  = 0.0
                 f    = 0.0
-                af   = 0.0
+                af   = acc
                 
             rule.setPerformance(af, acc, f, prec, rec)
             
@@ -150,7 +150,7 @@ class Trainer(BaseTD):
         
         bestRules = self.findBestRule()
         
-        while self.prevAF < bestRules[0].af - 0.01:
+        while self.prevAF < bestRules[0].af - 0.001:
             self.prevAF = bestRules[0].af
             # store the selected rules
             for r in bestRules:

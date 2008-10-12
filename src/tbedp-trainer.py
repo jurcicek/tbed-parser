@@ -4,9 +4,9 @@ from trainer import *
 import getopt
 import sys
 
-import cProfile
-##import psyco
-##psyco.full()
+#import cProfile
+import psyco
+psyco.full()
 
 trainData   = 'towninfo-train.sem'
 trainData   = 'debug.sem'
@@ -104,7 +104,8 @@ trn = Trainer(fos = filterOutSlots, fosa = filterOutSpeechActs, tplGrams = tplGr
 
 trn.loadData(trainData, maxProcessedDAs, nGrams)
 
-cProfile.run('trn.train()', 'train')
+#cProfile.run('trn.train()', 'train.profile')
+trn.train()
 
 trn.writeRules(outRules)
 trn.writePickle(outPickle)
