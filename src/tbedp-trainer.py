@@ -108,7 +108,7 @@ if profile:
     # sometimes is needed to delete *.pyc files because psyco is used if you do 
     # not proile
     import cProfile
-    cProfile.run('trn.train()', 'src/trn.train.profile')
+    cProfile.run('trn.train()', tmpData+'/trn.train.profile')
 else:
     import psyco
     psyco.full()

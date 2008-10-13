@@ -1,8 +1,27 @@
 #!/usr/bin/env python2.5
 
 import pstats
+import getopt, sys
 
-p = pstats.Stats('trn.train.profile')
+try:
+    opts, args = getopt.gnu_getopt(sys.argv[1:], "hp", 
+        ["profileFile="])
+         
+except getopt.GetoptError, exc:
+    print("ERROR: " + exc.msg)
+    usage()
+    sys.exit(2)
+
+profileFile = 'trn.train.profile'
+
+for o, a in opts:
+    if o == "-h":
+        usage()
+        sys.exit()
+    elif o == "--profileFile":
+        profileFile = a
+
+p = pstats.Stats(profileFile)
 
 print '--------------------------------------------------------'
 

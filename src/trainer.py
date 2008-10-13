@@ -69,7 +69,7 @@ class Trainer(BaseTD):
                 prec = 0.0
                 rec  = 0.0
                 f    = 0.0
-                af   = acc
+                af   = 0.0
                 
             rule.setPerformance(af, acc, f, prec, rec)
             

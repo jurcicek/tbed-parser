@@ -1,6 +1,6 @@
 #!/bin/sh
 
-rm *.pyc
+rm `find src/*.pyc`
 
 # load the experiment cofiguration
 source $1
@@ -41,5 +41,7 @@ date
 
 echo $1 > $TBEDP_RESULTS_DIR/settings
 env | grep TBEDP | sort >> $TBEDP_RESULTS_DIR/settings
+
+./src/profile.py --profileFile=$TBEDP_RESULTS_DIR/trn.train.profile > $TBEDP_RESULTS_DIR/trn.train.profile.txt
 
 echo `date` >> $TBEDP_RESULTS_DIR/settings

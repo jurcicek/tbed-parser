@@ -32,7 +32,7 @@ class Transformation:
         
         return h % (1 << 31) 
         
-    def apply(self, da, tmp):
+    def apply(self, da, tmp = False):
         # change the speech act
         if self.speechAct:
             if tmp:

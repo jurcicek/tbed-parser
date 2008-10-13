@@ -140,8 +140,6 @@ class DialogueAct:
             Hi = len(set(self.tmpTbedSlots)&set(self.slots))
             Ri = len(self.tmpTbedSlots)
             Ni = len(self.slots)
-            
-            return (Ha, Na, Hi, Ri, Ni)
         else:
             if self.tbedSpeechAct == self.speechAct:
                 Ha = 1
@@ -155,7 +153,7 @@ class DialogueAct:
             Ri = len(self.tbedSlots)
             Ni = len(self.slots)
             
-            return (Ha, Na, Hi, Ri, Ni)
+        return (Ha, Na, Hi, Ri, Ni)
         
     def genTrans(self):
         # return a set of all posible modifications of the current DA
@@ -171,14 +169,14 @@ class DialogueAct:
         # return transformation for slot & value only if the 
         # the slot&value is missing or is it should not be here is wrong
         # self.tbedSlots array is actually list we update (improve)
-#        missingSlotAndValues = set(self.slots) - set(self.tbedSlots)
-#        extraSlotAndValues = set(self.tbedSlots) - set(self.slots)
+        missingSlotAndValues = set(self.slots) - set(self.tbedSlots)
+        extraSlotAndValues = set(self.tbedSlots) - set(self.slots)
         
-#        for slot in missingSlotAndValues:
-#            trans.add(Transformation(addSlot=slot))
+        for slot in missingSlotAndValues:
+            trans.add(Transformation(addSlot=slot))
             
-#        for slot in extraSlotAndValues:
-#            trans.add(Transformation(delSlot=slot))
+        for slot in extraSlotAndValues:
+            trans.add(Transformation(delSlot=slot))
         
         # do not forget explode transformations
         # it would be to time consuming -> I am skiping it
@@ -202,8 +200,8 @@ class DialogueAct:
 
 
         slotsCond = [None,]
-#        for slot in self.tbedSlots:
-#            slotsCond.append([slot,])
+        for slot in self.tbedSlots:
+            slotsCond.append([slot,])
                         
         # generate triggers
         triggers = set()
@@ -211,8 +209,6 @@ class DialogueAct:
         for sa in saCond:
             for gram in gramsCond:
                 for slot in slotsCond:
-                    triggers.add(Trigger(speechAct=sa, grams=gram, slots = slot))
+                    triggers.add(Trigger(speechAct=sa, grams=gram, slots=slot))
         
         return triggers
-
-        
