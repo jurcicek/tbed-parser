@@ -34,11 +34,11 @@ class Rule:
         
         return h % (1 << 31) 
         
-    def apply(self, da):
+    def apply(self, da, tmp=False):
         # apply transformation on the dialogue act
-        if self.trigger.validate(da):
+        if self.trigger.validate(da, tmp):
             # applstr(each)+' Acc:'+str(each.acc)+' F:'+str(each.f)+'\n'y rules
-            self.transformation.apply(da)
+            self.transformation.apply(da, tmp)
         
         return 
     

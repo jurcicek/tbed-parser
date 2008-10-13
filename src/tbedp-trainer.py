@@ -4,10 +4,6 @@ from trainer import *
 import getopt
 import sys
 
-#import cProfile
-import psyco
-psyco.full()
-
 trainData   = 'towninfo-train.sem'
 trainData   = 'debug.sem'
 trainData   = 'debug200.sem'
@@ -41,6 +37,7 @@ def usage():
     Options: 
              -h                 : print this help message and exit
              -v                 : produce verbose output
+             -p                 : profile
              --trainData=FILE   : CUED format dialogue acts {%s}
              --tmpData=DIR      : directory for temporal data of the parser {%s}
              --outRules=FILE    : output rules file {%s}
@@ -60,7 +57,7 @@ def usage():
 ##############################################################################
 
 try:
-    opts, args = getopt.gnu_getopt(sys.argv[1:], "hv", 
+    opts, args = getopt.gnu_getopt(sys.argv[1:], "hvp", 
         ["trainData=",
          "outRules=", 
          "outPickle=",
@@ -74,12 +71,15 @@ except getopt.GetoptError, exc:
     sys.exit(2)
 
 verbose = False
+profile = False
 for o, a in opts:
     if o == "-h":
         usage()
         sys.exit()
     elif o == "-v":
         verbose = True
+    elif o == "-p":
+        profile = True
     elif o == "-t":
         text = True
     elif o == "--trainData":
@@ -104,8 +104,15 @@ trn = Trainer(fos = filterOutSlots, fosa = filterOutSpeechActs, tplGrams = tplGr
 
 trn.loadData(trainData, maxProcessedDAs, nGrams)
 
-#cProfile.run('trn.train()', 'train.profile')
-trn.train()
+if profile:
+    # sometimes is needed to delete *.pyc files because psyco is used if you do 
+    # not proile
+    import cProfile
+    cProfile.run('trn.train()', 'src/trn.train.profile')
+else:
+    import psyco
+    psyco.full()
+    trn.train()
 
 trn.writeRules(outRules)
 trn.writePickle(outPickle)

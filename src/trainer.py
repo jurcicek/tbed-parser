@@ -44,10 +44,10 @@ class Trainer(BaseTD):
         for rule in self.rls:
             Ha = Na = Hi = Ri = Ni = 0
             for da in self.das:
-                afterRuleDA = copy(da)
-                rule.apply(afterRuleDA)
+                da.resetTmp()
+                rule.apply(da, tmp=True)
                 
-                pHa, pNa, pHi, pRi, pNi = afterRuleDA.measure()
+                pHa, pNa, pHi, pRi, pNi = da.measure(tmp=True)
                 
                 Ha += pHa
                 Na += pNa

@@ -2,7 +2,6 @@
 
 import getopt
 import sys
-
 from decoder import *
 
 inPickle = 'debug200.pickle'

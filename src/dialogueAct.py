@@ -21,6 +21,10 @@ class DialogueAct:
         self.tbedSpeechAct = 'inform'
         self.tbedSlots = []
         
+        # temporal tbed data, for rules evaluation
+        self.tmpTbedSpeechAct = 'inform'
+        self.tmpTbedSlots = []
+        
         return
 
     def __str__(self):
@@ -45,7 +49,11 @@ class DialogueAct:
         cDA.grams = self.grams
         
         return cDA
-        
+    
+    def resetTmp(self):
+        self.tmpTbedSpeechAct = self.tbedSpeechAct
+        self.tmpTbedSlots = copy(self.tbedSlots)
+    
     def parse(self):
         self.words = split(self.text)
         numOfDAs = len(splitByComma(self.cuedDA))
@@ -118,21 +126,36 @@ class DialogueAct:
     def getNumOfSlots(self):
         return len(self.slots)
         
-    def measure(self):
+    def measure(self, tmp=False):
         # get similarity measure
-        if self.tbedSpeechAct == self.speechAct:
-            Ha = 1
-        else:
-            Ha = 0
+        if tmp:
+            if self.tmpTbedSpeechAct == self.speechAct:
+                Ha = 1
+            else:
+                Ha = 0
+                
+            Na = 1
             
-        Na = 1
-        
-        # slots measures
-        Hi = len(set(self.tbedSlots)&set(self.slots))
-        Ri = len(self.tbedSlots)
-        Ni = len(self.slots)
-        
-        return (Ha, Na, Hi, Ri, Ni)
+            # slots measures
+            Hi = len(set(self.tmpTbedSlots)&set(self.slots))
+            Ri = len(self.tmpTbedSlots)
+            Ni = len(self.slots)
+            
+            return (Ha, Na, Hi, Ri, Ni)
+        else:
+            if self.tbedSpeechAct == self.speechAct:
+                Ha = 1
+            else:
+                Ha = 0
+                
+            Na = 1
+            
+            # slots measures
+            Hi = len(set(self.tbedSlots)&set(self.slots))
+            Ri = len(self.tbedSlots)
+            Ni = len(self.slots)
+            
+            return (Ha, Na, Hi, Ri, Ni)
         
     def genTrans(self):
         # return a set of all posible modifications of the current DA
