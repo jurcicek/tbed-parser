@@ -14,9 +14,9 @@ class Transformation:
         
     def __str__(self):
         s  = 'TRANS:'
-        s += 'SpeechAct: %s - ' % self.speechAct
-        s += 'AddSlot: %s - ' % self.addSlot
-        s += 'DelSlot: %s - ' % self.delSlot
+        s += 'SpeechAct: %s - ' % str(self.speechAct)
+        s += 'AddSlot: %s - ' % str(self.addSlot)
+        s += 'DelSlot: %s - ' % str(self.delSlot)
         return s
 
     def __eq__(self, other):
@@ -43,21 +43,21 @@ class Transformation:
         # update slots
         if self.addSlot:
             if tmp:
-                da.tmpTbedSlots.append(self.addSlot)
+                da.tmpTbedSlots.add(self.addSlot)
             else:
-                da.tbedSlots.append(self.addSlot)
+                da.tbedSlots.add(self.addSlot)
             
         if tmp:
             if self.delSlot:
-                for i in range(len(da.tbedSlots)):
-                    if da.tmpTbedSlots[i] == self.delSlot:
-                        del da.tmpTbedSlots[i]
+                for slt in da.tmpTbedSlots:
+                    if slt == self.delSlot:
+                        da.tmpTbedSlots.remove(slt)
                         break
         else:
             if self.delSlot:
-                for i in range(len(da.tbedSlots)):
-                    if da.tbedSlots[i] == self.delSlot:
-                        del da.tbedSlots[i]
+                for slt in da.tbedSlots:
+                    if slt == self.delSlot:
+                        da.tbedSlots.remove(slt)
                         break
                         
     def complexity(self):
@@ -81,11 +81,11 @@ class Transformation:
         s = ''
         
         if self.speechAct:
-            s += 'Transformation:SpeechAct:'+self.speechAct+'\n'
+            s += 'Transformation:SpeechAct:'+str(self.speechAct)+'\n'
         if self.addSlot:
-            s += 'Transformation:AddSlot:'+self.addSlot+'\n'
+            s += 'Transformation:AddSlot:'+str(self.addSlot)+'\n'
         if self.delSlot:
-            s += 'Transformation:DelSlot:'+self.delSlot+'\n'
+            s += 'Transformation:DelSlot:'+str(self.delSlot)+'\n'
             
         return s
         
@@ -102,7 +102,7 @@ class Trigger:
     def __str__(self):
         s  = 'TRIGGER:'
         s += 'Grams: %s - ' % str(self.grams)
-        s += 'SpeechAct: %s - ' % self.speechAct
+        s += 'SpeechAct: %s - ' % str(self.speechAct)
         s += 'Slots: %s - ' % str(self.slots)
         
         return s
@@ -183,7 +183,7 @@ class Trigger:
                 s += 'Trigger:Gram:'+str(each)+'\n'
 
         if self.speechAct:
-                s += 'Trigger:SpeechAct:'+self.speechAct+'\n'
+                s += 'Trigger:SpeechAct:'+str(self.speechAct)+'\n'
         
         if self.slots:
             for each in self.slots:

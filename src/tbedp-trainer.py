@@ -47,12 +47,14 @@ def usage():
                                   (1 - unigrams, 2 - bigrams, 3 - trigrams) {%d}
              --tplGrams=NUMBER  : grams x grams used for triggers 
                                   (1 - just nGrams, 2 - 2xnGrams) {%d}
+             --outDict=FILE     : output file speed up dictionary{%s}
     """ % (trainData,
            tmpData, 
            outRules, 
            outPickle,
            nGrams,
-           tplGrams))
+           tplGrams,
+           outDict))
            
 ##############################################################################
 
@@ -62,8 +64,9 @@ try:
          "outRules=", 
          "outPickle=",
          "nGrams=",
-         "tplGrams="         ,
-         "tmpData="])
+         "tplGrams=",
+         "tmpData=",
+         'outDict='])
          
 except getopt.GetoptError, exc:
     print("ERROR: " + exc.msg)
@@ -90,6 +93,8 @@ for o, a in opts:
         outRules = a
     elif o == "--outPickle":
         outPickle = a
+    elif o == "--outDict":
+        outDict = a
     elif o == "--nGrams":
         nGrams = int(a)
     elif o == "--tplGrams":
@@ -116,6 +121,7 @@ else:
 
 trn.writeRules(outRules)
 trn.writePickle(outPickle)
+trn.writeDict(outDict)
 
 if verbose:
     print "---------------------------------------------"

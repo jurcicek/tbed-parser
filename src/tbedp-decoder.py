@@ -31,9 +31,11 @@ def usage():
              --testData=FILE    : tes data - CUED format dialogue acts {%s}
              --inPickle=FILE    : input rules file with rules in Pickle format 
                                   suitable for Python pograms {%s}
+             --inDict=FILE      : input speed up dict {%s}
              --outSem=FILE      : decoded CUED format dialogue acts {%s}
     """ % (testData, 
            inPickle,
+           inDict,
            outSem))
            
 ##############################################################################
@@ -42,6 +44,7 @@ try:
     opts, args = getopt.gnu_getopt(sys.argv[1:], "hv", 
         ["testData=",
          "inPickle=",
+         'inDict=',
          "outSem="])
          
 except getopt.GetoptError, exc:
@@ -62,6 +65,8 @@ for o, a in opts:
         testData = a
     elif o == "--inPickle":
         inPickle = a
+    elif o == "--inDict":
+        inDict = a
     elif o == "--outSem":
         outSem = a
 
@@ -73,6 +78,7 @@ if verbose:
 dcd = Decoder(fos = filterOutSlots, fosa = filterOutSpeechActs)
 
 dcd.readPickle(inPickle)
+dcd.readDict(inDict)
 dcd.loadData(testData, maxProcessedDAs, nGrams=3)
 
 dcd.decode()

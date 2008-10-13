@@ -14,6 +14,8 @@ class BaseTD:
         self.das = []
         self.filterOutSlots = fos
         self.filterOutSpeechActs = fosa
+        self.vocabulary = adict()
+
         return
 
     def loadData(self, inputFile, mpdas, nGrams):
@@ -30,7 +32,7 @@ class BaseTD:
             if len(sentence) == 0 or len(da) == 0:
                 continue
     
-            da = DialogueAct(da, sentence)
+            da = DialogueAct(da, sentence, self.vocabulary)
             da.parse()
             da.genGrams(nGrams)
     
@@ -56,9 +58,7 @@ class BaseTD:
         return
             
     def writeRules(self, fn):
-        
         # print rules
-        
         f = file(fn,'w')
         
         for i in range(len(self.bestRules)):
@@ -69,15 +69,9 @@ class BaseTD:
         return
         
     def writePickle(self, fn):
-        
-        # print rules
-        
         f = file(fn,'wb')
-        
         pickle.dump(self.bestRules, f)
-        
-        f.close
-            
+        f.close()
         return
     
     def readPickle(self, fn):
@@ -85,7 +79,13 @@ class BaseTD:
         self.bestRules = pickle.load(f)
         f.close()
         return
-    
+
+    def writeDict(self, fn):
+        self.vocabulary.write(fn)
+        
+    def readDict(self, fn):
+        self.vocabulary = self.vocabulary.read(fn)
+        
     def readRules(self, fn):
         f = file(fn, 'r')
         

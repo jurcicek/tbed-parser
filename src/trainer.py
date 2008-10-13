@@ -19,6 +19,7 @@ class Trainer(BaseTD):
         BaseTD.__init__(self, fos = fos, fosa = fosa)
         self.tplGrams = tplGrams
         self.tmpData = tmpData
+        
         return
 
     def findBestRule(self):
@@ -46,7 +47,6 @@ class Trainer(BaseTD):
             for da in self.das:
                 da.resetTmp()
                 rule.apply(da, tmp=True)
-                
                 pHa, pNa, pHi, pRi, pNi = da.measure(tmp=True)
                 
                 Ha += pHa
@@ -81,7 +81,7 @@ class Trainer(BaseTD):
             
         if len(self.rls) == 0:
             print 'No applicable rules.'
-            return None, 0.0
+            return None
         else:
             print 'Best: %s AF:%.2f Cplx:%d Occ:%d' % (self.rls[0], self.rls[0].af, self.rls[0].complexity(), self.rules[self.rls[0]])
             for i in range(1,10):
@@ -165,3 +165,5 @@ class Trainer(BaseTD):
 
             bestRules = self.findBestRule()
             
+            if bestRules == None:
+                break

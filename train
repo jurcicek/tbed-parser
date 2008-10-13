@@ -19,17 +19,21 @@ time ./src/tbedp-trainer.py -v \
   --outPickle=$TBEDP_OUT_PICKLE \
   --outRules=$TBEDP_OUT_RULES \
   --nGrams=$TBEDP_NGRAMS \
-  --tplGrams=$TBEDP_TPLGRAMS
+  --tplGrams=$TBEDP_TPLGRAMS \
+  --outDict=$TBEDP_OUT_DICT
   
 time ./src/tbedp-decoder.py -v \
   --testData=$TBEDP_TEST_DATA_SEM \
   --inPickle=$TBEDP_OUT_PICKLE \
-  --outSem=$TBEDP_OUT_SEM_HYP
+  --outSem=$TBEDP_OUT_SEM_HYP \
+  --inDict=$TBEDP_OUT_DICT
+
 
 time ./src/tbedp-decoder.py -v \
   --testData=$TBEDP_TEST_DATA_ASR \
   --inPickle=$TBEDP_OUT_PICKLE \
-  --outSem=$TBEDP_OUT_ASR_HYP
+  --outSem=$TBEDP_OUT_ASR_HYP \
+  --inDict=$TBEDP_OUT_DICT
   
 ./bin/cuedSemScore.pl $TBEDP_OUT_SEM_HYP $TBEDP_TEST_DATA_SEM
 ./bin/cuedSemScore.pl $TBEDP_OUT_SEM_HYP $TBEDP_TEST_DATA_SEM > $TBEDP_OUT_SEM_HYP.rslt

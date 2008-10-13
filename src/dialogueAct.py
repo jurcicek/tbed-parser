@@ -9,29 +9,30 @@ from slot import *
 from transformation import *
       
 class DialogueAct:
-    def __init__(self, cuedDA, text):
+    def __init__(self, cuedDA, text, vocabulary):
         # train data values
-        self.text = text
         self.cuedDA = cuedDA
+        self.text = text
+        self.vocabulary = vocabulary
 
-        self.speechAct = ''
-        self.slots = []
+        self.speechAct = self.vocabulary['']
+        self.slots = set()
         
         # tbed data
-        self.tbedSpeechAct = 'inform'
-        self.tbedSlots = []
+        self.tbedSpeechAct = self.vocabulary['inform']
+        self.tbedSlots = set()
         
         # temporal tbed data, for rules evaluation
-        self.tmpTbedSpeechAct = 'inform'
-        self.tmpTbedSlots = []
+        self.tmpTbedSpeechAct = self.vocabulary['inform']
+        self.tmpTbedSlots = set()
         
         return
 
     def __str__(self):
         s = self.text+' - '
         s+= self.cuedDA+' - '
-        s+= self.speechAct+' - '
-        s+= self.tbedSpeechAct+' - '
+        s+= self.vocabulary.getKey(self.speechAct)+' - '
+        s+= self.vocabulary.getKey(self.tbedSpeechAct)+' - '
         s+= str(self.slots)+' - '
         s+= str(self.tbedSlots)+' - '
         s+= str(self.grams)
@@ -56,13 +57,15 @@ class DialogueAct:
     
     def parse(self):
         self.words = split(self.text)
+        self. words = [self.vocabulary[w] for w in self.words]
+        
         numOfDAs = len(splitByComma(self.cuedDA))
         if numOfDAs > 1:
             raise ValueError('Too many DAs in input text.')
 
         # get the speech-act
         i = self.cuedDA.index("(")
-        self.speechAct = self.cuedDA[:i]
+        self.speechAct = self.vocabulary[self.cuedDA[:i]]
         slots = self.cuedDA[i:]
         slots = slots.replace('(', '')
         slots = slots.replace(')', '')
@@ -77,7 +80,7 @@ class DialogueAct:
         for each_slot in slots:
 ##            slot = Slot(each_slot)
 ##            slot.parse()
-            self.slots.append(each_slot)
+            self.slots.add(self.vocabulary[each_slot])
 
         return
 
@@ -100,7 +103,7 @@ class DialogueAct:
                 pass
     
     def render(self, speechAct, slots):
-        DA = speechAct
+        DA = self.vocabulary.getKey(speechAct)
         rendered_slots = ""
         
         if len(slots) > 0:
@@ -108,7 +111,7 @@ class DialogueAct:
 
             for each_slot in slots:
 ##                rendered_slots += each_slot.renderCUED() + ','
-                rendered_slots += each_slot + ','
+                rendered_slots += self.vocabulary.getKey(each_slot) + ','
 
             # remove the last comma
             rendered_slots = re.sub(r',$', '', rendered_slots)
@@ -137,7 +140,7 @@ class DialogueAct:
             Na = 1
             
             # slots measures
-            Hi = len(set(self.tmpTbedSlots)&set(self.slots))
+            Hi = len(self.tmpTbedSlots&self.slots)
             Ri = len(self.tmpTbedSlots)
             Ni = len(self.slots)
         else:
@@ -149,7 +152,7 @@ class DialogueAct:
             Na = 1
             
             # slots measures
-            Hi = len(set(self.tbedSlots)&set(self.slots))
+            Hi = len(self.tbedSlots&self.slots)
             Ri = len(self.tbedSlots)
             Ni = len(self.slots)
             
@@ -169,8 +172,8 @@ class DialogueAct:
         # return transformation for slot & value only if the 
         # the slot&value is missing or is it should not be here is wrong
         # self.tbedSlots array is actually list we update (improve)
-        missingSlotAndValues = set(self.slots) - set(self.tbedSlots)
-        extraSlotAndValues = set(self.tbedSlots) - set(self.slots)
+        missingSlotAndValues = self.slots-self.tbedSlots
+        extraSlotAndValues = self.tbedSlots-self.slots
         
         for slot in missingSlotAndValues:
             trans.add(Transformation(addSlot=slot))
