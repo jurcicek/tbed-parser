@@ -18,9 +18,8 @@ time ./src/tbedp-trainer.py -v \
   --trainData=$TBEDP_TRAIN_DATA \
   --outPickle=$TBEDP_OUT_PICKLE \
   --outRules=$TBEDP_OUT_RULES \
-  --nGrams=$TBEDP_NGRAMS \
-  --tplGrams=$TBEDP_TPLGRAMS \
-  --outDict=$TBEDP_OUT_DICT
+  --outDict=$TBEDP_OUT_DICT \
+  --trgCond="$TBEDP_TRG_COND" 
   
 time ./src/tbedp-decoder.py -v \
   --testData=$TBEDP_TEST_DATA_SEM \
@@ -40,8 +39,5 @@ time ./src/tbedp-decoder.py -v \
 ./bin/cuedSemScore.pl $TBEDP_OUT_ASR_HYP $TBEDP_TEST_DATA_ASR > $TBEDP_OUT_ASR_HYP.rslt
 
 date
-
-echo $1 > $TBEDP_RESULTS_DIR/settings
-env | grep TBEDP | sort >> $TBEDP_RESULTS_DIR/settings
 
 echo `date` >> $TBEDP_RESULTS_DIR/settings

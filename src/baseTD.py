@@ -10,15 +10,17 @@ from dialogueAct import *
 from rule import *
 
 class BaseTD:
-    def __init__(self, fos, fosa):
+    def __init__(self, fos, fosa,trgCond):
         self.das = []
         self.filterOutSlots = fos
         self.filterOutSpeechActs = fosa
         self.vocabulary = adict()
+        self.trgCond = trgCond
+
 
         return
 
-    def loadData(self, inputFile, mpdas, nGrams):
+    def loadData(self, inputFile, mpdas):
         # read the training data
         # build all DAs
         sem = file(inputFile, 'r')
@@ -34,7 +36,7 @@ class BaseTD:
     
             da = DialogueAct(da, sentence, self.vocabulary)
             da.parse()
-            da.genGrams(nGrams)
+            da.genGrams(self.trgCond)
     
 ##            print da.renderCUED()
             

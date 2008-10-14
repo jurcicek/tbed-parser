@@ -9,6 +9,8 @@ testData    = 'towninfo-test.sem'
 
 maxProcessedDAs = 28000
 
+trgCond = {'nGrams':3, 'nStarGrams':4, 'tplGrams':1, 'speechAct':1, 'lngth':1}
+
 filterOutSlots      = range(12,12)
 filterOutSpeechActs = ('xxx', 
 ## 'ask','affirm', 'bye', 'confirm', 'deny', 'hello','inform',
@@ -75,11 +77,11 @@ if verbose:
     print "TBED decoder"
     print "---------------------------------------------"
 
-dcd = Decoder(fos = filterOutSlots, fosa = filterOutSpeechActs)
+dcd = Decoder(fos = filterOutSlots, fosa = filterOutSpeechActs, trgCond = trgCond)
 
 dcd.readPickle(inPickle)
 dcd.readDict(inDict)
-dcd.loadData(testData, maxProcessedDAs, nGrams=3)
+dcd.loadData(testData, maxProcessedDAs)
 
 dcd.decode()
 dcd.writeOutput(outSem)

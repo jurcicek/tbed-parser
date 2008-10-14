@@ -3,6 +3,9 @@
 from math import *
 
 class Transformation:
+    # I implement only one modification at one time
+    # If I allowed to performe more modifications than it would be 
+    # to complex
     def __init__(self, speechAct = None, addSlot = None, delSlot = None):
         self.speechAct = speechAct
         self.addSlot = addSlot
@@ -31,14 +34,51 @@ class Transformation:
         h += hash(self.delSlot)
         
         return h % (1 << 31) 
+    
+    # measure only difference in performance
+    #  1 - for corect modification
+    #  0 - for no mofification
+    # -1 - for wrong modification
+    # I expect to perform only one modification at on time
+    def measureDiff(self, da):
+        if self.speechAct:
+            if self.speechAct == da.speechAct:
+                if self.speechAct != da.tbedSpeechAct:
+                    return 1
+                else:
+                    return 0
+            else:
+                return -1
+                
+        if self.addSlot:
+            if self.addSlot in da.slots:
+                if not self.addSlot in da.tbedSlots:
+                    return 1
+                else:
+                    return 0
+            else:
+                return -1
+                    
+        if self.delSlot:
+            if not self.delSlot in da.slots:
+                if self.delSlot in da.tbedSlots:
+                    return 1
+                else:
+                    return 0
+            else:
+                return -1
         
-    def apply(self, da, tmp = False):
+        return 0
+        
+    def apply(self, da, tmp=False):
         # change the speech act
         if self.speechAct:
             if tmp:
                 da.tmpTbedSpeechAct = self.speechAct
             else:
                 da.tbedSpeechAct = self.speechAct
+                
+            return
         
         # update slots
         if self.addSlot:
@@ -46,6 +86,8 @@ class Transformation:
                 da.tmpTbedSlots.add(self.addSlot)
             else:
                 da.tbedSlots.add(self.addSlot)
+            
+            return
             
         if tmp:
             if self.delSlot:
@@ -59,18 +101,17 @@ class Transformation:
                     if slt == self.delSlot:
                         da.tbedSlots.remove(slt)
                         break
-                        
-    def complexity(self):
-        c = 0
+        return
         
+    def complexity(self):
         if self.speechAct:
-            c += 1
+            return 1
         if self.addSlot:
-            c += 1
+            return 1
         if self.delSlot:
-            c += 1
+            return 1
 
-        return c
+        return 0
         
     @classmethod
     def read(cls, nTriggers):
@@ -90,13 +131,12 @@ class Transformation:
         return s
         
 class Trigger:
-    def __init__(self, speechAct = None, grams = None, slots = None):
+    def __init__(self, speechAct = None, grams = None, slots = None, lngth = None):
         self.speechAct = speechAct
         self.grams = grams
         self.slots = slots
+        self.lngth = lngth
 
-##        print str(self)
-        
         return
 
     def __str__(self):
@@ -104,11 +144,12 @@ class Trigger:
         s += 'Grams: %s - ' % str(self.grams)
         s += 'SpeechAct: %s - ' % str(self.speechAct)
         s += 'Slots: %s - ' % str(self.slots)
+        s += 'Length: %s - ' % str(self.lngth)
         
         return s
         
     def __eq__(self, other):
-        if self.grams == other.grams and self.speechAct == other.speechAct and self.slots == other.slots:
+        if self.grams == other.grams and self.speechAct == other.speechAct and self.slots == other.slots and self.lngth == other.lngth:
             return True
         
         return False
@@ -126,10 +167,13 @@ class Trigger:
         if self.slots:
             for each in self.slots:
                 h += hash(each)
+                
+        if self.lngth:
+            h += hash(self.lngth)
         
         return h % (1 << 31)
 
-    def validate(self, da, tmp):
+    def validate(self, da, tmp=False):
         if self.grams:
             for each in self.grams:
                 if not each in da.grams:
@@ -142,7 +186,11 @@ class Trigger:
             else:
                 if self.speechAct != da.tbedSpeechAct:
                     return False
-        
+
+        if self.lngth:
+            if self.lngth < len(da.words):
+                return False
+                    
         if tmp:
             if self.slots:
                 for each in self.slots:
@@ -166,6 +214,9 @@ class Trigger:
         if self.speechAct:
             c += 1
 
+        if self.lngth:
+            c += 1
+            
         if self.slots:
             c += len(self.slots)
 
@@ -183,10 +234,13 @@ class Trigger:
                 s += 'Trigger:Gram:'+str(each)+'\n'
 
         if self.speechAct:
-                s += 'Trigger:SpeechAct:'+str(self.speechAct)+'\n'
+            s += 'Trigger:SpeechAct:'+str(self.speechAct)+'\n'
         
         if self.slots:
             for each in self.slots:
                 s += 'Trigger:Slot:'+str(each)+'\n'
         
+        if self.lngth:
+            s += 'Trigger:Length:'+str(self.lngth)+'\n'
+            
         return s

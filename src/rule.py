@@ -33,6 +33,16 @@ class Rule:
         h += hash(self.transformation)
         
         return h % (1 << 31) 
+    
+    # measure whether the difference in accuracy after applying 
+    # the rule 
+    def measureDiff(self, da):
+        if self.trigger.validate(da):
+            return self.transformation.measureDiff(da)
+        else:
+            # no difference in performance becasue I can not 
+            # apply it
+            return 0
         
     def apply(self, da, tmp=False):
         # apply transformation on the dialogue act
@@ -80,11 +90,11 @@ class Rule:
         
         return s
 
-def getRules(da, tplGrams):
+def getRules(da, trgCond):
     # explode trans & triggers
     rules = []
     for tran in da.genTrans():
-        for trigger in da.genTriggers(tplGrams):
+        for trigger in da.genTriggers(trgCond):
             r = Rule(trigger, tran)
             rules.append(r)
     

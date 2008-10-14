@@ -12,8 +12,8 @@ from rule import *
 from baseTD import *
 
 class Decoder(BaseTD):
-    def __init__(self, fos, fosa):
-        BaseTD.__init__(self, fos = fos, fosa = fosa)
+    def __init__(self, fos, fosa, trgCond):
+        BaseTD.__init__(self, fos=fos, fosa=fosa, trgCond=trgCond)
         
         return
         
@@ -40,12 +40,12 @@ class Decoder(BaseTD):
                 prec = 100.0*Hi/Ri
                 rec  = 100.0*Hi/Ni
                 f = 2*prec*rec/(prec+rec)
-                af = 2*acc*f/(acc+f)
             except ZeroDivisionError:
                 prec = 0.0
                 rec  = 0.0
-                f    = 0.0
-                af   = acc
+                f    = 0.001
+                
+            af = 2*acc*f/(acc+f)
 
             i += 1
             print 'Rule:%d' % i

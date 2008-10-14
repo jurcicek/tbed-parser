@@ -57,7 +57,7 @@ class DialogueAct:
     
     def parse(self):
         self.words = split(self.text)
-        self. words = [self.vocabulary[w] for w in self.words]
+        self.words = [self.vocabulary[w] for w in self.words]
         
         numOfDAs = len(splitByComma(self.cuedDA))
         if numOfDAs > 1:
@@ -84,24 +84,27 @@ class DialogueAct:
 
         return
 
-    def genGrams(self,nGrams):
+    def genGrams(self, trgCond):
         self.grams = set()
-        if len(self.grams) == 0:
-            # generate unigrams, bigrams, and trigrams from text
-            for i in range(len(self.words)):
-                self.grams.add((self.words[i],))
-            
-            try:
-                if nGrams >=2:
-                    for i in range(1, len(self.words)):
-                        self.grams.add((self.words[i-1],self.words[i]))
+        # generate unigrams, bigrams, and trigrams from text
+        for i in range(len(self.words)):
+            self.grams.add((self.words[i],))
+        
+        if trgCond['nGrams'] >=2:
+            for i in range(1, len(self.words)):
+                self.grams.add((self.words[i-1],self.words[i]))
+        if trgCond['nGrams'] >=3:
+            for i in range(2, len(self.words)):
+                self.grams.add((self.words[i-2],self.words[i-1],self.words[i]))
 
-                if nGrams >=3:
-                    for i in range(2, len(self.words)):
-                        self.grams.add((self.words[i-2],self.words[i-1],self.words[i]))
-            except IndexError:
-                pass
-    
+        if trgCond['nStarGrams'] >=3:
+            for i in range(2, len(self.words)):
+                self.grams.add((self.words[i-2],'*',self.words[i]))
+        if trgCond['nStarGrams'] >=4:
+            for i in range(3, len(self.words)):
+                self.grams.add((self.words[i-3],'*','*',self.words[i]))
+            
+                    
     def render(self, speechAct, slots):
         DA = self.vocabulary.getKey(speechAct)
         rendered_slots = ""
@@ -181,37 +184,48 @@ class DialogueAct:
         for slot in extraSlotAndValues:
             trans.add(Transformation(delSlot=slot))
         
-        # do not forget explode transformations
-        # it would be to time consuming -> I am skiping it
+        # do not explode transformations, only one modification 
+        # at one time is allowed
         
         return trans
         
-    def genTriggers(self, tplGrams):
+    def genTriggers(self, trgCond):
         # collect all posible triggers for all dimmensions 
-        #   (speachAct, grams, slots)
+        #   (speechAct, grams, slots)
         
-        saCond = [None, self.tbedSpeechAct]
+        saCond = [None,]
+        if trgCond['speechAct'] >=1:
+            saCond.append(self.tbedSpeechAct)
         
         gramsCond = [None,]
         for gram1 in self.grams:
             gramsCond.append([gram1,])
             
-            if tplGrams >= 2:
+            if trgCond['tplGrams'] >= 2:
                 for gram2 in self.grams:
                     if gram1 != gram2:
                         gramsCond.append([gram1,gram2])
 
-
         slotsCond = [None,]
-        for slot in self.tbedSlots:
-            slotsCond.append([slot,])
-                        
+        if trgCond['nSlots'] >= 1:
+            for slot in self.tbedSlots:
+                slotsCond.append([slot,])
+
+        # sentece length rigger
+        lengthCond = [None,]
+        if trgCond['lngth'] >= 1:
+            lengthCond.append(len(self.words))
+        
         # generate triggers
         triggers = set()
         # explode trigger combinations
         for sa in saCond:
             for gram in gramsCond:
                 for slot in slotsCond:
-                    triggers.add(Trigger(speechAct=sa, grams=gram, slots=slot))
+                    for lngth in lengthCond:
+                        triggers.add(Trigger(speechAct=sa, 
+                                                grams=gram, 
+                                                slots=slot,
+                                                lngth=lngth))
         
         return triggers

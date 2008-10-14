@@ -1,23 +1,20 @@
 #!/usr/bin/env python2.5
 
+import re, random, os.path
+from copy import *
 from string import *
-import re
-import os.path
 from threading import *
 
-from copy import *
 
 from utils import *
 from slot import *
 from dialogueAct import *
 from rule import *
-
 from baseTD import *
 
 class Trainer(BaseTD):
-    def __init__(self, fos, fosa, tplGrams ,tmpData):
-        BaseTD.__init__(self, fos = fos, fosa = fosa)
-        self.tplGrams = tplGrams
+    def __init__(self, fos, fosa, trgCond,tmpData):
+        BaseTD.__init__(self, fos = fos, fosa = fosa, trgCond = trgCond)
         self.tmpData = tmpData
         
         return
@@ -26,7 +23,7 @@ class Trainer(BaseTD):
         self.rules = {}
         # get all applicable rules
         for da in self.das:
-            rs = getRules(da, self.tplGrams)
+            rs = getRules(da, self.trgCond)
             
             for r in rs:
                 self.rules[r] = self.rules.get(r,0) + 1
@@ -37,43 +34,30 @@ class Trainer(BaseTD):
 ##        print rules.values()
         print '---------------------------------------------------------'
         print 'Number of applicable rules %d: ' % len(self.rules)
-        print '---------------------------------------------------------'
-        
         self.rls = self.rules.keys()
+##        self.rls = random.sample(self.rls, len(self.rls)/(self.iRule/2+1))
+        print '                 pruned to %d: ' % len(self.rls)
+        print '---------------------------------------------------------'
 
+        self.rls.sort(cmp=lambda x,y: cmp(x.occurence, y.occurence), reverse=True)
+        
         # apply each rule and measure the score
         for rule in self.rls:
             Ha = Na = Hi = Ri = Ni = 0
             for da in self.das:
-                da.resetTmp()
-                rule.apply(da, tmp=True)
-                pHa, pNa, pHi, pRi, pNi = da.measure(tmp=True)
+                Ha += rule.measureDiff(da)
+                Na += 1 
                 
-                Ha += pHa
-                Na += pNa
-                Hi += pHi
-                Ri += pRi
-                Ni += pNi
+            prec = 0.0
+            rec  = 0.0
+            f    = 0.0
+            acc  = 100.0*Ha/Na
+            af   = acc
             
-            try:
-                acc  = 100.0*Ha/Na
-            except ZeroDivisionError:
-                acc  = 0.0
-
-            try:
-                prec = 100.0*Hi/Ri
-                rec  = 100.0*Hi/Ni
-                f = 2*prec*rec/(prec+rec)
-                af = 2*acc*f/(acc+f)
-            except ZeroDivisionError:
-                prec = 0.0
-                rec  = 0.0
-                f    = 0.0
-                af   = 0.0
-                
             rule.setPerformance(af, acc, f, prec, rec)
             
-##            print rule, af, acc, f
+##            print '%s Occ:%d AF:%.2f Cplx:%d Acc:%.2f F:%.2f' % (rule, rule.occurence, af, rule.complexity(), acc, f)
+##            print Ha, Na, Hi, Ri, Ni
         
         # sort rules accordin their performance and complexity
         
@@ -83,9 +67,9 @@ class Trainer(BaseTD):
             print 'No applicable rules.'
             return None
         else:
-            print 'Best: %s AF:%.2f Cplx:%d Occ:%d' % (self.rls[0], self.rls[0].af, self.rls[0].complexity(), self.rules[self.rls[0]])
-            for i in range(1,10):
-                print ' Opt: %s AF:%.2f Cplx:%d Occ:%d' % (self.rls[i], self.rls[i].af, self.rls[i].complexity(), self.rls[i].occurence)
+            print 'Best: %s AF:%.3f Cplx:%d Occ:%d' % (self.rls[0], self.rls[0].af, self.rls[0].complexity(), self.rls[0].occurence)
+            for i in range(1, min([len(self.rls), 10])):
+                print ' Opt: %s AF:%.3f Cplx:%d Occ:%d' % (self.rls[i], self.rls[i].af, self.rls[i].complexity(), self.rls[i].occurence)
         
         return self.selectBestRules(self.rls[:10])
 
@@ -97,28 +81,22 @@ class Trainer(BaseTD):
         br = []
         br.append(bestRules[0])
 
-        if br[0].prec - br[0].rec > 2.0:
-            # there is too much higher precision than recall
-            # I have to encourage increase perferomance in recall because
-            # this learning is very defensive = 
-            # it slowly increases the recall
-            for i in range(1, len(bestRules)):
-                if bestRules[i].transformation.addSlot == None:
-                    continue
-                elif bestRules[i].transformation.speechAct != None:
-                    continue
-                elif bestRules[i].transformation.delSlot != None:
-                    continue
-                elif bestRules[i].af < self.prevAF:
-                    continue
-                elif bestRules[i].transformation.addSlot == bestRules[i-1].transformation.addSlot:
-                    # remove duplicates
-                    continue
-                    
-                br.append(bestRules[i])
+        # I have to encourage increase perferomance in recall because
+        # this learning is very defensive = 
+        # it slowly increases the recall
+        for i in range(1, len(bestRules)):
+            if bestRules[i].transformation.addSlot == None:
+                continue
+            elif bestRules[i].af < 0:
+                continue
+            elif bestRules[i].transformation.addSlot == bestRules[i-1].transformation.addSlot:
+                # remove duplicates
+                continue
+                
+            br.append(bestRules[i])
 
 ##        for r in br:
-##            print '<<<Slct: %s AF:%.2f Cplx:%d' % (r, r.af, r.complexity())
+##            priaccnt '<<<Slct: %s AF:%.2f Cplx:%d' % (r, r.af, r.complexity())
         
         br.reverse()
         sr = []
@@ -137,20 +115,21 @@ class Trainer(BaseTD):
         sr.reverse()
         
         for r in sr:
-            print 'Slct: %s AF:%.2f Cplx:%d' % (r, r.af, r.complexity())
+            print 'Slct: %s AF:%.3f Cplx:%d' % (r, r.af, r.complexity())
                 
         return sr
     
     def train(self):
         self.bestRules = []
         self.prevAF = 0
+        self.iRule = 0
         
         self.rulesPruningHiThreshold = 0
         self.rulesPruningLowThreshold = 0
         
         bestRules = self.findBestRule()
         
-        while self.prevAF < bestRules[0].af - 0.001:
+        while bestRules[0].af - 0.001 > 0:
             self.prevAF = bestRules[0].af
             # store the selected rules
             for r in bestRules:
@@ -162,7 +141,9 @@ class Trainer(BaseTD):
             
             self.writeRules(os.path.join(self.tmpData,'rules.txt'))
             self.writePickle(os.path.join(self.tmpData,'rules.pickle'))
+            self.writeDict(os.path.join(self.tmpData,'rules.pckl-dict'))
 
+            self.iRule += 1
             bestRules = self.findBestRule()
             
             if bestRules == None:

@@ -10,12 +10,13 @@ trainData   = 'debug200.sem'
 #trainData   = 'debug500.sem'
 #trainData   = 'debug1500.sem'
 
-nGrams = 2
-tplGrams = 1
+trgCond = {'nGrams':2, 'nStarGrams':3, 'tplGrams':1, 'speechAct':1, 'lngth':1}
+
 tmpData = ''
 
 outRules='results.rules'
 outPickle='results.pickle'
+outDict='results.pckl-dict'
 
 maxProcessedDAs = 28000
 
@@ -29,31 +30,40 @@ filterOutSpeechActs = ('xxx',
 ##############################################################################
 def usage():
     print("""
-    Usage:   tbed-trainer.py [options] 
-    
-    Description:
-             Train Transformation-based Error-driven parser.
-    
-    Options: 
-             -h                 : print this help message and exit
-             -v                 : produce verbose output
-             -p                 : profile
-             --trainData=FILE   : CUED format dialogue acts {%s}
-             --tmpData=DIR      : directory for temporal data of the parser {%s}
-             --outRules=FILE    : output rules file {%s}
-             --outPickle=FILE   : output rules file with rules in Pickle format 
-                                  suitable for Python pograms {%s}
-             --nGrams=NUMBER    : grams type generated for triggers 
-                                  (1 - unigrams, 2 - bigrams, 3 - trigrams) {%d}
-             --tplGrams=NUMBER  : grams x grams used for triggers 
-                                  (1 - just nGrams, 2 - 2xnGrams) {%d}
-             --outDict=FILE     : output file speed up dictionary{%s}
+Usage:   tbed-trainer.py [options] 
+
+Description:
+         Train Transformation-based Error-driven parser.
+
+Options: 
+         -h                    : print this help message and exit
+         -v                    : produce verbose output
+         -p                    : profile
+         --trainData=FILE      : CUED format dialogue acts {%s}
+         --tmpData=DIR         : directory for temporal data of the parser {%s}
+         --outRules=FILE       : output rules file {%s}
+         --outPickle=FILE      : output rules file with rules in Pickle format 
+                                 suitable for Python pograms {%s}
+         --trgCond=STR         :  {%s}
+         
+            nGrams=NUMBER      : grams type generated for triggers 
+                                 (1 - unigrams, 2 - bigrams, 3 - trigrams)
+            nStarGrams=NUMBER  : star grams type generated for triggers 
+                                 (3 - trigrams e.g. ('was', '*', 'hard'), 
+                                 4 - four grams ('x','*',*','y') 
+            tplGrams=NUMBER    : grams x grams used for triggers 
+                                 (1 - just trgNGrams, 2 - 2xtrgNGrams)
+            speechAct=NUMBER   : 0 - no dependence on speech act
+                                 1 - some triggers depend on speech acts
+            lngth=NUMBER       : 0 - no dependence on length of the input word sequence
+                                 1 - some triggers depend on the length of the input word sequence
+                   
+         --outDict=FILE     : output file speed up dictionary{%s}
     """ % (trainData,
            tmpData, 
            outRules, 
            outPickle,
-           nGrams,
-           tplGrams,
+           trgCond,
            outDict))
            
 ##############################################################################
@@ -63,8 +73,7 @@ try:
         ["trainData=",
          "outRules=", 
          "outPickle=",
-         "nGrams=",
-         "tplGrams=",
+         "trgCond=",
          "tmpData=",
          'outDict='])
          
@@ -95,19 +104,19 @@ for o, a in opts:
         outPickle = a
     elif o == "--outDict":
         outDict = a
-    elif o == "--nGrams":
-        nGrams = int(a)
-    elif o == "--tplGrams":
-        tplGrams = int(a)
+    elif o == "--trgCond":
+        trgCond = eval(a)
 
 if verbose:
     print "---------------------------------------------"
     print "TBED trainer"
     print "---------------------------------------------"
 
-trn = Trainer(fos = filterOutSlots, fosa = filterOutSpeechActs, tplGrams = tplGrams, tmpData = tmpData)
+print trgCond
 
-trn.loadData(trainData, maxProcessedDAs, nGrams)
+trn = Trainer(fos = filterOutSlots, fosa = filterOutSpeechActs, trgCond = trgCond, tmpData = tmpData)
+
+trn.loadData(trainData, maxProcessedDAs)
 
 if profile:
     # sometimes is needed to delete *.pyc files because psyco is used if you do 
