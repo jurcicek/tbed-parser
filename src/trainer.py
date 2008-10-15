@@ -37,15 +37,8 @@ class Trainer(BaseTD):
                 # call the validate function on these DAs
                 self.trg2d[t].append(i)
             
-##        x = 0    
         for r in self.rules:
             r.occurence = self.rules[r]
-##            print self.rules[r], len(self.trg2d[r.trigger])
-##            
-##            if len(self.trg2d[r.trigger]) > x:
-##                x = len(self.trg2d[r.trigger])
-##        
-##        print x
             
 ##        print rules.values()
         print '========================================================='
@@ -55,9 +48,6 @@ class Trainer(BaseTD):
         # I might delete self.rules it seem that I do not need it any more
         self.rls.sort(cmp=lambda x,y: cmp(x.occurence, y.occurence), reverse=True)
 
-##        for r in self.rls:
-##            print r.occurence, self.r2d[r]
-        
         # apply each rule and measure the score
         R = 0
         maxNetScore = 0
@@ -74,7 +64,6 @@ class Trainer(BaseTD):
             # compute netScore for the curent rule
             netScore = 0 
             for i in self.trg2d[rule.trigger]:
-##                netScore += rule.measureDiff(self.das[i])
                 netScore += rule.transformation.measureDiff(self.das[i])
             af  = 100.0*netScore/N
             
@@ -83,7 +72,7 @@ class Trainer(BaseTD):
             
             rule.setPerformance(af, netScore)
             
-##            print '%snetScore Occ:%d NetScore:%d AF:%.2f Cplx:%d' % (rule, rule.occurence, netScore, af, rule.complexity())
+##            print '%s netScore Occ:%d NetScore:%d AF:%.2f Cplx:%d' % (rule, rule.occurence, netScore, af, rule.complexity())
         
         print '    Number of tested rules: %d ' % R
         print '========================================================='
