@@ -32,44 +32,53 @@ class Trainer(BaseTD):
             r.occurence = self.rules[r]
             
 ##        print rules.values()
-        print '---------------------------------------------------------'
-        print 'Number of applicable rules %d: ' % len(self.rules)
+        print '========================================================='
+        print 'Number of applicable rules: %d' % len(self.rules)
         self.rls = self.rules.keys()
 ##        self.rls = random.sample(self.rls, len(self.rls)/(self.iRule/2+1))
-        print '                 pruned to %d: ' % len(self.rls)
-        print '---------------------------------------------------------'
+        print '                 pruned to: %d' % len(self.rls)
 
         self.rls.sort(cmp=lambda x,y: cmp(x.occurence, y.occurence), reverse=True)
         
         # apply each rule and measure the score
+        R = 0
+        maxNetScore = 0
+        N = len(self.das)
         for rule in self.rls:
-            Ha = Na = Hi = Ri = Ni = 0
-            for da in self.das:
-                Ha += rule.measureDiff(da)
-                Na += 1 
+            if rule.occurence < maxNetScore:
+                # the best possible benefit of the rule is lower than the
+                # benefit of some already tested rule. And because the rules 
+                # are sorted w.r.t occurence, I can not find a better rule.
+                break
                 
-            prec = 0.0
-            rec  = 0.0
-            f    = 0.0
-            acc  = 100.0*Ha/Na
-            af   = acc
+            R += 1
+
+            # compute netScore for the curent rule
+            netScore = 0 
+            for da in self.das:
+                netScore += rule.measureDiff(da)
+            af  = 100.0*netScore/N
             
-            rule.setPerformance(af, acc, f, prec, rec)
+            if netScore > maxNetScore:
+                maxNetScore = netScore
             
-##            print '%s Occ:%d AF:%.2f Cplx:%d Acc:%.2f F:%.2f' % (rule, rule.occurence, af, rule.complexity(), acc, f)
-##            print Ha, Na, Hi, Ri, Ni
+            rule.setPerformance(af, netScore)
+            
+##            print '%snetScore Occ:%d NetScore:%d AF:%.2f Cplx:%d' % (rule, rule.occurence, netScore, af, rule.complexity())
         
-        # sort rules accordin their performance and complexity
+        print '    Number of tested rules: %d ' % R
+        print '========================================================='
         
+        # sort the rules accordin their performance and complexity
         self.rls.sort(cmp=lambda x,y: x.cmpPlx(y))
             
         if len(self.rls) == 0:
             print 'No applicable rules.'
             return None
         else:
-            print 'Best: %s AF:%.3f Cplx:%d Occ:%d' % (self.rls[0], self.rls[0].af, self.rls[0].complexity(), self.rls[0].occurence)
+            print 'Best: %s Occ:%d NetScore:%d AF:%.2f Cplx:%d' % (self.rls[0], self.rls[0].occurence, self.rls[0].netScore, self.rls[0].af, self.rls[0].complexity())
             for i in range(1, min([len(self.rls), 10])):
-                print ' Opt: %s AF:%.3f Cplx:%d Occ:%d' % (self.rls[i], self.rls[i].af, self.rls[i].complexity(), self.rls[i].occurence)
+                print ' Opt: %s Occ:%d NetScore:%d AF:%.2f Cplx:%d' % (self.rls[i], self.rls[i].occurence, self.rls[i].netScore, self.rls[i].af, self.rls[i].complexity())
         
         return self.selectBestRules(self.rls[:10])
 
@@ -87,7 +96,7 @@ class Trainer(BaseTD):
         for i in range(1, len(bestRules)):
             if bestRules[i].transformation.addSlot == None:
                 continue
-            elif bestRules[i].af < 0:
+            elif bestRules[i].af < 0.0:
                 continue
             elif bestRules[i].transformation.addSlot == bestRules[i-1].transformation.addSlot:
                 # remove duplicates
@@ -115,7 +124,7 @@ class Trainer(BaseTD):
         sr.reverse()
         
         for r in sr:
-            print 'Slct: %s AF:%.3f Cplx:%d' % (r, r.af, r.complexity())
+            print 'Slct: %s Occ:%d NetScore:%d AF:%.2f Cplx:%d' % (r, r.occurence, r.netScore, r.af, r.complexity())
                 
         return sr
     

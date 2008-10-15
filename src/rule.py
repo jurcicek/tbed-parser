@@ -9,6 +9,8 @@ class Rule:
     def __init__(self, trigger, transformation):
         self.trigger = trigger
         self.transformation = transformation
+        self.af = -100.0
+        self.netScore = -10000
         
         return 
     
@@ -64,12 +66,9 @@ class Rule:
         
         return ret
     
-    def setPerformance(self, af, acc, f, prec, rec):
+    def setPerformance(self, af, netScore):
         self.af = af
-        self.acc = acc
-        self.f = f
-        self.prec = prec
-        self.rec = rec
+        self.netScore = netScore
         
     @classmethod
     def read(cls, nRules):
