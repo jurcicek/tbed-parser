@@ -10,7 +10,7 @@ class Rule:
         self.trigger = trigger
         self.transformation = transformation
         self.af = -100.0
-        self.netScore = -10000
+        self.netScore = -1000000
         
         return 
     
@@ -46,11 +46,11 @@ class Rule:
             # apply it
             return 0
         
-    def apply(self, da, tmp=False):
+    def apply(self, da):
         # apply transformation on the dialogue act
-        if self.trigger.validate(da, tmp):
+        if self.trigger.validate(da):
             # applstr(each)+' Acc:'+str(each.acc)+' F:'+str(each.f)+'\n'y rules
-            self.transformation.apply(da, tmp)
+            self.transformation.apply(da)
         
         return 
     
@@ -59,6 +59,9 @@ class Rule:
 
     # cmp function for sort()
     def cmpPlx(self, r):
+        if self.netScore == r.netScore == -1000000:
+            return 0
+            
         ret = cmp(r.af,self.af)
         
         if ret == 0:
@@ -92,9 +95,11 @@ class Rule:
 def getRules(da, trgCond):
     # explode trans & triggers
     rules = []
+    triggers = da.genTriggers(trgCond)
+    
     for tran in da.genTrans():
-        for trigger in da.genTriggers(trgCond):
+        for trigger in triggers:
             r = Rule(trigger, tran)
             rules.append(r)
     
-    return rules
+    return rules, triggers

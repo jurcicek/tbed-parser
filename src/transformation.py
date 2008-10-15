@@ -70,37 +70,22 @@ class Transformation:
         
         return 0
         
-    def apply(self, da, tmp=False):
+    def apply(self, da):
         # change the speech act
         if self.speechAct:
-            if tmp:
-                da.tmpTbedSpeechAct = self.speechAct
-            else:
-                da.tbedSpeechAct = self.speechAct
-                
+            da.tbedSpeechAct = self.speechAct
             return
         
         # update slots
         if self.addSlot:
-            if tmp:
-                da.tmpTbedSlots.add(self.addSlot)
-            else:
-                da.tbedSlots.add(self.addSlot)
-            
+            da.tbedSlots.add(self.addSlot)
             return
             
-        if tmp:
-            if self.delSlot:
-                for slt in da.tmpTbedSlots:
-                    if slt == self.delSlot:
-                        da.tmpTbedSlots.remove(slt)
-                        break
-        else:
-            if self.delSlot:
-                for slt in da.tbedSlots:
-                    if slt == self.delSlot:
-                        da.tbedSlots.remove(slt)
-                        break
+        if self.delSlot:
+            for slt in da.tbedSlots:
+                if slt == self.delSlot:
+                    da.tbedSlots.remove(slt)
+                    break
         return
         
     def complexity(self):
@@ -173,34 +158,24 @@ class Trigger:
         
         return h % (1 << 31)
 
-    def validate(self, da, tmp=False):
+    def validate(self, da):
         if self.grams:
             for each in self.grams:
                 if not each in da.grams:
                     return False
 
         if self.speechAct:
-            if tmp:
-                if self.speechAct != da.tmpTbedSpeechAct:
-                    return False
-            else:
-                if self.speechAct != da.tbedSpeechAct:
-                    return False
+            if self.speechAct != da.tbedSpeechAct:
+                return False
 
         if self.lngth:
             if self.lngth < len(da.words):
                 return False
                     
-        if tmp:
-            if self.slots:
-                for each in self.slots:
-                    if not each in da.tmpTbedSlots:
-                        return False
-        else:
-            if self.slots:
-                for each in self.slots:
-                    if not each in da.tbedSlots:
-                        return False
+        if self.slots:
+            for each in self.slots:
+                if not each in da.tbedSlots:
+                    return False
     
         return True
 

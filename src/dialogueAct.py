@@ -22,10 +22,6 @@ class DialogueAct:
         self.tbedSpeechAct = self.vocabulary['inform']
         self.tbedSlots = set()
         
-        # temporal tbed data, for rules evaluation
-        self.tmpTbedSpeechAct = self.vocabulary['inform']
-        self.tmpTbedSlots = set()
-        
         return
 
     def __str__(self):
@@ -50,10 +46,6 @@ class DialogueAct:
         cDA.grams = self.grams
         
         return cDA
-    
-    def resetTmp(self):
-        self.tmpTbedSpeechAct = self.tbedSpeechAct
-        self.tmpTbedSlots = copy(self.tbedSlots)
     
     def parse(self):
         self.words = split(self.text)
@@ -132,32 +124,19 @@ class DialogueAct:
     def getNumOfSlots(self):
         return len(self.slots)
         
-    def measure(self, tmp=False):
+    def measure(self):
         # get similarity measure
-        if tmp:
-            if self.tmpTbedSpeechAct == self.speechAct:
-                Ha = 1
-            else:
-                Ha = 0
-                
-            Na = 1
-            
-            # slots measures
-            Hi = len(self.tmpTbedSlots&self.slots)
-            Ri = len(self.tmpTbedSlots)
-            Ni = len(self.slots)
+        if self.tbedSpeechAct == self.speechAct:
+            Ha = 1
         else:
-            if self.tbedSpeechAct == self.speechAct:
-                Ha = 1
-            else:
-                Ha = 0
-                
-            Na = 1
+            Ha = 0
             
-            # slots measures
-            Hi = len(self.tbedSlots&self.slots)
-            Ri = len(self.tbedSlots)
-            Ni = len(self.slots)
+        Na = 1
+        
+        # slots measures
+        Hi = len(self.tbedSlots&self.slots)
+        Ri = len(self.tbedSlots)
+        Ni = len(self.slots)
             
         return (Ha, Na, Hi, Ri, Ni)
         

@@ -1,6 +1,7 @@
 #!/usr/bin/env python2.5
 
 import re, random, os.path
+from collections import *
 from copy import *
 from string import *
 from threading import *
@@ -20,25 +21,42 @@ class Trainer(BaseTD):
         return
 
     def findBestRule(self):
-        self.rules = {}
+        print '=================== FIND BEST START ====================='
+        self.rules = defaultdict(int)
+        self.trg2d = defaultdict(list)
         # get all applicable rules
-        for da in self.das:
-            rs = getRules(da, self.trgCond)
+        for i in xrange(len(self.das)):
+            rs, ts = getRules(self.das[i], self.trgCond)
             
             for r in rs:
-                self.rules[r] = self.rules.get(r,0) + 1
-
+                self.rules[r] += 1
+            
+            for t in ts:
+                # collect indexes of DAs for which the trigger satisfies the 
+                # conditions. As a result I do not have to
+                # call the validate function on these DAs
+                self.trg2d[t].append(i)
+            
+##        x = 0    
         for r in self.rules:
             r.occurence = self.rules[r]
+##            print self.rules[r], len(self.trg2d[r.trigger])
+##            
+##            if len(self.trg2d[r.trigger]) > x:
+##                x = len(self.trg2d[r.trigger])
+##        
+##        print x
             
 ##        print rules.values()
         print '========================================================='
         print 'Number of applicable rules: %d' % len(self.rules)
-        self.rls = self.rules.keys()
-##        self.rls = random.sample(self.rls, len(self.rls)/(self.iRule/2+1))
-        print '                 pruned to: %d' % len(self.rls)
-
+        
+        self.rls = self.rules.keys() 
+        # I might delete self.rules it seem that I do not need it any more
         self.rls.sort(cmp=lambda x,y: cmp(x.occurence, y.occurence), reverse=True)
+
+##        for r in self.rls:
+##            print r.occurence, self.r2d[r]
         
         # apply each rule and measure the score
         R = 0
@@ -55,8 +73,9 @@ class Trainer(BaseTD):
 
             # compute netScore for the curent rule
             netScore = 0 
-            for da in self.das:
-                netScore += rule.measureDiff(da)
+            for i in self.trg2d[rule.trigger]:
+##                netScore += rule.measureDiff(self.das[i])
+                netScore += rule.transformation.measureDiff(self.das[i])
             af  = 100.0*netScore/N
             
             if netScore > maxNetScore:
@@ -80,6 +99,7 @@ class Trainer(BaseTD):
             for i in range(1, min([len(self.rls), 10])):
                 print ' Opt: %s Occ:%d NetScore:%d AF:%.2f Cplx:%d' % (self.rls[i], self.rls[i].occurence, self.rls[i].netScore, self.rls[i].af, self.rls[i].complexity())
         
+        print '==================== FIND BEST END ======================'
         return self.selectBestRules(self.rls[:10])
 
     def applyBestRule(self, bestRule):
