@@ -1,0 +1,8 @@
+#!/bin/sh
+
+../../src/graph.py \
+  --resultsDir='' \
+  --dataDir='../../data'
+  
+  
+

@@ -17,7 +17,7 @@ class Decoder(BaseTD):
         
         return
         
-    def decode(self):
+    def decode(self, verbose = False):
         i = 0
         for rule in self.bestRules:
             Ha = Na = Hi = Ri = Ni = 0
@@ -48,8 +48,10 @@ class Decoder(BaseTD):
             af = 2*acc*f/(acc+f)
 
             i += 1
-            print 'Rule:%d' % i
-            print '%s AF: %.2f ACC: %.2f F:%.2f PREC: %.2f REC: %.2f' %(rule, af, acc, f, prec, rec)
+            
+            if verbose:
+                print 'Rule:%d' % i
+                print '%s AF: %.2f ACC: %.2f F:%.2f PREC: %.2f REC: %.2f' %(rule, af, acc, f, prec, rec)
                 
         return
     

@@ -76,11 +76,17 @@ class BaseTD:
         f.close()
         return
     
-    def readPickle(self, fn):
+    def readPickle(self, fn, nRules = 0):
         f = file(fn, 'rb')
         self.bestRules = pickle.load(f)
         f.close()
-        return
+        
+        n = len(self.bestRules)
+        
+        if nRules:
+            self.bestRules = self.bestRules[:nRules]
+            
+        return n
 
     def writeDict(self, fn):
         self.vocabulary.write(fn)
