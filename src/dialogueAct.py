@@ -3,6 +3,7 @@
 from string import *
 import re
 from copy import *
+from collections import *
 
 from utils import *
 from slot import *
@@ -176,14 +177,16 @@ class DialogueAct:
         if trgCond['speechAct'] >=1:
             saCond.append(self.tbedSpeechAct)
         
+        tplFilter = defaultdict(int)
         gramsCond = [None,]
         for gram1 in self.grams:
             gramsCond.append([gram1,])
             
             if trgCond['tplGrams'] >= 2:
                 for gram2 in self.grams:
-                    if gram1 != gram2:
+                    if gram1 != gram2 and tplFilter[(gram2,gram1)]!=1:
                         gramsCond.append([gram1,gram2])
+                        tplFilter[(gram1,gram2)] = 1
 
         slotsCond = [None,]
         if trgCond['nSlots'] >= 1:

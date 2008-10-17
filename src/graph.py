@@ -21,7 +21,7 @@ except getopt.GetoptError, exc:
 
 for o, a in opts:
     if o == "-h":
-        usage()70
+        usage()
         sys.exit()
     elif o == "--resultsDir":
         resultsDir = a
