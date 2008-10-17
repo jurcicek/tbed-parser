@@ -101,14 +101,14 @@ f = file(settingsFN, 'r')
 settings = ''
 for s in f.readlines():
     if s.startswith('TBEDP_TRN_DATA_FILE'):
-        settings += s.replace('TBEDP_TRN_DATA_FILE=', '')
-##    if s.startswith('TBEDP_TRG_COND'):
-##        settings += s+'\n'
+        settings += s+'\n'
+    if s.startswith('TBEDP_TRG_COND'):
+        settings += s.replace('{', '').replace('}','').replace("':", '=').replace("'",'')+'\n'
 f.close()
 
 fig = figure(figsize=(11.7, 8.3))
 
-title('Clean test data - training data: '+settings)
+title('Clean test data')
 
 xlabel('nRules - number of used rules')
 ylabel('Acc [%], F[%]')
@@ -135,16 +135,17 @@ grid(True)
 i = findMax(devCleanF)
 plot([nRules[i]], [devCleanF[i]], 'bs-')
 
-annotate('Best performance \non dev set.', (nRules[i], devCleanF[i]), 
-        (nRules[i]-25, devCleanF[i]-7), 
+annotate('Best performance on the dev set.', (nRules[i], devCleanF[i]), 
+        (int(nRules[-1]/2), devCleanF[i]-7), 
         arrowprops=dict(facecolor='black', shrink=0.05, width=1),
         fontsize=14)
 
 xlim(xmin=nRules[0]-2)
 
-text(nRules[i]-25, devCleanF[i]-9, 'Test data: Acc=%.2f F=%.2f' % (testCleanAcc[i], testCleanF[i]), fontsize=14)
-savefig(outGraph)
+text(int(nRules[-1]/2), devCleanF[i]-9, 'Test data: Acc=%.2f F=%.2f' % (testCleanAcc[i], testCleanF[i]), fontsize=14)
+text(nRules[0], 67, settings)
 
+savefig(outGraph)
 print commands.getoutput("epstopdf %s" % (outGraph))
 print commands.getoutput("rm -f %s" % (outGraph))
 
@@ -155,7 +156,7 @@ devCleanAcc, devCleanF, nRules = decodeSet('towninfo-dev.asr')
 testCleanAcc, testCleanF, nRules = decodeSet('towninfo-test.asr')
 
 fig = figure(figsize=(11.7, 8.3))
-title('ASR test data - training data: '+settings)
+title('ASR test data')
 xlabel('nRules - number of used rules')
 ylabel('Acc [%], F[%]')
 
@@ -181,14 +182,15 @@ grid(True)
 i = findMax(devCleanF)
 plot([nRules[i]], [devCleanF[i]], 'bs-')
 
-annotate('Best performance \non dev set.', (nRules[i], devCleanF[i]), 
-        (nRules[i]-25, devCleanF[i]-7), 
+annotate('Best performance on the dev set.', (nRules[i], devCleanF[i]), 
+        (int(nRules[-1]/2), devCleanF[i]-7), 
         arrowprops=dict(facecolor='black', shrink=0.05, width=1),
         fontsize=14)
 
 xlim(xmin=nRules[0]-2)
 
-text(nRules[i]-25, devCleanF[i]-9, 'Test data: Acc=%.2f F=%.2f' % (testCleanAcc[i], testCleanF[i]), fontsize=14)
+text(int(nRules[-1]/2), devCleanF[i]-9, 'Test data: Acc=%.2f F=%.2f' % (testCleanAcc[i], testCleanF[i]), fontsize=14)
+text(nRules[0], 67, settings)
 
 savefig(outGraph)
 print commands.getoutput("epstopdf %s" % (outGraph))
