@@ -21,7 +21,7 @@ except getopt.GetoptError, exc:
 
 for o, a in opts:
     if o == "-h":
-        usage()
+        usage()70
         sys.exit()
     elif o == "--resultsDir":
         resultsDir = a
@@ -143,7 +143,7 @@ annotate('Best performance on the dev set.', (nRules[i], devCleanF[i]),
 xlim(xmin=nRules[0]-2)
 
 text(int(nRules[-1]/2), devCleanF[i]-9, 'Test data: Acc=%.2f F=%.2f' % (testCleanAcc[i], testCleanF[i]), fontsize=14)
-text(nRules[0], 67, settings)
+text(nRules[0], devCleanF[i]-15, settings)
 
 savefig(outGraph)
 print commands.getoutput("epstopdf %s" % (outGraph))
@@ -190,7 +190,7 @@ annotate('Best performance on the dev set.', (nRules[i], devCleanF[i]),
 xlim(xmin=nRules[0]-2)
 
 text(int(nRules[-1]/2), devCleanF[i]-9, 'Test data: Acc=%.2f F=%.2f' % (testCleanAcc[i], testCleanF[i]), fontsize=14)
-text(nRules[0], 67, settings)
+text(nRules[0], devCleanF[i]-15, settings)
 
 savefig(outGraph)
 print commands.getoutput("epstopdf %s" % (outGraph))

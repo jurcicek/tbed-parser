@@ -2,7 +2,7 @@
 <!DOCTYPE Session SYSTEM "Session-3.8.dtd">
 <!-- eric3 session file for project tbedp -->
 <!-- This file was generated automatically, do not edit. -->
-<!-- Saved: 2008-10-16, 18:53:29 -->
+<!-- Saved: 2008-10-17, 15:18:23 -->
 <Session version="3.8">
   <Filenames>
     <Filename cline="118" cindex="5">/home/filip/cued/tbed-parser/src/tbedp-trainer.py</Filename>
@@ -10,9 +10,9 @@
     <Filename cline="42" cindex="0">/home/filip/cued/tbed-parser/src/transformation.py</Filename>
     <Filename cline="139" cindex="0">/home/filip/cued/tbed-parser/src/dialogueAct.py</Filename>
     <Filename cline="74" cindex="8">/home/filip/cued/tbed-parser/src/rule.py</Filename>
-    <Filename cline="7" cindex="10">/home/filip/cued/tbed-parser/src/graph.py</Filename>
+    <Filename cline="192" cindex="31">/home/filip/cued/tbed-parser/src/graph.py</Filename>
   </Filenames>
-  <ActiveWindow cline="7" cindex="10">/home/filip/cued/tbed-parser/src/graph.py</ActiveWindow>
+  <ActiveWindow cline="192" cindex="31">/home/filip/cued/tbed-parser/src/graph.py</ActiveWindow>
   <Breakpoints>
   </Breakpoints>
   <Watchpoints>
