@@ -40,10 +40,15 @@ class Trainer(BaseTD):
         for r in self.rules:
             r.occurence = self.rules[r]
             
-##        print rules.values()
         print '========================================================='
         print 'Number of applicable rules: %d' % len(self.rules)
-        
+
+        self.rls = self.rules.keys() 
+        for r in self.rls:
+            if r.occurence < 2:
+                del self.rules[r]
+        print '                 pruned to: %d' % len(self.rules)
+
         self.rls = self.rules.keys() 
         # I might delete self.rules it seem that I do not need it any more
         self.rls.sort(cmp=lambda x,y: cmp(x.occurence, y.occurence), reverse=True)
@@ -65,28 +70,27 @@ class Trainer(BaseTD):
             netScore = 0 
             for i in self.trg2d[rule.trigger]:
                 netScore += rule.transformation.measureDiff(self.das[i])
-            af  = 100.0*netScore/N
             
             if netScore > maxNetScore:
                 maxNetScore = netScore
             
-            rule.setPerformance(af, netScore)
+            rule.setPerformance(netScore)
             
-##            print '%s netScore Occ:%d NetScore:%d AF:%.2f Cplx:%d' % (rule, rule.occurence, netScore, af, rule.complexity())
+##            print '%s netScore Occ:%d NetScore:%d Cplx:%d' % (rule, rule.occurence, netScore, rule.complexity())
         
         print '    Number of tested rules: %d ' % R
         print '========================================================='
         
-        # sort the rules accordin their performance and complexity
+        # sort the rules according their performance and complexity
         self.rls.sort(cmp=lambda x,y: x.cmpPlx(y))
             
         if len(self.rls) == 0:
             print 'No applicable rules.'
             return None
         else:
-            print 'Best: %s Occ:%d NetScore:%d AF:%.2f Cplx:%d' % (self.rls[0], self.rls[0].occurence, self.rls[0].netScore, self.rls[0].af, self.rls[0].complexity())
+            print 'Best: %s Occ:%d NetScore:%d Cplx:%d' % (self.rls[0], self.rls[0].occurence, self.rls[0].netScore, self.rls[0].complexity())
             for i in range(1, min([len(self.rls), 10])):
-                print ' Opt: %s Occ:%d NetScore:%d AF:%.2f Cplx:%d' % (self.rls[i], self.rls[i].occurence, self.rls[i].netScore, self.rls[i].af, self.rls[i].complexity())
+                print ' Opt: %s Occ:%d NetScore:%d Cplx:%d' % (self.rls[i], self.rls[i].occurence, self.rls[i].netScore, self.rls[i].complexity())
         
         print '==================== FIND BEST END ======================'
         return self.selectBestRules(self.rls[:10])
@@ -105,7 +109,7 @@ class Trainer(BaseTD):
         for i in range(1, len(bestRules)):
             if bestRules[i].transformation.addSlot == None:
                 continue
-            elif bestRules[i].af < 0.0:
+            elif bestRules[i].netScore < 2:
                 continue
             elif bestRules[i].transformation.addSlot == bestRules[i-1].transformation.addSlot:
                 # remove duplicates
@@ -114,7 +118,7 @@ class Trainer(BaseTD):
             br.append(bestRules[i])
 
 ##        for r in br:
-##            priaccnt '<<<Slct: %s AF:%.2f Cplx:%d' % (r, r.af, r.complexity())
+##            priaccnt '<<<Slct: %s Cplx:%d' % (r, r.complexity())
         
         br.reverse()
         sr = []
@@ -133,13 +137,12 @@ class Trainer(BaseTD):
         sr.reverse()
         
         for r in sr:
-            print 'Slct: %s Occ:%d NetScore:%d AF:%.2f Cplx:%d' % (r, r.occurence, r.netScore, r.af, r.complexity())
+            print 'Slct: %s Occ:%d NetScore:%d Cplx:%d' % (r, r.occurence, r.netScore, r.complexity())
                 
         return sr
     
     def train(self):
         self.bestRules = []
-        self.prevAF = 0
         self.iRule = 0
         
         self.rulesPruningHiThreshold = 0
@@ -147,8 +150,7 @@ class Trainer(BaseTD):
         
         bestRules = self.findBestRule()
         
-        while bestRules[0].af - 0.001 > 0:
-            self.prevAF = bestRules[0].af
+        while bestRules[0].netScore >= 2:
             # store the selected rules
             for r in bestRules:
                 self.bestRules.append(r)

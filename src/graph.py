@@ -91,11 +91,7 @@ def findMax(data):
     
     return iMax
     
-outGraph = os.path.join(resultsDir,'rules.performance.clean.eps')
 settingsFN = os.path.join(resultsDir,'settings')
-trainCleanAcc, trainCleanF, nRules = decodeSet('towninfo-train.sem')
-devCleanAcc, devCleanF, nRules = decodeSet('towninfo-dev.sem')
-testCleanAcc, testCleanF, nRules = decodeSet('towninfo-test.sem')
 
 f = file(settingsFN, 'r')
 settings = ''
@@ -106,6 +102,11 @@ for s in f.readlines():
         settings += s.replace('{', '').replace('}','').replace("':", '=').replace("'",'')+'\n'
 f.close()
 
+outGraph = os.path.join(resultsDir,'rules.performance.clean.eps')
+trainCleanAcc, trainCleanF, nRules1 = decodeSet('towninfo-train.sem')
+devCleanAcc, devCleanF, nRules2 = decodeSet('towninfo-dev.sem')
+testCleanAcc, testCleanF, nRules3 = decodeSet('towninfo-test.sem')
+
 fig = figure(figsize=(11.7, 8.3))
 
 title('Clean test data')
@@ -113,14 +114,14 @@ title('Clean test data')
 xlabel('nRules - number of used rules')
 ylabel('Acc [%], F[%]')
 
-plot(nRules, trainCleanAcc, "g-.")
-plot(nRules, trainCleanF,  "g-")
+plot(nRules1, trainCleanAcc, "g-.")
+plot(nRules1, trainCleanF,  "g-")
 
-plot(nRules, devCleanAcc, "b-.")
-plot(nRules, devCleanF,  "b-")
+plot(nRules2, devCleanAcc, "b-.")
+plot(nRules2, devCleanF,  "b-")
 
-plot(nRules, testCleanAcc, "r-.")
-plot(nRules, testCleanF,  "r-")
+plot(nRules3, testCleanAcc, "r-.")
+plot(nRules3, testCleanF,  "r-")
 
 legend(("train data - clean - Accurracy",
         "train data - clean - Item F-masure", 
@@ -133,17 +134,17 @@ legend(("train data - clean - Accurracy",
 grid(True)
 
 i = findMax(devCleanF)
-plot([nRules[i]], [devCleanF[i]], 'bs-')
+plot([nRules2[i]], [devCleanF[i]], 'bs-')
 
-annotate('Best performance on the dev set.', (nRules[i], devCleanF[i]), 
-        (int(nRules[-1]/2), devCleanF[i]-7), 
+annotate('Best performance on the dev set.', (nRules2[i], devCleanF[i]), 
+        (int(nRules2[-1]/2), devCleanF[i]-7), 
         arrowprops=dict(facecolor='black', shrink=0.05, width=1),
         fontsize=14)
 
-xlim(xmin=nRules[0]-2)
+xlim(xmin=nRules2[0]-2)
 
-text(int(nRules[-1]/2), devCleanF[i]-9, 'Test data: Acc=%.2f F=%.2f' % (testCleanAcc[i], testCleanF[i]), fontsize=14)
-text(nRules[0], devCleanF[i]-15, settings)
+text(int(nRules2[-1]/2), devCleanF[i]-9, 'Test data: nRules=%d Acc=%.2f F=%.2f' % (nRules2[i], testCleanAcc[i], testCleanF[i]), fontsize=14)
+text(nRules2[0], devCleanF[i]-15, settings)
 
 savefig(outGraph)
 print commands.getoutput("epstopdf %s" % (outGraph))
@@ -151,23 +152,23 @@ print commands.getoutput("rm -f %s" % (outGraph))
 
 
 outGraph = os.path.join(resultsDir,'rules.performance.asr.eps')
-trainCleanAcc, trainCleanF, nRules = decodeSet('towninfo-train.asr')
-devCleanAcc, devCleanF, nRules = decodeSet('towninfo-dev.asr')
-testCleanAcc, testCleanF, nRules = decodeSet('towninfo-test.asr')
+trainCleanAcc, trainCleanF, nRules1 = decodeSet('towninfo-train.asr')
+devCleanAcc, devCleanF, nRules1 = decodeSet('towninfo-dev.asr')
+testCleanAcc, testCleanF, nRules1 = decodeSet('towninfo-test.asr')
 
 fig = figure(figsize=(11.7, 8.3))
 title('ASR test data')
 xlabel('nRules - number of used rules')
 ylabel('Acc [%], F[%]')
 
-plot(nRules, trainCleanAcc, "g-.")
-plot(nRules, trainCleanF,  "g-")
+plot(nRules1, trainCleanAcc, "g-.")
+plot(nRules1, trainCleanF,  "g-")
 
-plot(nRules, devCleanAcc, "b-.")
-plot(nRules, devCleanF,  "b-")
+plot(nRules2, devCleanAcc, "b-.")
+plot(nRules2, devCleanF,  "b-")
 
-plot(nRules, testCleanAcc, "r-.")
-plot(nRules, testCleanF,  "r-")
+plot(nRules3, testCleanAcc, "r-.")
+plot(nRules3, testCleanF,  "r-")
 
 legend(("train data - ASR - Accurracy",
         "train data - ASR - Item F-masure", 
@@ -180,17 +181,17 @@ legend(("train data - ASR - Accurracy",
 grid(True)
 
 i = findMax(devCleanF)
-plot([nRules[i]], [devCleanF[i]], 'bs-')
+plot([nRules2[i]], [devCleanF[i]], 'bs-')
 
-annotate('Best performance on the dev set.', (nRules[i], devCleanF[i]), 
-        (int(nRules[-1]/2), devCleanF[i]-7), 
+annotate('Best performance on the dev set.', (nRules2[i], devCleanF[i]), 
+        (int(nRules2[-1]/2), devCleanF[i]-7), 
         arrowprops=dict(facecolor='black', shrink=0.05, width=1),
         fontsize=14)
 
-xlim(xmin=nRules[0]-2)
+xlim(xmin=nRules2[0]-2)
 
-text(int(nRules[-1]/2), devCleanF[i]-9, 'Test data: Acc=%.2f F=%.2f' % (testCleanAcc[i], testCleanF[i]), fontsize=14)
-text(nRules[0], devCleanF[i]-15, settings)
+text(int(nRules2[-1]/2), devCleanF[i]-9, 'Test data: nRules=%d Acc=%.2f F=%.2f' % (nRules2[i], testCleanAcc[i], testCleanF[i]), fontsize=14)
+text(nRules2[0], devCleanF[i]-15, settings)
 
 savefig(outGraph)
 print commands.getoutput("epstopdf %s" % (outGraph))

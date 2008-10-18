@@ -3,5 +3,5 @@
 export TBEDP_TRN_DATA_FILE=towninfo-train.asr
 export TBEDP_TST_SEM_FILE=towninfo-test.sem
 export TBEDP_TST_ASR_FILE=towninfo-test.asr
-export TBEDP_TRG_COND="{'nGrams':1, 'nStarGrams':1, 'tplGrams':1, 'speechAct':1, 'nSlots':1, 'lngth':0}"
+export TBEDP_TRG_COND="{'nGrams':3, 'nStarGrams':4, 'tplGrams':1, 'speechAct':1, 'nSlots':1, 'lngth':0}"
 

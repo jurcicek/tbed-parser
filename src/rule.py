@@ -9,7 +9,7 @@ class Rule:
     def __init__(self, trigger, transformation):
         self.trigger = trigger
         self.transformation = transformation
-        self.af = -100.0
+        self.occurence = 0
         self.netScore = -1000000
         
         return 
@@ -62,15 +62,14 @@ class Rule:
         if self.netScore == r.netScore == -1000000:
             return 0
             
-        ret = cmp(r.af,self.af)
+        ret = cmp(r.netScore,self.netScore)
         
         if ret == 0:
             ret = cmp(self.complexity(),r.complexity())
         
         return ret
     
-    def setPerformance(self, af, netScore):
-        self.af = af
+    def setPerformance(self, netScore):
         self.netScore = netScore
         
     @classmethod
@@ -86,7 +85,8 @@ class Rule:
         return cls(trigger, trans)
         
     def write(self, i):
-        s = 'Rule:%d\n' % i
+        s = '-------------------------------------------------------------\n'
+        s+= 'Rule:%d:Occ:%d:Net:%d\n' % (i, self.occurence, self.netScore)
         s+= self.trigger.write()
         s+= self.transformation.write()
         

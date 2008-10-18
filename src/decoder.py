@@ -18,40 +18,9 @@ class Decoder(BaseTD):
         return
         
     def decode(self, verbose = False):
-        i = 0
         for rule in self.bestRules:
-            Ha = Na = Hi = Ri = Ni = 0
             for da in self.das:
                 rule.apply(da)
-                pHa, pNa, pHi, pRi, pNi = da.measure()
-                
-                Ha += pHa
-                Na += pNa
-                Hi += pHi
-                Ri += pRi
-                Ni += pNi
-            
-            try:
-                acc  = 100.0*Ha/Na
-            except ZeroDivisionError:
-                acc  = 0.0
-
-            try:
-                prec = 100.0*Hi/Ri
-                rec  = 100.0*Hi/Ni
-                f = 2*prec*rec/(prec+rec)
-            except ZeroDivisionError:
-                prec = 0.0
-                rec  = 0.0
-                f    = 0.001
-                
-            af = 2*acc*f/(acc+f)
-
-            i += 1
-            
-            if verbose:
-                print 'Rule:%d' % i
-                print '%s AF: %.2f ACC: %.2f F:%.2f PREC: %.2f REC: %.2f' %(rule, af, acc, f, prec, rec)
                 
         return
     
@@ -62,4 +31,3 @@ class Decoder(BaseTD):
             f.write('%s <=> %s\n' % (da.text, da.renderTBED()))
             
         return
-        
