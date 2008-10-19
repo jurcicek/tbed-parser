@@ -38,6 +38,11 @@ time ./src/tbedp-decoder.py -v \
 ./bin/cuedSemScore.pl $TBEDP_OUT_SEM_HYP $TBEDP_TEST_DATA_SEM > $TBEDP_OUT_SEM_HYP.rslt
 ./bin/cuedSemScore.pl $TBEDP_OUT_ASR_HYP $TBEDP_TEST_DATA_ASR > $TBEDP_OUT_ASR_HYP.rslt
 
+OLD_PWD=`pwd`
+cd $TBEDP_RESULTS_DIR
+grph
+cd $OLD_PWD
+
 date
 
 echo `date` >> $TBEDP_RESULTS_DIR/settings

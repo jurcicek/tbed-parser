@@ -89,6 +89,9 @@ class DialogueAct:
         if trgCond['nGrams'] >=3:
             for i in range(2, len(self.words)):
                 self.grams.add((self.words[i-2],self.words[i-1],self.words[i]))
+        if trgCond['nGrams'] >=4:
+            for i in range(3, len(self.words)):
+                self.grams.add((self.words[i-3],self.words[i-2],self.words[i-1],self.words[i]))
 
         if trgCond['nStarGrams'] >=3:
             for i in range(2, len(self.words)):
@@ -96,6 +99,9 @@ class DialogueAct:
         if trgCond['nStarGrams'] >=4:
             for i in range(3, len(self.words)):
                 self.grams.add((self.words[i-3],'*','*',self.words[i]))
+        if trgCond['nStarGrams'] >=5:
+            for i in range(4, len(self.words)):
+                self.grams.add((self.words[i-4],'*','*','*',self.words[i]))
             
                     
     def render(self, speechAct, slots):
