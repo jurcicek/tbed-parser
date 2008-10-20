@@ -143,7 +143,10 @@ annotate('Best performance on the dev set.', (nRules2[i], devCleanF[i]),
 
 xlim(xmin=nRules2[0]-2)
 
-text(int(nRules2[-1]/2), devCleanF[i]-9, 'Test data: nRules=%d Acc=%.2f F=%.2f' % (nRules2[i], testCleanAcc[i], testCleanF[i]), fontsize=14)
+text(int(nRules2[-1]/2), devCleanF[i]-9, 'Dev data: nRules=%d Acc=%.2f F=%.2f' % (nRules2[i], devCleanAcc[i], devCleanF[i]), fontsize=14)
+text(nRules2[0], devCleanF[i]-15, settings)
+
+text(int(nRules2[-1]/2), devCleanF[i]-11, 'Test data: nRules=%d Acc=%.2f F=%.2f' % (nRules2[i], testCleanAcc[i], testCleanF[i]), fontsize=14)
 text(nRules2[0], devCleanF[i]-15, settings)
 
 savefig(outGraph)
@@ -190,7 +193,10 @@ annotate('Best performance on the dev set.', (nRules2[i], devCleanF[i]),
 
 xlim(xmin=nRules2[0]-2)
 
-text(int(nRules2[-1]/2), devCleanF[i]-9, 'Test data: nRules=%d Acc=%.2f F=%.2f' % (nRules2[i], testCleanAcc[i], testCleanF[i]), fontsize=14)
+text(int(nRules2[-1]/2), devCleanF[i]-9, 'Dev data: nRules=%d Acc=%.2f F=%.2f' % (nRules2[i], devCleanAcc[i], devCleanF[i]), fontsize=14)
+text(nRules2[0], devCleanF[i]-15, settings)
+
+text(int(nRules2[-1]/2), devCleanF[i]-11, 'Test data: nRules=%d Acc=%.2f F=%.2f' % (nRules2[i], testCleanAcc[i], testCleanF[i]), fontsize=14)
 text(nRules2[0], devCleanF[i]-15, settings)
 
 savefig(outGraph)

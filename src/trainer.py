@@ -13,6 +13,8 @@ from dialogueAct import *
 from rule import *
 from baseTD import *
 
+maxOptRules = 10
+
 class Trainer(BaseTD):
     def __init__(self, fos, fosa, trgCond,tmpData):
         BaseTD.__init__(self, fos = fos, fosa = fosa, trgCond = trgCond)
@@ -89,11 +91,11 @@ class Trainer(BaseTD):
             return None
         else:
             print 'Best: %s Occ:%d NetScore:%d Cplx:%d' % (self.rls[0], self.rls[0].occurence, self.rls[0].netScore, self.rls[0].complexity())
-            for i in range(1, min([len(self.rls), 10])):
+            for i in range(1, min([len(self.rls), maxOptRules])):
                 print ' Opt: %s Occ:%d NetScore:%d Cplx:%d' % (self.rls[i], self.rls[i].occurence, self.rls[i].netScore, self.rls[i].complexity())
         
         print '==================== FIND BEST END ======================'
-        return self.selectBestRules(self.rls[:10])
+        return self.selectBestRules(self.rls[:maxOptRules])
 
     def applyBestRule(self, bestRule):
         for da in self.das:

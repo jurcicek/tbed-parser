@@ -170,7 +170,11 @@ class DialogueAct:
             
         for slot in extraSlotAndValues:
             trans.add(Transformation(delSlot=slot))
-        
+
+        for extraSlot in extraSlotAndValues:
+            for missingSlot in missingSlotAndValues:
+                trans.add(Transformation(subSlot=(extraSlot, missingSlot)))
+    
         # do not explode transformations, only one modification 
         # at one time is allowed
         

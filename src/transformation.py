@@ -90,7 +90,7 @@ class Transformation:
         if self.subSlot:
             if not self.subSlot[0] in da.slots:
                 if self.subSlot[0] in da.tbedSlots:
-                    # there is slot which migth be benefitial to substitue
+                    # there is slot which might be benefitial to substitue
                     if self.subSlot[1] in da.slots:
                         if not self.subSlot[1] in da.tbedSlots:
                             return 1
