@@ -8,6 +8,7 @@ from collections import *
 from utils import *
 from slot import *
 from transformation import *
+from trigger import *
       
 class DialogueAct:
     def __init__(self, cuedDA, text, vocabulary):

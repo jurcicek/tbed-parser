@@ -4,6 +4,7 @@ from math import *
 
 from dialogueAct import *
 from transformation import *
+from trigger import *
         
 class Rule:
     def __init__(self, trigger, transformation):
