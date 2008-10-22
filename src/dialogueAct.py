@@ -33,51 +33,59 @@ class DialogueAct:
         s+= self.vocabulary.getKey(self.tbedSpeechAct)+' - '
         s+= str(self.slots)+' - '
         s+= str(self.tbedSlots)+' - '
-        s+= str(self.grams)
+##        s+= str(self.grams)
 
         return s
         
-    def __copy__(self):
-        cDA = DialogueAct(self.cuedDA, self.text)
-        cDA.speechAct = self.speechAct
-        cDA.tbedSpeechAct = self.tbedSpeechAct
-        cDA.slots = self.slots
-        cDA.tbedSlots = copy(self.tbedSlots)
-        
-        cDA.words = self.words
-        cDA.grams = self.grams
-        
-        return cDA
+##    def __copy__(self):
+##        cDA = DialogueAct(self.cuedDA, self.text)
+##        cDA.speechAct = self.speechAct
+##        cDA.tbedSpeechAct = self.tbedSpeechAct
+##        cDA.slots = self.slots
+##        cDA.tbedSlots = copy(self.tbedSlots)
+##        
+##        cDA.words = self.words
+##        cDA.grams = self.grams
+##        
+##        return cDA
     
-    def parse(self):
-        self.words = split(self.text)
-        self.words = [self.vocabulary[w] for w in self.words]
+    def parseDA(self, cuedDA, text):
+        words = split(text)
+        words = [self.vocabulary[w] for w in words]
         
-        numOfDAs = len(splitByComma(self.cuedDA))
+        numOfDAs = len(splitByComma(cuedDA))
         if numOfDAs > 1:
             raise ValueError('Too many DAs in input text.')
 
         # get the speech-act
-        i = self.cuedDA.index("(")
-        self.speechAct = self.vocabulary[self.cuedDA[:i]]
-        slots = self.cuedDA[i:]
+        i = cuedDA.index("(")
+        speechAct = self.vocabulary[cuedDA[:i]]
+        slots = cuedDA[i:]
         slots = slots.replace('(', '')
         slots = slots.replace(')', '')
 
         if slots == '':
             # no slots to process
-            return
-            
-        # split slots
-        slots = splitByComma(slots)
+            slots = set()
+        else:
+            # split slots
+            slots = splitByComma(slots)
+            slots = set([self.vocabulary[si] for si in slots])
         
-        for each_slot in slots:
-##            slot = Slot(each_slot)
-##            slot.parse()
-            self.slots.add(self.vocabulary[each_slot])
+        return words, speechAct, slots
 
+    def parse(self):
+        self.words, self.speechAct, self.slots = self.parseDA(self.cuedDA, self.text)
+       
         return
-
+    
+    def parseTbed(self, cuedDA, text):
+        if text != self.text:
+            raise ValueError('Loaded tbed text must equal to the training text.')
+            
+        self.words, self.tbedSpeechAct, self.tbedSlots = self.parseDA(cuedDA, text)
+        return
+        
     def genGrams(self, trgCond):
         self.grams = set()
         # generate unigrams, bigrams, and trigrams from text
@@ -147,7 +155,24 @@ class DialogueAct:
         Ni = len(self.slots)
             
         return (Ha, Na, Hi, Ri, Ni)
+
+    def incorrectTbed(self):
+        if self.speechAct != self.tbedSpeechAct or self.slots != self.tbedSlots:
+            return True
         
+        return False
+    
+    def getErrors(self, dats, missingSlots, extraSlots):
+        if self.speechAct != self.tbedSpeechAct:
+            dats[self.speechAct].append(self)
+            
+        for each in self.slots-self.tbedSlots:
+            missingSlots[each].append(self)
+        for each in self.tbedSlots-self.slots:
+            extraSlots[each].append(self)
+        
+        return
+    
     def genTrans(self):
         # return a set of all posible modifications of the current DA
         trans = set()
@@ -209,6 +234,14 @@ class DialogueAct:
         if trgCond['lngth'] >= 1:
             lengthCond.append(len(self.words))
         
+        # sentece length rigger, None mean I do not care
+        hasSlotsCond = [None,]
+        if trgCond['hasSlots'] >= 1:
+            if len(self.tbedSlots) == 0:
+                hasSlotsCond.append(1) # False
+            else:
+                hasSlotsCond.append(2) # True
+            
         # generate triggers
         triggers = set()
         # explode trigger combinations
@@ -216,9 +249,11 @@ class DialogueAct:
             for gram in gramsCond:
                 for slot in slotsCond:
                     for lngth in lengthCond:
-                        triggers.add(Trigger(speechAct=sa, 
-                                                grams=gram, 
-                                                slots=slot,
-                                                lngth=lngth))
+                        for hasSlots in hasSlotsCond:
+                            triggers.add(Trigger(speechAct=sa, 
+                                                    grams=gram, 
+                                                    slots=slot,
+                                                    lngth=lngth,
+                                                    hasSlots=hasSlots))
         
         return triggers

@@ -3,11 +3,12 @@
 from math import *
 
 class Trigger:
-    def __init__(self, speechAct = None, grams = None, slots = None, lngth = None):
+    def __init__(self, speechAct = None, grams = None, slots = None, lngth = None, hasSlots=None):
         self.speechAct = speechAct
         self.grams = grams
         self.slots = slots
         self.lngth = lngth
+        self.hasSlots = hasSlots
 
         return
 
@@ -17,11 +18,12 @@ class Trigger:
         s += 'SpeechAct: %s - ' % str(self.speechAct)
         s += 'Slots: %s - ' % str(self.slots)
         s += 'Length: %s - ' % str(self.lngth)
+        s += 'HasSlots: %s - ' % str(self.hasSlots)
         
         return s
         
     def __eq__(self, other):
-        if self.grams == other.grams and self.speechAct == other.speechAct and self.slots == other.slots and self.lngth == other.lngth:
+        if self.grams == other.grams and self.speechAct == other.speechAct and self.slots == other.slots and self.lngth == other.lngth and self.hasSlots == other.hasSlots:
             return True
         
         return False
@@ -32,16 +34,15 @@ class Trigger:
         if self.grams:
             for each in self.grams:
                 h += hash(each)
-
         if self.speechAct:
             h += hash(self.speechAct)
-        
         if self.slots:
             for each in self.slots:
                 h += hash(each)
-                
         if self.lngth:
             h += hash(self.lngth)
+        if self.hasSlots:
+            h += hash(self.hasSlots)
         
         return h % (1 << 31)
 
@@ -55,8 +56,14 @@ class Trigger:
             if self.speechAct != da.tbedSpeechAct:
                 return False
 
-        if self.lngth:
+        if self.lngth != None:
             if self.lngth < len(da.words):
+                return False
+                
+        if self.hasSlots != None:
+            if self.hasSlots == 1 and len(da.tbedSlots) > 0:
+                return False
+            if self.hasSlots == 2 and len(da.tbedSlots) == 0:
                 return False
                     
         if self.slots:
@@ -75,8 +82,9 @@ class Trigger:
                 
         if self.speechAct:
             c += 1
-
-        if self.lngth:
+        if self.lngth != None:
+            c += 1
+        if self.hasSlots != None:
             c += 1
             
         if self.slots:
@@ -102,7 +110,10 @@ class Trigger:
             for each in self.slots:
                 s += 'Trigger:Slot:'+str(each)+'\n'
         
-        if self.lngth:
+        if self.lngth != None:
             s += 'Trigger:Length:'+str(self.lngth)+'\n'
+            
+        if self.hasSlots != None:
+            s += 'Trigger:HasSlots:'+str(self.hasSlots)+'\n'
             
         return s

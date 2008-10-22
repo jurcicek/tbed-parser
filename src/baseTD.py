@@ -2,6 +2,7 @@
 
 from string import *
 from copy import *
+from collections import *
 import re, pickle
 
 from utils import *
@@ -10,21 +11,18 @@ from dialogueAct import *
 from rule import *
 
 class BaseTD:
-    def __init__(self, fos, fosa,trgCond):
+    def __init__(self, trgCond=None):
         self.das = []
-        self.filterOutSlots = fos
-        self.filterOutSpeechActs = fosa
         self.vocabulary = adict()
         self.trgCond = trgCond
 
-
         return
 
-    def loadData(self, inputFile, mpdas):
+    def loadData(self, inputFile):
         # read the training data
         # build all DAs
         sem = file(inputFile, 'r')
-        semLines = sem.readlines()[:mpdas]
+        semLines = sem.readlines()
 
         for line in semLines:
             splt = split(line, '<=>')
@@ -38,19 +36,28 @@ class BaseTD:
             da.parse()
             da.genGrams(self.trgCond)
     
-##            print da.renderCUED()
-            
-            # filter out some input semantics
-            if da.getNumOfSlots() in self.filterOutSlots:
-                continue
-    
-            if da.speechAct in self.filterOutSpeechActs:
-                continue
-
             self.das.append(da)
             
         return
 
+    def loadTbedData(self, inputFile):
+        # read the training data
+        # build all DAs
+        sem = file(inputFile, 'r')
+        semLines = sem.readlines()
+
+        for i in range(len(semLines)):
+            splt = split(semLines[i], '<=>')
+            sentence = strip(splt[0])
+            da = strip(splt[1])
+
+            if len(sentence) == 0 or len(da) == 0:
+                continue
+    
+            self.das[i].parseTbed(da, sentence)
+            
+        return
+        
     def printRules(self):
         print
         print "Rules' sequence"
@@ -111,3 +118,65 @@ class BaseTD:
     def applyBestRule(self, bestRule):
         for da in self.das:
             bestRule.apply(da)
+
+    def analyze(self):
+        incorrectTbed = []
+        dats = defaultdict(list)
+        missingSlots = defaultdict(list)
+        extraSlots = defaultdict(list)
+        
+        for each in self.das:
+            if each.incorrectTbed():
+                incorrectTbed.append(each)
+        
+        for each in incorrectTbed:
+            each.getErrors(dats, missingSlots, extraSlots)
+
+        print '*'*80
+        print 'Confused dialogue act types'
+        print '*'*80
+        print 
+        for k, v in sorted(dats.iteritems()):
+            print 'Confusions for:', k, 'Occurence:' , len(v)
+            print '='*80
+            for each in v:
+                print 'Text:         ', each.text
+                print 'HYP Semantics:', each.renderTBED()
+                print 'REF Semantics:', each.renderCUED()
+                print '-'*80
+            
+        print '*'*80
+        print 'Missing slot items (recall error)'
+        print '*'*80
+        print 
+        for k, v in sorted(missingSlots.iteritems()):
+            print 'Missing slot item:', k, 'Occurence:' , len(v)
+            print '='*80
+            for each in v:
+                print 'Text:         ', each.text
+                print 'HYP Semantics:', each.renderTBED()
+                print 'REF Semantics:', each.renderCUED()
+                print '-'*80
+
+        print '*'*80
+        print 'Extra slot items (precision error)'
+        print '*'*80
+        print 
+        for k, v in sorted(extraSlots.iteritems()):
+            print 'Extra slot item:', k, 'Occurence:' , len(v)
+            print '='*80
+            for each in v:
+                print 'Text:         ', each.text
+                print 'HYP Semantics:', each.renderTBED()
+                print 'REF Semantics:', each.renderCUED()
+                print '-'*80
+
+        print 'Global statistics'
+        print '='*80
+        print '   Dialogue act type substitutions:', sum([len(x) for x in dats.itervalues()]), 'Avg per DAT:', sum([len(x) for x in dats.itervalues()])*1.0/len(dats)
+        print ' Missing slot items (recall error):', sum([len(x) for x in missingSlots.itervalues()]), 'Avg per MSI:', sum([len(x) for x in missingSlots.itervalues()])*1.0/len(extraSlots)
+        print 'Extra slot items (precision error):', sum([len(x) for x in extraSlots.itervalues()]), 'Avg per ESI:', sum([len(x) for x in extraSlots.itervalues()])*1.0/len(extraSlots)
+
+        
+        return
+        

@@ -18,15 +18,6 @@ outRules='results.rules'
 outPickle='results.pickle'
 outDict='results.pckl-dict'
 
-maxProcessedDAs = 28000
-
-filterOutSlots      = range(12,12)
-filterOutSpeechActs = ('xxx', 
-## 'ask','affirm', 'bye', 'confirm', 'deny', 'hello','inform',
-## 'negate','repeat','reqalts','reqmore','request','restart',
-## 'select','thankyou',
-                       )
-
 ##############################################################################
 def usage():
     print("""
@@ -114,9 +105,9 @@ if verbose:
 
 print trgCond
 
-trn = Trainer(fos = filterOutSlots, fosa = filterOutSpeechActs, trgCond = trgCond, tmpData = tmpData)
+trn = Trainer(trgCond = trgCond, tmpData = tmpData)
 
-trn.loadData(trainData, maxProcessedDAs)
+trn.loadData(trainData)
 
 if profile:
     # sometimes is needed to delete *.pyc files because psyco is used if you do 

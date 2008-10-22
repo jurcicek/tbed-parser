@@ -7,18 +7,9 @@ from decoder import *
 inPickle = 'debug200.pickle'
 testData    = 'towninfo-test.sem'
 
-maxProcessedDAs = 28000
+trgCond = {'nGrams':4, 'nStarGrams':5, 'tplGrams':1, 'speechAct':1, 'lngth':1}
 
-trgCond = {'nGrams':3, 'nStarGrams':4, 'tplGrams':1, 'speechAct':1, 'lngth':1}
-
-filterOutSlots      = range(12,12)
-filterOutSpeechActs = ('xxx', 
-## 'ask','affirm', 'bye', 'confirm', 'deny', 'hello','inform',
-## 'negate','repeat','reqalts','reqmore','request','restart',
-## 'select','thankyou',
-                       )
-
-                ##############################################################################
+##############################################################################
 def usage():
     print("""
     Usage:   tbed-decoder.py [options] 
@@ -77,11 +68,11 @@ if verbose:
     print "TBED decoder"
     print "---------------------------------------------"
 
-dcd = Decoder(fos = filterOutSlots, fosa = filterOutSpeechActs, trgCond = trgCond)
+dcd = Decoder(trgCond = trgCond)
 
 dcd.readPickle(inPickle)
 dcd.readDict(inDict)
-dcd.loadData(testData, maxProcessedDAs)
+dcd.loadData(testData)
 
 dcd.decode()
 dcd.writeOutput(outSem)

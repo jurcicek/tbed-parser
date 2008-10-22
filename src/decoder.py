@@ -12,14 +12,14 @@ from rule import *
 from baseTD import *
 
 class Decoder(BaseTD):
-    def __init__(self, fos, fosa, trgCond):
-        BaseTD.__init__(self, fos=fos, fosa=fosa, trgCond=trgCond)
+    def __init__(self, trgCond):
+        BaseTD.__init__(self, trgCond=trgCond)
         
         return
         
     def decode(self, verbose = False):
-        for rule in self.bestRules:
-            for da in self.das:
+        for da in self.das:
+            for rule in self.bestRules:
                 rule.apply(da)
                 
         return

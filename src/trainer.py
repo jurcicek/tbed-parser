@@ -16,8 +16,8 @@ from baseTD import *
 maxOptRules = 10
 
 class Trainer(BaseTD):
-    def __init__(self, fos, fosa, trgCond,tmpData):
-        BaseTD.__init__(self, fos = fos, fosa = fosa, trgCond = trgCond)
+    def __init__(self, trgCond, tmpData):
+        BaseTD.__init__(self, trgCond = trgCond)
         self.tmpData = tmpData
         
         return
@@ -25,7 +25,7 @@ class Trainer(BaseTD):
     def findBestRule(self):
         print '=================== FIND BEST START ====================='
         self.rules = defaultdict(int)
-        self.trg2d = defaultdict(list)
+        self.trg2da = defaultdict(list)
         # get all applicable rules
         for i in xrange(len(self.das)):
             rs, ts = getRules(self.das[i], self.trgCond)
@@ -37,7 +37,7 @@ class Trainer(BaseTD):
                 # collect indexes of DAs for which the trigger satisfies the 
                 # conditions. As a result I do not have to
                 # call the validate function on these DAs
-                self.trg2d[t].append(i)
+                self.trg2da[t].append(i)
             
         for r in self.rules:
             r.occurence = self.rules[r]
@@ -70,7 +70,7 @@ class Trainer(BaseTD):
 
             # compute netScore for the curent rule
             netScore = 0 
-            for i in self.trg2d[rule.trigger]:
+            for i in self.trg2da[rule.trigger]:
                 netScore += rule.transformation.measureDiff(self.das[i])
             
             if netScore > maxNetScore:
