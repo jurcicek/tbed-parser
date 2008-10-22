@@ -76,7 +76,6 @@ class Rule:
     @classmethod
     def read(cls, nRules):
         # constructor for lines
-        
         nTriggers = filter(lambda r: r[1].startswith('Trigger:') != 0, nRules)
         nTrans = filter(lambda r: r[1].startswith('Transformation:') != 0, nRules)
         

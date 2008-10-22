@@ -4,28 +4,27 @@ import getopt
 import sys
 from decoder import *
 
-inPickle = 'debug200.pickle'
+inPickle = 'debug200.pckl-decoder'
 testData    = 'towninfo-test.sem'
-
-trgCond = {'nGrams':4, 'nStarGrams':5, 'tplGrams':1, 'speechAct':1, 'lngth':1}
 
 ##############################################################################
 def usage():
     print("""
-    Usage:   tbed-decoder.py [options] 
-    
-    Description:
-             Decode CUED semantics based obn Transformation-based Error-driven
-             rules.
-    
-    Options: 
-             -h                 : print this help message and exit
-             -v                 : produce verbose output
-             --testData=FILE    : tes data - CUED format dialogue acts {%s}
-             --inPickle=FILE    : input rules file with rules in Pickle format 
-                                  suitable for Python pograms {%s}
-             --inDict=FILE      : input speed up dict {%s}
-             --outSem=FILE      : decoded CUED format dialogue acts {%s}
+Usage:   tbed-decoder.py [options] 
+
+Description:
+    Decoder of CUED semantics based on Transformation-based Error-driven
+    rules which are derived fully automatically.
+
+Options: 
+    -h                : print this help message and exit
+    -v                : produce verbose output
+    --testData=FILE   : tes data - CUED format dialogue acts {%s}
+    --inPickle=FILE   : input decoder file from trainer with rules and 
+                        other parameters in Pickle format 
+                        suitable for Python pograms {%s}
+    --inDict=FILE     : input speed up dict {%s}
+    --outSem=FILE     : decoded CUED format dialogue acts {%s}
     """ % (testData, 
            inPickle,
            inDict,
@@ -68,12 +67,10 @@ if verbose:
     print "TBED decoder"
     print "---------------------------------------------"
 
-dcd = Decoder(trgCond = trgCond)
+dcd = Decoder.readDecoderPickle(inPickle)
+print dcd.trgCond
 
-dcd.readPickle(inPickle)
-dcd.readDict(inDict)
 dcd.loadData(testData)
-
 dcd.decode()
 dcd.writeOutput(outSem)
     

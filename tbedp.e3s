@@ -5,16 +5,16 @@
 <!-- Saved: 2008-10-21, 21:20:24 -->
 <Session version="3.8">
   <Filenames>
-    <Filename cline="109" cindex="22">/home/filip/cued/tbed-parser/src/tbedp-trainer.py</Filename>
-    <Filename cline="18" cindex="32">/home/filip/cued/tbed-parser/src/trainer.py</Filename>
-    <Filename cline="45" cindex="0">/home/filip/cued/tbed-parser/src/transformation.py</Filename>
-    <Filename cline="239" cindex="36">/home/filip/cued/tbed-parser/src/dialogueAct.py</Filename>
-    <Filename cline="6" cindex="12">/home/filip/cued/tbed-parser/src/rule.py</Filename>
-    <Filename cline="65" cindex="33">/home/filip/cued/tbed-parser/src/trigger.py</Filename>
-    <Filename cline="176" cindex="186">/home/filip/cued/tbed-parser/src/baseTD.py</Filename>
-    <Filename cline="12" cindex="0">/home/filip/cued/tbed-parser/src/tbedp-decoder.py</Filename>
+    <Filename cline="109" cindex="22">src/tbedp-trainer.py</Filename>
+    <Filename cline="18" cindex="32">trainer.py</Filename>
+    <Filename cline="45" cindex="0">src/transformation.py</Filename>
+    <Filename cline="239" cindex="36">src/dialogueAct.py</Filename>
+    <Filename cline="6" cindex="12">src/rule.py</Filename>
+    <Filename cline="65" cindex="33">src/trigger.py</Filename>
+    <Filename cline="176" cindex="186">src/baseTD.py</Filename>
+    <Filename cline="12" cindex="0">src/tbedp-decoder.py</Filename>
   </Filenames>
-  <ActiveWindow cline="65" cindex="33">/home/filip/cued/tbed-parser/src/trigger.py</ActiveWindow>
+  <ActiveWindow cline="65" cindex="33">src/trigger.py</ActiveWindow>
   <Breakpoints>
   </Breakpoints>
   <Watchpoints>

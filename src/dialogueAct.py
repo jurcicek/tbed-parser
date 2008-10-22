@@ -33,22 +33,9 @@ class DialogueAct:
         s+= self.vocabulary.getKey(self.tbedSpeechAct)+' - '
         s+= str(self.slots)+' - '
         s+= str(self.tbedSlots)+' - '
-##        s+= str(self.grams)
 
         return s
         
-##    def __copy__(self):
-##        cDA = DialogueAct(self.cuedDA, self.text)
-##        cDA.speechAct = self.speechAct
-##        cDA.tbedSpeechAct = self.tbedSpeechAct
-##        cDA.slots = self.slots
-##        cDA.tbedSlots = copy(self.tbedSlots)
-##        
-##        cDA.words = self.words
-##        cDA.grams = self.grams
-##        
-##        return cDA
-    
     def parseDA(self, cuedDA, text):
         words = split(text)
         words = [self.vocabulary[w] for w in words]
@@ -213,17 +200,10 @@ class DialogueAct:
         if trgCond['speechAct'] >=1:
             saCond.append(self.tbedSpeechAct)
         
-        tplFilter = defaultdict(int)
         gramsCond = [None,]
         for gram1 in self.grams:
             gramsCond.append([gram1,])
             
-            if trgCond['tplGrams'] >= 2:
-                for gram2 in self.grams:
-                    if gram1 != gram2 and tplFilter[(gram2,gram1)]!=1:
-                        gramsCond.append([gram1,gram2])
-                        tplFilter[(gram1,gram2)] = 1
-
         slotsCond = [None,]
         if trgCond['nSlots'] >= 1:
             for slot in self.tbedSlots:
@@ -250,10 +230,11 @@ class DialogueAct:
                 for slot in slotsCond:
                     for lngth in lengthCond:
                         for hasSlots in hasSlotsCond:
-                            triggers.add(Trigger(speechAct=sa, 
-                                                    grams=gram, 
-                                                    slots=slot,
-                                                    lngth=lngth,
-                                                    hasSlots=hasSlots))
+                            triggers.add(
+                                Trigger(speechAct=sa, 
+                                        grams=gram, 
+                                        slots=slot,
+                                        lngth=lngth,
+                                        hasSlots=hasSlots))
         
         return triggers

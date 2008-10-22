@@ -6,53 +6,52 @@ from copy import *
 from string import *
 from threading import *
 
-
 from utils import *
 from slot import *
 from dialogueAct import *
 from rule import *
-from baseTD import *
+from decoder import *
 
 maxOptRules = 10
 
-class Trainer(BaseTD):
+class Trainer(Decoder):
     def __init__(self, trgCond, tmpData):
-        BaseTD.__init__(self, trgCond = trgCond)
+        Decoder.__init__(self, trgCond = trgCond)
         self.tmpData = tmpData
         
         return
 
-    def findBestRule(self):
+    def findBestRules(self):
         print '=================== FIND BEST START ====================='
-        self.rules = defaultdict(int)
-        self.trg2da = defaultdict(list)
+        rules = defaultdict(int)
+        trg2da = defaultdict(list)
         # get all applicable rules
         for i in xrange(len(self.das)):
             rs, ts = getRules(self.das[i], self.trgCond)
             
             for r in rs:
-                self.rules[r] += 1
+                rules[r] += 1
             
             for t in ts:
                 # collect indexes of DAs for which the trigger satisfies the 
                 # conditions. As a result I do not have to
                 # call the validate function on these DAs
-                self.trg2da[t].append(i)
+                trg2da[t].append(i)
             
-        for r in self.rules:
-            r.occurence = self.rules[r]
+        for r in rules:
+            r.occurence = rules[r]
             
         print '========================================================='
-        print 'Number of applicable rules: %d' % len(self.rules)
+        print 'Number of applicable rules: %d' % len(rules)
 
-        self.rls = self.rules.keys() 
+        self.rls = rules.keys() 
         for r in self.rls:
             if r.occurence < 2:
-                del self.rules[r]
-        print '                 pruned to: %d' % len(self.rules)
+                del rules[r]
+        print '                 pruned to: %d' % len(rules)
 
-        self.rls = self.rules.keys() 
-        # I might delete self.rules it seem that I do not need it any more
+        self.rls = rules.keys() 
+        # I might delete rules it seem that I do not need it any more
         self.rls.sort(cmp=lambda x,y: cmp(x.occurence, y.occurence), reverse=True)
 
         # apply each rule and measure the score
@@ -70,7 +69,7 @@ class Trainer(BaseTD):
 
             # compute netScore for the curent rule
             netScore = 0 
-            for i in self.trg2da[rule.trigger]:
+            for i in trg2da[rule.trigger]:
                 netScore += rule.transformation.measureDiff(self.das[i])
             
             if netScore > maxNetScore:
@@ -146,11 +145,8 @@ class Trainer(BaseTD):
     def train(self):
         self.bestRules = []
         self.iRule = 0
-        
-        self.rulesPruningHiThreshold = 0
-        self.rulesPruningLowThreshold = 0
-        
-        bestRules = self.findBestRule()
+                
+        bestRules = self.findBestRules()
         
         while bestRules[0].netScore >= 2:
             # store the selected rules
@@ -161,12 +157,13 @@ class Trainer(BaseTD):
             for r in bestRules:
                 self.applyBestRule(r)
             
-            self.writeRules(os.path.join(self.tmpData,'rules.txt'))
-            self.writePickle(os.path.join(self.tmpData,'rules.pickle'))
-            self.writeDict(os.path.join(self.tmpData,'rules.pckl-dict'))
+            self.writeDecoderPickle(os.path.join(self.tmpData,'rules.pckl-decoder'))
+            self.writeBestRulesTXT(os.path.join(self.tmpData,'rules.txt'))
+            self.writeBestRulesPickle(os.path.join(self.tmpData,'rules.pckl-bestrules'))
+            self.writeVocabulary(os.path.join(self.tmpData,'rules.pckl-vocabulary'))
 
             self.iRule += 1
-            bestRules = self.findBestRule()
+            bestRules = self.findBestRules()
             
             if bestRules == None:
                 break

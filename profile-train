@@ -19,31 +19,32 @@ time ./src/tbedp-trainer.py -v -p \
   --tmpData=$TBEDP_RESULTS_DIR \
   --trainData=$TBEDP_TRAIN_DATA \
   --outPickle=$TBEDP_OUT_PICKLE \
+  --outDecoderPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outRules=$TBEDP_OUT_RULES \
   --outDict=$TBEDP_OUT_DICT \
   --trgCond="$TBEDP_TRG_COND"
   
-time ./src/tbedp-decoder.py -v \
+./src/tbedp-decoder.py -v \
   --testData=$TBEDP_TEST_DATA_SEM \
-  --inPickle=$TBEDP_OUT_PICKLE \
+  --inPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outSem=$TBEDP_OUT_SEM_HYP \
   --inDict=$TBEDP_OUT_DICT
 
-time ./src/tbedp-decoder.py -v \
+./src/tbedp-decoder.py -v \
   --testData=$TBEDP_TEST_DATA_ASR \
-  --inPickle=$TBEDP_OUT_PICKLE \
+  --inPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outSem=$TBEDP_OUT_ASR_HYP \
   --inDict=$TBEDP_OUT_DICT
 
-time ./src/tbedp-decoder.py -v \
+./src/tbedp-decoder.py -v \
   --testData=$TBEDP_DEV_DATA_SEM \
-  --inPickle=$TBEDP_OUT_PICKLE \
+  --inPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outSem=$TBEDP_OUT_DEV_SEM_HYP \
   --inDict=$TBEDP_OUT_DICT
 
-time ./src/tbedp-decoder.py -v \
+./src/tbedp-decoder.py -v \
   --testData=$TBEDP_DEV_DATA_ASR \
-  --inPickle=$TBEDP_OUT_PICKLE \
+  --inPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outSem=$TBEDP_OUT_DEV_ASR_HYP \
   --inDict=$TBEDP_OUT_DICT
   

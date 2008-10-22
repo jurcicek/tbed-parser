@@ -17,32 +17,39 @@ time ./src/tbedp-trainer.py -v \
   --tmpData=$TBEDP_RESULTS_DIR \
   --trainData=$TBEDP_TRAIN_DATA \
   --outPickle=$TBEDP_OUT_PICKLE \
+  --outDecoderPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outRules=$TBEDP_OUT_RULES \
   --outDict=$TBEDP_OUT_DICT \
   --trgCond="$TBEDP_TRG_COND" 
   
-time ./src/tbedp-decoder.py -v \
+./src/tbedp-decoder.py -v \
   --testData=$TBEDP_TEST_DATA_SEM \
-  --inPickle=$TBEDP_OUT_PICKLE \
+  --inPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outSem=$TBEDP_OUT_SEM_HYP \
   --inDict=$TBEDP_OUT_DICT
 
-time ./src/tbedp-decoder.py -v \
+./src/tbedp-decoder.py -v \
   --testData=$TBEDP_TEST_DATA_ASR \
-  --inPickle=$TBEDP_OUT_PICKLE \
+  --inPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outSem=$TBEDP_OUT_ASR_HYP \
   --inDict=$TBEDP_OUT_DICT
 
-time ./src/tbedp-decoder.py -v \
+./src/tbedp-decoder.py -v \
   --testData=$TBEDP_DEV_DATA_SEM \
-  --inPickle=$TBEDP_OUT_PICKLE \
+  --inPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outSem=$TBEDP_OUT_DEV_SEM_HYP \
   --inDict=$TBEDP_OUT_DICT
 
-time ./src/tbedp-decoder.py -v \
+./src/tbedp-decoder.py -v \
   --testData=$TBEDP_DEV_DATA_ASR \
-  --inPickle=$TBEDP_OUT_PICKLE \
+  --inPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outSem=$TBEDP_OUT_DEV_ASR_HYP \
+  --inDict=$TBEDP_OUT_DICT
+
+./src/tbedp-decoder.py -v \
+  --testData=$TBEDP_TRAIN_DATA \
+  --inPickle=$TBEDP_OUT_DECODER_PICKLE \
+  --outSem=$TBEDP_OUT_TRN_HYP \
   --inDict=$TBEDP_OUT_DICT
   
 ./bin/cuedSemScore.pl $TBEDP_OUT_SEM_HYP $TBEDP_TEST_DATA_SEM
@@ -51,6 +58,12 @@ time ./src/tbedp-decoder.py -v \
 
 ./bin/cuedSemScore.pl $TBEDP_OUT_DEV_SEM_HYP $TBEDP_DEV_DATA_SEM > $TBEDP_OUT_DEV_SEM_HYP.rslt
 ./bin/cuedSemScore.pl $TBEDP_OUT_DEV_ASR_HYP $TBEDP_DEV_DATA_ASR > $TBEDP_OUT_DEV_ASR_HYP.rslt
+
+./bin/cuedSemScore.pl $TBEDP_OUT_TRN_HYP $TBEDP_TRAIN_DATA > $TBEDP_OUT_TRN_HYP.rslt
+
+./src/analyzeHyp.py --hypData=$TBEDP_OUT_DEV_SEM_HYP --refData=$TBEDP_DEV_DATA_SEM > $TBEDP_OUT_DEV_SEM_HYP.anlz
+./src/analyzeHyp.py --hypData=$TBEDP_OUT_DEV_ASR_HYP --refData=$TBEDP_DEV_DATA_ASR > $TBEDP_OUT_DEV_ASR_HYP.anlz
+./src/analyzeHyp.py --hypData=$TBEDP_OUT_TRN_HYP --refData=$TBEDP_TRAIN_DATA > $TBEDP_OUT_TRN_HYP.anlz
 
 OLD_PWD=`pwd`
 cd $TBEDP_RESULTS_DIR

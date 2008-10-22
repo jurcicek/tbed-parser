@@ -28,28 +28,25 @@ for o, a in opts:
     elif o == "--dataDir":
         dataDir = a
 
-def decode(data, inPickle, inDict, nRules = 0):
+def decode(data, inPickle, nRules = 0):
     outSem = 'graph.sem'
-    trgCond = {'nGrams':4, 'nStarGrams':5, 'tplGrams':1, 'speechAct':1, 'lngth':1, 'hasSlots':1}
     
-    dcd = Decoder(trgCond = trgCond)
+    dcd = Decoder.readDecoderPickle(inPickle)
+    print dcd.trgCond
 
-    maxRules = dcd.readPickle(inPickle, nRules)
-    dcd.readDict(inDict)
     dcd.loadData(data)
-    dcd.decode()
+    dcd.decode(nRules)
     dcd.writeOutput(outSem)
 
     o = commands.getoutput('%s/cuedSemScore.pl -d %s %s' % (binDir, outSem, data))
     o = o.split()
     
-    return maxRules, o[0], o[3]
+    return len(dcd.bestRules), o[0], o[3]
 
     
 def decodeSet(data):
     data = os.path.join(dataDir, data)
-    inPickle = os.path.join(resultsDir, 'rules.pickle')
-    inDict = os.path.join(resultsDir, 'rules.pckl-dict')
+    inPickle = os.path.join(resultsDir, 'rules.pckl-decoder')
     
     i = 16
     iMax = 30
@@ -60,7 +57,7 @@ def decodeSet(data):
     
     print data
     while i<iMax:
-        iMax, a, f = decode(data, inPickle, inDict, i)
+        iMax, a, f = decode(data, inPickle, i)
         acc.append(float(a))
         fm.append(float(f))
         nRules.append(i)

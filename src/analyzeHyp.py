@@ -8,23 +8,20 @@ inPickle = 'debug200.pickle'
 refData    = 'data/towninfo-dev.sem'
 hypData    = 'results/test/rules.dev.sem.hyp'
 
-# I do not depend on these condition in this script
-trgCond = {'nGrams':4, 'nStarGrams':5, 'tplGrams':1, 'speechAct':1, 'lngth':1}
-
 ##############################################################################
 def usage():
     print("""
 Usage:   analyzeHyp.py [options] 
 
 Description:
-    The script loads CUED development semantics and compares it with the output 
-    of the TBED parser.
+    The script loads CUED development semantics and compares it with the 
+    output of the TBED parser.
     
 Options: 
-         -h                 : print this help message and exit
-         -v                 : produce verbose output
-         --refData=FILE     : reference data {%s}
-         --hypData=FILE     : hypothesis data {%s}
+    -h                 : print this help message and exit
+    -v                 : produce verbose output
+    --refData=FILE     : reference data {%s}
+    --hypData=FILE     : hypothesis data {%s}
     """ % (refData, 
            hypData))
            
@@ -54,7 +51,7 @@ for o, a in opts:
     elif o == "--hypData":
         hypData = a
 
-dcd = Decoder(trgCond = trgCond)
+dcd = Decoder()
 
 dcd.loadData(refData)
 dcd.loadTbedData(hypData)
