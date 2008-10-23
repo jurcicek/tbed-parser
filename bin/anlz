@@ -1,0 +1,25 @@
+#!/bin/sh
+#$ -S /bin/bash
+#$ -cwd
+#$ -j y
+#$ -l lr=1
+#$ -v PATH
+#$ -M fj228
+#$ -m eas
+
+export TBEDP_TEST_DATA_SEM=../../data/towninfo-test.sem
+export TBEDP_TEST_DATA_ASR=../../data/towninfo-test.asr
+export TBEDP_DEV_DATA_SEM=../../data/towninfo-dev.sem
+export TBEDP_DEV_DATA_ASR=../../data/towninfo-dev.asr
+export TBEDP_OUT_PICKLE=rules.pckl-bestrules
+export TBEDP_OUT_DECODER_PICKLE=rules.pckl-decoder
+export TBEDP_OUT_SEM_HYP=rules.sem.hyp
+export TBEDP_OUT_ASR_HYP=rules.asr.hyp
+export TBEDP_OUT_DEV_SEM_HYP=rules.dev.sem.hyp
+export TBEDP_OUT_DEV_ASR_HYP=rules.dev.asr.hyp
+export TBEDP_OUT_DICT=rules.pckl-vocabulary
+
+../../src/analyzeHyp.py --hypData=$TBEDP_OUT_DEV_SEM_HYP --refData=$TBEDP_DEV_DATA_SEM > $TBEDP_OUT_DEV_SEM_HYP.anlz
+../../src/analyzeHyp.py --hypData=$TBEDP_OUT_DEV_ASR_HYP --refData=$TBEDP_DEV_DATA_ASR > $TBEDP_OUT_DEV_ASR_HYP.anlz
+../../src/analyzeHyp.py --hypData=$TBEDP_OUT_TRN_HYP --refData=$TBEDP_TRAIN_DATA > $TBEDP_OUT_TRN_HYP.anlz
+
