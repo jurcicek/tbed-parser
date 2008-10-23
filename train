@@ -1,4 +1,11 @@
 #!/bin/sh
+#$ -S /bin/bash
+#$ -cwd
+#$ -j y
+#$ -l lr=1
+#$ -v PATH
+#$ -M fj228
+#$ -m eas
 
 # load the experiment cofiguration
 source $1
