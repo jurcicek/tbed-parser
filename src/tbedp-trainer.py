@@ -126,8 +126,12 @@ if profile:
     import cProfile
     cProfile.run('trn.train()', tmpData+'/trn.train.profile')
 else:
-    import psyco
-    psyco.full()
+    try:
+	import psyco
+	psyco.full()
+    except ImportError:
+	pass
+	
     trn.train()
 
 trn.writeDecoderPickle(outDecoderPickle)
