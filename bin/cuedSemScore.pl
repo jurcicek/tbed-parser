@@ -1,1 +1,0 @@
-/home/filip/cued/ehvs/semantics-4/src/cuedSemScore.pl
