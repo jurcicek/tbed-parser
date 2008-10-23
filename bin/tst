@@ -1,6 +1,8 @@
 #!/bin/sh
 #$ -S /bin/bash
 
+export TBEDP_TRAIN_DATA_SEM=../../data/towninfo-train.sem
+export TBEDP_TRAIN_DATA_ASR=../../data/towninfo-train.asr
 export TBEDP_TEST_DATA_SEM=../../data/towninfo-test.sem
 export TBEDP_TEST_DATA_ASR=../../data/towninfo-test.asr
 export TBEDP_DEV_DATA_SEM=../../data/towninfo-dev.sem
@@ -11,6 +13,8 @@ export TBEDP_OUT_SEM_HYP=rules.sem.hyp
 export TBEDP_OUT_ASR_HYP=rules.asr.hyp
 export TBEDP_OUT_DEV_SEM_HYP=rules.dev.sem.hyp
 export TBEDP_OUT_DEV_ASR_HYP=rules.dev.asr.hyp
+export TBEDP_OUT_TRN_SEM_HYP=rules.trn.sem.hyp
+export TBEDP_OUT_TRN_ASR_HYP=rules.trn.asr.hyp
 export TBEDP_OUT_DICT=rules.pckl-vocabulary
 
 date
@@ -38,6 +42,18 @@ time ../../src/tbedp-decoder.py -v \
   --inPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outSem=$TBEDP_OUT_DEV_ASR_HYP \
   --inDict=$TBEDP_OUT_DICT
+
+time ../../src/tbedp-decoder.py -v \
+  --testData=$TBEDP_TRAIN_DATA_SEM \
+  --inPickle=$TBEDP_OUT_DECODER_PICKLE \
+  --outSem=$TBEDP_OUT_TRN_SEM_HYP \
+  --inDict=$TBEDP_OUT_DICT
+
+time ../../src/tbedp-decoder.py -v \
+  --testData=$TBEDP_TRAIN_DATA_ASR \
+  --inPickle=$TBEDP_OUT_DECODER_PICKLE \
+  --outSem=$TBEDP_OUT_TRN_ASR_HYP \
+  --inDict=$TBEDP_OUT_DICT
   
 #../../bin/cuedSemScore.pl $TBEDP_OUT_SEM_HYP $TBEDP_TEST_DATA_SEM
 ../../bin/cuedSemScore.pl $TBEDP_OUT_SEM_HYP $TBEDP_TEST_DATA_SEM > $TBEDP_OUT_SEM_HYP.rslt
@@ -45,6 +61,9 @@ time ../../src/tbedp-decoder.py -v \
 
 ../../bin/cuedSemScore.pl $TBEDP_OUT_DEV_SEM_HYP $TBEDP_DEV_DATA_SEM > $TBEDP_OUT_DEV_SEM_HYP.rslt
 ../../bin/cuedSemScore.pl $TBEDP_OUT_DEV_ASR_HYP $TBEDP_DEV_DATA_ASR > $TBEDP_OUT_DEV_ASR_HYP.rslt
+
+../../bin/cuedSemScore.pl $TBEDP_OUT_TRN_SEM_HYP $TBEDP_TRAIN_DATA_SEM > $TBEDP_OUT_TRN_SEM_HYP.rslt
+../../bin/cuedSemScore.pl $TBEDP_OUT_TRN_ASR_HYP $TBEDP_TRAIN_DATA_ASR > $TBEDP_OUT_TRN_ASR_HYP.rslt
 
 date
 
