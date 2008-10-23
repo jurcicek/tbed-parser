@@ -7,7 +7,7 @@ import sys
 trainData   = 'debug.sem'
 trainData   = 'debug500.sem'
 
-trgCond = {'nGrams':2, 'nStarGrams':3, 'tplGrams':1, 'speechAct':1, 'lngth':1, 'hasSlots':1}
+trgCond = {'nGrams':2, 'nStarGrams':3, 'tplGrams':1, 'speechAct':1, 'nSlots':1, 'lngth':1, 'hasSlots':1}
 
 tmpData = ''
 
@@ -45,6 +45,11 @@ Options:
                             (1 - just trgNGrams, 2 - 2xtrgNGrams)
         speechAct=NUMBER  : 0 - no dependence on speech act
                             1 - some triggers depend on speech acts
+        nSlots=NUMBER     : 0 - no dependence on slots
+                            1 - some triggers may depend on already 
+                                added slot
+                            2 - some triggers may depend on already added 
+                                one or two slots
         lngth=NUMBER      : 0 - no dependence on length of the input word 
                                 sequence
                             1 - some triggers depend on the length of the 

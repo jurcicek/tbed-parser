@@ -40,7 +40,7 @@ class Trainer(Decoder):
             
         for r in rules:
             r.occurence = rules[r]
-            
+        
         print '========================================================='
         print 'Number of applicable rules: %d' % len(rules)
 
