@@ -1,0 +1,22 @@
+#!/bin/sh
+#$ -S /bin/bash
+#$ -cwd
+#$ -j y
+#$ -l lr=1
+#$ -v PATH
+#$ -M fj228
+#$ -m eas
+
+export TBEDP_TRAIN_DATA_SEM=../../data/atis-train.sem
+export TBEDP_TEST_DATA_SEM=../../data/atis-test.sem
+export TBEDP_DEV_DATA_SEM=../../data/atis-dev.sem
+export TBEDP_OUT_PICKLE=rules.pckl-bestrules
+export TBEDP_OUT_DECODER_PICKLE=rules.pckl-decoder
+export TBEDP_OUT_SEM_HYP=rules.sem.hyp
+export TBEDP_OUT_DEV_SEM_HYP=rules.dev.sem.hyp
+export TBEDP_OUT_TRN_SEM_HYP=rules.trn.sem.hyp
+export TBEDP_OUT_DICT=rules.pckl-vocabulary
+
+../../src/analyzeHyp.py --hypData=$TBEDP_OUT_DEV_SEM_HYP --refData=$TBEDP_DEV_DATA_SEM > $TBEDP_OUT_DEV_SEM_HYP.anlz
+../../src/analyzeHyp.py --hypData=$TBEDP_OUT_TRN_SEM_HYP --refData=$TBEDP_TRAIN_DATA_SEM > $TBEDP_OUT_TRN_SEM_HYP.anlz
+

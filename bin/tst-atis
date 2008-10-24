@@ -1,0 +1,41 @@
+#!/bin/sh
+#$ -S /bin/bash
+
+export TBEDP_TRAIN_DATA_SEM=../../data/atis-train.sem
+export TBEDP_TEST_DATA_SEM=../../data/atis-test.sem
+export TBEDP_DEV_DATA_SEM=../../data/atis-dev.sem
+export TBEDP_OUT_PICKLE=rules.pckl-bestrules
+export TBEDP_OUT_DECODER_PICKLE=rules.pckl-decoder
+export TBEDP_OUT_SEM_HYP=rules.sem.hyp
+export TBEDP_OUT_DEV_SEM_HYP=rules.dev.sem.hyp
+export TBEDP_OUT_TRN_SEM_HYP=rules.trn.sem.hyp
+export TBEDP_OUT_DICT=rules.pckl-vocabulary
+
+date
+  
+time ../../src/tbedp-decoder.py -v \
+  --testData=$TBEDP_TEST_DATA_SEM \
+  --inPickle=$TBEDP_OUT_DECODER_PICKLE \
+  --outSem=$TBEDP_OUT_SEM_HYP \
+  --inDict=$TBEDP_OUT_DICT
+
+time ../../src/tbedp-decoder.py -v \
+  --testData=$TBEDP_DEV_DATA_SEM \
+  --inPickle=$TBEDP_OUT_DECODER_PICKLE \
+  --outSem=$TBEDP_OUT_DEV_SEM_HYP \
+  --inDict=$TBEDP_OUT_DICT
+
+time ../../src/tbedp-decoder.py -v \
+  --testData=$TBEDP_TRAIN_DATA_SEM \
+  --inPickle=$TBEDP_OUT_DECODER_PICKLE \
+  --outSem=$TBEDP_OUT_TRN_SEM_HYP \
+  --inDict=$TBEDP_OUT_DICT
+
+../../bin/cuedSemScore.pl $TBEDP_OUT_SEM_HYP $TBEDP_TEST_DATA_SEM > $TBEDP_OUT_SEM_HYP.rslt
+../../bin/cuedSemScore.pl $TBEDP_OUT_DEV_SEM_HYP $TBEDP_DEV_DATA_SEM > $TBEDP_OUT_DEV_SEM_HYP.rslt
+../../bin/cuedSemScore.pl $TBEDP_OUT_TRN_SEM_HYP $TBEDP_TRAIN_DATA_SEM > $TBEDP_OUT_TRN_SEM_HYP.rslt
+
+date
+
+echo $1 > rules.settings
+env | grep TBEDP | sort >> rules.settings
