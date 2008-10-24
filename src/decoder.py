@@ -10,6 +10,9 @@ from slot import *
 from dialogueAct import *
 from rule import *
 
+class DecoderData:
+    pass
+
 class Decoder:
     def __init__(self, trgCond=None):
         self.vocabulary = adict()
@@ -71,15 +74,27 @@ class Decoder:
             f.write('%s <=> %s\n' % (da.text, da.renderTBED()))
                     
     def writeDecoderPickle(self, fn):
+        dd = DecoderData()
+        
+        dd.vocabulary = self.vocabulary
+        dd.bestRules = self.bestRules
+        dd.trgCond = self.trgCond
+        
         f = file(fn,'wb')
-        pickle.dump(self, f)
+        pickle.dump(dd, f)
         f.close()
     
     @classmethod
     def readDecoderPickle(cls, fn):
         f = file(fn, 'rb')
-        decoder = pickle.load(f)
+        dd = pickle.load(f)
         f.close()
+        
+        decoder = cls()
+        decoder.vocabulary = dd.vocabulary
+        decoder.bestRules = dd.bestRules
+        decoder.trgCond = dd.trgCond
+        
         return decoder
         
     def writeBestRulesPickle(self, fn):

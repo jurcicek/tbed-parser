@@ -19,37 +19,37 @@ export TBEDP_OUT_DICT=rules.pckl-vocabulary
 
 date
   
-time ../../src/tbedp-decoder.py -v \
+time ../../src/tbedp-decoder.py -v $1 \
   --testData=$TBEDP_TEST_DATA_SEM \
   --inPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outSem=$TBEDP_OUT_SEM_HYP \
   --inDict=$TBEDP_OUT_DICT
 
-time ../../src/tbedp-decoder.py -v \
+time ../../src/tbedp-decoder.py -v $1 \
   --testData=$TBEDP_TEST_DATA_ASR \
   --inPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outSem=$TBEDP_OUT_ASR_HYP \
   --inDict=$TBEDP_OUT_DICT
 
-time ../../src/tbedp-decoder.py -v \
+time ../../src/tbedp-decoder.py -v $1 \
   --testData=$TBEDP_DEV_DATA_SEM \
   --inPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outSem=$TBEDP_OUT_DEV_SEM_HYP \
   --inDict=$TBEDP_OUT_DICT
 
-time ../../src/tbedp-decoder.py -v \
+time ../../src/tbedp-decoder.py -v $1 \
   --testData=$TBEDP_DEV_DATA_ASR \
   --inPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outSem=$TBEDP_OUT_DEV_ASR_HYP \
   --inDict=$TBEDP_OUT_DICT
 
-time ../../src/tbedp-decoder.py -v \
+time ../../src/tbedp-decoder.py -v $1 \
   --testData=$TBEDP_TRAIN_DATA_SEM \
   --inPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outSem=$TBEDP_OUT_TRN_SEM_HYP \
   --inDict=$TBEDP_OUT_DICT
 
-time ../../src/tbedp-decoder.py -v \
+time ../../src/tbedp-decoder.py -v $1 \
   --testData=$TBEDP_TRAIN_DATA_ASR \
   --inPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outSem=$TBEDP_OUT_TRN_ASR_HYP \

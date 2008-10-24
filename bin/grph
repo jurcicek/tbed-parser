@@ -1,9 +1,8 @@
 #!/bin/sh
 #$ -S /bin/bash
 
-../../src/graph.py \
+../../src/graph.py $1 \
   --resultsDir='' \
   --dataDir='../../data'
-  
   
 

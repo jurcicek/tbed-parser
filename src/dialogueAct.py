@@ -55,7 +55,7 @@ class DialogueAct:
             # no slots to process
             slots = set()
         else:
-            # Francois hack:
+            # Francois's hack:
             slots = slots.replace('.!=', '!=').replace('zeroProb-','')
             
             # split slots
@@ -118,7 +118,7 @@ class DialogueAct:
         if len(slots) > 0:
             rendered_slots = ""
 
-            for each_slot in slots:
+            for each_slot in sorted(slots):
 ##                rendered_slots += each_slot.renderCUED() + ','
                 rendered_slots += self.vocabulary.getKey(each_slot) + ','
 

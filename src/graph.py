@@ -8,9 +8,10 @@ from decoder import *
 split = 50
 binDir = '../../bin'
 resultsDir=''
+iniTest = False
 
 try:
-    opts, args = getopt.gnu_getopt(sys.argv[1:], "hp", 
+    opts, args = getopt.gnu_getopt(sys.argv[1:], "hpi", 
         ["resultsDir=",
          'dataDir='])
          
@@ -23,18 +24,26 @@ for o, a in opts:
     if o == "-h":
         usage()
         sys.exit()
+    elif o == "-i":
+        iniTest = True
     elif o == "--resultsDir":
         resultsDir = a
     elif o == "--dataDir":
         dataDir = a
 
-def decode(data, inPickle, nRules = 0):
+def decode(data, inPickle, nRules = 0, iniTest = False):
     outSem = 'graph.sem'
     
     dcd = Decoder.readDecoderPickle(inPickle)
     print dcd.trgCond
 
-    dcd.loadData(data)
+    try:
+        dcd.loadData(data)
+        if iniTest:
+            dcd.loadTbedData(data+'.ini')
+    except IOError:
+        return 0, 0.0, 0.0
+        
     dcd.decode(nRules)
     dcd.writeOutput(outSem)
 
@@ -44,7 +53,7 @@ def decode(data, inPickle, nRules = 0):
     return len(dcd.bestRules), o[0], o[3]
 
     
-def decodeSet(data):
+def decodeSet(data, iniTest = False):
     data = os.path.join(dataDir, data)
     inPickle = os.path.join(resultsDir, 'rules.pckl-decoder')
     
@@ -57,7 +66,7 @@ def decodeSet(data):
     
     print data
     while i<iMax:
-        iMax, a, f = decode(data, inPickle, i)
+        iMax, a, f = decode(data, inPickle, i, iniTest)
         acc.append(float(a))
         fm.append(float(f))
         nRules.append(i)
@@ -97,9 +106,9 @@ for s in f.readlines():
 f.close()
 
 outGraph = os.path.join(resultsDir,'rules.performance.clean.eps')
-trainCleanAcc, trainCleanF, nRules1 = decodeSet('towninfo-train.sem')
-devCleanAcc, devCleanF, nRules2 = decodeSet('towninfo-dev.sem')
-testCleanAcc, testCleanF, nRules3 = decodeSet('towninfo-test.sem')
+trainCleanAcc, trainCleanF, nRules1 = decodeSet('towninfo-train.sem', iniTest)
+devCleanAcc, devCleanF, nRules2 = decodeSet('towninfo-dev.sem', iniTest)
+testCleanAcc, testCleanF, nRules3 = decodeSet('towninfo-test.sem', iniTest)
 
 fig = figure(figsize=(11.7, 8.3))
 
@@ -147,9 +156,9 @@ print commands.getoutput("rm -f %s" % (outGraph))
 
 
 outGraph = os.path.join(resultsDir,'rules.performance.asr.eps')
-trainCleanAcc, trainCleanF, nRules1 = decodeSet('towninfo-train.asr')
-devCleanAcc, devCleanF, nRules2 = decodeSet('towninfo-dev.asr')
-testCleanAcc, testCleanF, nRules3 = decodeSet('towninfo-test.asr')
+trainCleanAcc, trainCleanF, nRules1 = decodeSet('towninfo-train.asr', iniTest)
+devCleanAcc, devCleanF, nRules2 = decodeSet('towninfo-dev.asr', iniTest)
+testCleanAcc, testCleanF, nRules3 = decodeSet('towninfo-test.asr', iniTest)
 
 fig = figure(figsize=(11.7, 8.3))
 title('ASR test data')

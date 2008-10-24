@@ -74,7 +74,7 @@ time ./src/tbedp-trainer.py -v $TBEDP_OPTS \
 
 OLD_PWD=`pwd`
 cd $TBEDP_RESULTS_DIR
-grph
+grph $TBEDP_OPTS 
 cd $OLD_PWD
 
 date
