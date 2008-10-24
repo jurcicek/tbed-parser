@@ -20,7 +20,7 @@ echo `date` >> $TBEDP_RESULTS_DIR/settings
 env | grep TBEDP | sort >> $TBEDP_RESULTS_DIR/settings
 
 date
-time ./src/tbedp-trainer.py -v \
+time ./src/tbedp-trainer.py -v $TBEDP_OPTS \
   --tmpData=$TBEDP_RESULTS_DIR \
   --trainData=$TBEDP_TRAIN_DATA \
   --outPickle=$TBEDP_OUT_PICKLE \
@@ -29,31 +29,31 @@ time ./src/tbedp-trainer.py -v \
   --outDict=$TBEDP_OUT_DICT \
   --trgCond="$TBEDP_TRG_COND" 
   
-./src/tbedp-decoder.py -v \
+./src/tbedp-decoder.py -v $TBEDP_OPTS \
   --testData=$TBEDP_TEST_DATA_SEM \
   --inPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outSem=$TBEDP_OUT_SEM_HYP \
   --inDict=$TBEDP_OUT_DICT
 
-./src/tbedp-decoder.py -v \
+./src/tbedp-decoder.py -v $TBEDP_OPTS \
   --testData=$TBEDP_TEST_DATA_ASR \
   --inPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outSem=$TBEDP_OUT_ASR_HYP \
   --inDict=$TBEDP_OUT_DICT
 
-./src/tbedp-decoder.py -v \
+./src/tbedp-decoder.py -v $TBEDP_OPTS \
   --testData=$TBEDP_DEV_DATA_SEM \
   --inPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outSem=$TBEDP_OUT_DEV_SEM_HYP \
   --inDict=$TBEDP_OUT_DICT
 
-./src/tbedp-decoder.py -v \
+./src/tbedp-decoder.py -v $TBEDP_OPTS \
   --testData=$TBEDP_DEV_DATA_ASR \
   --inPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outSem=$TBEDP_OUT_DEV_ASR_HYP \
   --inDict=$TBEDP_OUT_DICT
 
-./src/tbedp-decoder.py -v \
+./src/tbedp-decoder.py -v $TBEDP_OPTS \
   --testData=$TBEDP_TRAIN_DATA \
   --inPickle=$TBEDP_OUT_DECODER_PICKLE \
   --outSem=$TBEDP_OUT_TRN_HYP \

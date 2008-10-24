@@ -6,6 +6,7 @@ from decoder import *
 
 inPickle = 'debug200.pckl-decoder'
 testData    = 'towninfo-test.sem'
+iniTest = False
 
 ##############################################################################
 def usage():
@@ -19,6 +20,7 @@ Description:
 Options: 
     -h                : print this help message and exit
     -v                : produce verbose output
+    -i                : initialize decoding with 'testData'.ini file
     --testData=FILE   : tes data - CUED format dialogue acts {%s}
     --inPickle=FILE   : input decoder file from trainer with rules and 
                         other parameters in Pickle format 
@@ -33,7 +35,7 @@ Options:
 ##############################################################################
 
 try:
-    opts, args = getopt.gnu_getopt(sys.argv[1:], "hv", 
+    opts, args = getopt.gnu_getopt(sys.argv[1:], "hvi", 
         ["testData=",
          "inPickle=",
          'inDict=',
@@ -53,6 +55,8 @@ for o, a in opts:
         verbose = True
     elif o == "-t":
         text = True
+    elif o == "-i":
+        iniTest = True
     elif o == "--testData":
         testData = a
     elif o == "--inPickle":
@@ -71,6 +75,9 @@ dcd = Decoder.readDecoderPickle(inPickle)
 print dcd.trgCond
 
 dcd.loadData(testData)
+if iniTest:
+    dcd.loadTbedData(testData+'.ini')
+    
 dcd.decode()
 dcd.writeOutput(outSem)
     

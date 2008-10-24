@@ -1,6 +1,7 @@
 #!/bin/sh
 #$ -S /bin/bash
 
+export TBEDP_OPTS='-i'
 export TBEDP_TRN_DATA_FILE=debug500.asr
 export TBEDP_TST_SEM_FILE=towninfo-test.sem
 export TBEDP_TST_ASR_FILE=towninfo-test.asr

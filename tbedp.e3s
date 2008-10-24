@@ -2,18 +2,10 @@
 <!DOCTYPE Session SYSTEM "Session-3.8.dtd">
 <!-- eric3 session file for project tbedp -->
 <!-- This file was generated automatically, do not edit. -->
-<!-- Saved: 2008-10-23, 11:38:22 -->
+<!-- Saved: 2008-10-24, 11:59:26 -->
 <Session version="3.8">
   <Filenames>
-    <Filename cline="184" cindex="118">/home/filip/cued/tbed-parser-new/src/decoder.py</Filename>
-    <Filename cline="43" cindex="0">/home/filip/cued/tbed-parser-new/src/trainer.py</Filename>
-    <Filename cline="51" cindex="32">/home/filip/cued/tbed-parser-new/src/tbedp-trainer.py</Filename>
-    <Filename cline="40" cindex="17">/home/filip/cued/tbed-parser-new/src/analyzeHyp.py</Filename>
-    <Filename cline="109" cindex="0">/home/filip/cued/tbed-parser-new/src/graph.py</Filename>
-    <Filename cline="71" cindex="0">/home/filip/cued/tbed-parser-new/src/tbedp-decoder.py</Filename>
-    <Filename cline="211" cindex="38">/home/filip/cued/tbed-parser-new/src/dialogueAct.py</Filename>
   </Filenames>
-  <ActiveWindow cline="43" cindex="0">/home/filip/cued/tbed-parser-new/src/trainer.py</ActiveWindow>
   <Breakpoints>
   </Breakpoints>
   <Watchpoints>

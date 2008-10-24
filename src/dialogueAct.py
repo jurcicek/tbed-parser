@@ -35,7 +35,7 @@ class DialogueAct:
         s+= str(self.tbedSlots)+' - '
 
         return s
-        
+
     def parseDA(self, cuedDA, text):
         words = split(text)
         words = [self.vocabulary[w] for w in words]
@@ -47,16 +47,27 @@ class DialogueAct:
         # get the speech-act
         i = cuedDA.index("(")
         speechAct = self.vocabulary[cuedDA[:i]]
-        slots = cuedDA[i:]
+        slots = cuedDA[i:].lower()
         slots = slots.replace('(', '')
         slots = slots.replace(')', '')
-
+        
         if slots == '':
             # no slots to process
             slots = set()
         else:
+            # Francois hack:
+            slots = slots.replace('.!=', '!=').replace('zeroProb-','')
+            
             # split slots
             slots = splitByComma(slots)
+            # unify slot values with Francois, scoring this modification should 
+            # accept without any problems
+            for i in range(len(slots)):
+                j = slots[i].find('=')
+                if j !=-1:
+                    slots[i] = slots[i].replace('=', '="')+'"'
+                    slots[i] = slots[i].replace('""', '"')
+                    
             slots = set([self.vocabulary[si] for si in slots])
         
         return words, speechAct, slots
