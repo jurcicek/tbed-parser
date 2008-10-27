@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.5
 
-from string import *
 import re
+from string import *
 from copy import *
 from collections import *
 
@@ -18,11 +18,10 @@ class DialogueAct:
         self.vocabulary = vocabulary
 
         self.speechAct = self.vocabulary['']
-        self.slots = set()
-        
-        # tbed data
         self.tbedSpeechAct = self.vocabulary['inform']
-        self.tbedSlots = set()
+        
+        self.slots = []
+        self.tbedSlots = []
         
         return
 
@@ -53,23 +52,17 @@ class DialogueAct:
         
         if slots == '':
             # no slots to process
-            slots = set()
+            slots = []
         else:
             # Francois's hack:
             slots = slots.replace('.!=', '!=').replace('zeroProb-','')
             
             # split slots
             slots = splitByComma(slots)
-            # unify slot values with Francois, scoring this modification should 
-            # accept without any problems
             for i in range(len(slots)):
-                j = slots[i].find('=')
-                if j !=-1:
-                    slots[i] = slots[i].replace('=', '="')+'"'
-                    slots[i] = slots[i].replace('""', '"')
-                    
-            slots = set([self.vocabulary[si] for si in slots])
-        
+                slots[i] = Slot(slots[i])
+                slots[i].parse()
+                
         return words, speechAct, slots
 
     def parse(self):
@@ -119,8 +112,7 @@ class DialogueAct:
             rendered_slots = ""
 
             for each_slot in sorted(slots):
-##                rendered_slots += each_slot.renderCUED() + ','
-                rendered_slots += self.vocabulary.getKey(each_slot) + ','
+                rendered_slots += each_slot.renderCUED() + ','
 
             # remove the last comma
             rendered_slots = re.sub(r',$', '', rendered_slots)
@@ -171,6 +163,20 @@ class DialogueAct:
         
         return
     
+    def getMissingSlotItems(self):
+        msi = []
+        for si in self.slots:
+            if si not in self.tbedSlots:
+                msi.append(si)
+        return msi
+    
+    def getExtraSlotItems(self):
+        esi = []
+        for si in self.tbedSlots:
+            if si not in self.slots:
+                esi.append(si)
+        return esi
+        
     def genTrans(self):
         # return a set of all posible modifications of the current DA
         trans = set()
@@ -184,18 +190,18 @@ class DialogueAct:
         # slot & values
         # return transformation for slot & value only if the 
         # the slot&value is missing or is it should not be here is wrong
-        # self.tbedSlots array is actually list we update (improve)
-        missingSlotAndValues = self.slots-self.tbedSlots
-        extraSlotAndValues = self.tbedSlots-self.slots
+        # self.tbedSlots array is list which we update (improve)
+        missingSlotItems = self.getMissingSlotItems()
+        extraSlotItems = self.getExtraSlotItems()
         
-        for slot in missingSlotAndValues:
+        for slot in missingSlotItems:
             trans.add(Transformation(addSlot=slot))
             
-        for slot in extraSlotAndValues:
+        for slot in extraSlotItems:
             trans.add(Transformation(delSlot=slot))
 
-        for extraSlot in extraSlotAndValues:
-            for missingSlot in missingSlotAndValues:
+        for extraSlot in extraSlotItems:
+            for missingSlot in missingSlotItems:
                 trans.add(Transformation(subSlot=(extraSlot, missingSlot)))
     
         # do not explode transformations, only one modification 
@@ -213,7 +219,7 @@ class DialogueAct:
         
         gramsCond = [None,]
         for gram1 in self.grams:
-            gramsCond.append([gram1,])
+            gramsCond.append(gram1)
             
         slotsCond = [None,]
         if trgCond['nSlots'] >= 1:
@@ -249,7 +255,7 @@ class DialogueAct:
                         for hasSlots in hasSlotsCond:
                             triggers.add(
                                 Trigger(speechAct=sa, 
-                                        grams=gram, 
+                                        gram=gram, 
                                         slots=slot,
                                         lngth=lngth,
                                         hasSlots=hasSlots))

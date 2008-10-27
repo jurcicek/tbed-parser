@@ -43,15 +43,14 @@ class Rule:
         if self.trigger.validate(da):
             return self.transformation.measureDiff(da)
         else:
-            # no difference in performance becasue I can not 
-            # apply it
+            # no difference in performance because I can not 
+            # apply the rule
             return 0
         
     def apply(self, da):
         # apply transformation on the dialogue act
         if self.trigger.validate(da):
-            # applstr(each)+' Acc:'+str(each.acc)+' F:'+str(each.f)+'\n'y rules
-            self.transformation.apply(da)
+            self.transformation.apply(da, self.trigger)
         
         return 
     

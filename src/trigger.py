@@ -3,9 +3,9 @@
 from math import *
 
 class Trigger:
-    def __init__(self, speechAct = None, grams = None, slots = None, lngth = None, hasSlots=None):
+    def __init__(self, speechAct = None, gram = None, slots = None, lngth = None, hasSlots=None):
         self.speechAct = speechAct
-        self.grams = grams
+        self.gram = gram
         self.slots = slots
         self.lngth = lngth
         self.hasSlots = hasSlots
@@ -14,7 +14,7 @@ class Trigger:
 
     def __str__(self):
         s  = 'TRIGGER:'
-        s += 'Grams: %s - ' % str(self.grams)
+        s += 'Gram: %s - ' % str(self.gram)
         s += 'SpeechAct: %s - ' % str(self.speechAct)
         s += 'Slots: %s - ' % str(self.slots)
         s += 'Length: %s - ' % str(self.lngth)
@@ -23,7 +23,7 @@ class Trigger:
         return s
         
     def __eq__(self, other):
-        if self.grams == other.grams and self.speechAct == other.speechAct and self.slots == other.slots and self.lngth == other.lngth and self.hasSlots == other.hasSlots:
+        if self.gram == other.gram and self.speechAct == other.speechAct and self.slots == other.slots and self.lngth == other.lngth and self.hasSlots == other.hasSlots:
             return True
         
         return False
@@ -31,9 +31,8 @@ class Trigger:
     def __hash__(self):
         h = 0
 
-        if self.grams:
-            for each in self.grams:
-                h += hash(each)
+        if self.gram:
+            h += hash(self.gram)
         if self.speechAct:
             h += hash(self.speechAct)
         if self.slots:
@@ -47,10 +46,9 @@ class Trigger:
         return h % (1 << 31)
 
     def validate(self, da):
-        if self.grams:
-            for each in self.grams:
-                if not each in da.grams:
-                    return False
+        if self.gram:
+            if self.gram in da.grams:
+                return False
 
         if self.speechAct:
             if self.speechAct != da.tbedSpeechAct:
@@ -73,13 +71,17 @@ class Trigger:
     
         return True
 
+    def getLexIndexes(self, da):
+        if self.gram:
+            raise ValueError('Not implemented.')
+        else:
+            return []
+        
     def complexity(self):
         c = 0
         
-        if self.grams:
-            for each in self.grams:
-                c += len(each)
-                
+        if self.gram:
+            c += 1
         if self.speechAct:
             c += 1
         if self.lngth != None:
@@ -99,9 +101,8 @@ class Trigger:
         
     def write(self):
         s = ''
-        if self.grams:
-            for each in self.grams:
-                s += 'Trigger:Gram:'+str(each)+'\n'
+        if self.gram:
+            s += 'Trigger:Gram:'+str(self.gram)+'\n'
 
         if self.speechAct:
             s += 'Trigger:SpeechAct:'+str(self.speechAct)+'\n'

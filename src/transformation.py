@@ -110,7 +110,7 @@ class Transformation:
                 
         return 0
         
-    def apply(self, da):
+    def apply(self, da, trigger):
         # change the speech act
         if self.speechAct:
             da.tbedSpeechAct = self.speechAct
@@ -118,11 +118,15 @@ class Transformation:
         
         # update slots
         if self.addSlot:
-            # I expect that slot items are unique, I can not have two the same 
-            # slot items in the semantics 
-            da.tbedSlots.add(self.addSlot)
-            return
+            lexIndexes = trigger.getLexIndexes(da)
             
+            # the trigger was validated globaly on the whole sentence,
+            # now I have to validate the trigger localy, or to track 
+            # where it is triggered on the lexical level
+            for each in lexIndexes:
+                da.tbedSlots.append(self.addSlot)
+                da.tbedSlots[-1].addLexIndex(each)
+                
         if self.delSlot:
             for slt in da.tbedSlots:
                 if slt == self.delSlot:
@@ -133,7 +137,7 @@ class Transformation:
             for slt in da.tbedSlots:
                 if slt == self.subSlot[0]:
                     da.tbedSlots.remove(slt)
-                    da.tbedSlots.add(self.subSlot[1])
+                    da.tbedSlots.append(self.subSlot[1])
                     break
         
         return

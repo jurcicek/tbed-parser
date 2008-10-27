@@ -13,6 +13,7 @@ from rule import *
 from decoder import *
 
 maxOptRules = 10
+minNetScore = 3
 
 class Trainer(Decoder):
     def __init__(self, trgCond, tmpData):
@@ -46,7 +47,7 @@ class Trainer(Decoder):
 
         self.rls = rules.keys() 
         for r in self.rls:
-            if r.occurence < 2:
+            if r.occurence < minNetScore:
                 del rules[r]
         print '                 pruned to: %d' % len(rules)
 
@@ -110,7 +111,7 @@ class Trainer(Decoder):
         for i in range(1, len(bestRules)):
             if bestRules[i].transformation.addSlot == None:
                 continue
-            elif bestRules[i].netScore < 2:
+            elif bestRules[i].netScore < minNetScore:
                 continue
             elif bestRules[i].transformation.addSlot == bestRules[i-1].transformation.addSlot:
                 # remove duplicates
@@ -148,7 +149,7 @@ class Trainer(Decoder):
                 
         bestRules = self.findBestRules()
         
-        while bestRules[0].netScore >= 2:
+        while bestRules[0].netScore >= minNetScore:
             # store the selected rules
             for r in bestRules:
                 self.bestRules.append(r)
