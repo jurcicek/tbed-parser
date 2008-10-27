@@ -71,6 +71,7 @@ if verbose:
     print "TBED decoder"
     print "---------------------------------------------"
 
+print inPickle
 dcd = Decoder.readDecoderPickle(inPickle)
 print dcd.trgCond
 
