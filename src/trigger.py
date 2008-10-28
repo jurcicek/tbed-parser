@@ -47,7 +47,7 @@ class Trigger:
 
     def validate(self, da):
         if self.gram:
-            if self.gram in da.grams:
+            if self.gram not in da.grams:
                 return False
 
         if self.speechAct:
@@ -73,9 +73,9 @@ class Trigger:
 
     def getLexIndexes(self, da):
         if self.gram:
-            raise ValueError('Not implemented.')
+            return da.grams[self.gram]
         else:
-            return []
+            return set()
         
     def complexity(self):
         c = 0

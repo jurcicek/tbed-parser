@@ -98,6 +98,11 @@ def getRules(da, trgCond):
     
     for tran in da.genTrans():
         for trigger in triggers:
+            if tran.addSlot != None and trigger.gram == None:
+                # I do not want to add slot which was not 
+                # triggered by some lexical item 
+                continue
+                
             r = Rule(trigger, tran)
             rules.append(r)
     

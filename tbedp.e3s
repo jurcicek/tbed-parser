@@ -2,16 +2,16 @@
 <!DOCTYPE Session SYSTEM "Session-3.8.dtd">
 <!-- eric3 session file for project tbedp -->
 <!-- This file was generated automatically, do not edit. -->
-<!-- Saved: 2008-10-27, 18:44:52 -->
+<!-- Saved: 2008-10-28, 15:22:01 -->
 <Session version="3.8">
   <Filenames>
-    <Filename cline="219" cindex="0">/home/filip/cued/tbed-parser/src/dialogueAct.py</Filename>
-    <Filename cline="8" cindex="11">/home/filip/cued/tbed-parser/src/slot.py</Filename>
-    <Filename cline="75" cindex="46">/home/filip/cued/tbed-parser/src/trigger.py</Filename>
-    <Filename cline="120" cindex="36">/home/filip/cued/tbed-parser/src/transformation.py</Filename>
-    <Filename cline="52" cindex="54">/home/filip/cued/tbed-parser/src/rule.py</Filename>
+    <Filename cline="242" cindex="24">/home/filip/cued/tbed-parser/src/dialogueAct.py</Filename>
+    <Filename cline="61" cindex="0">/home/filip/cued/tbed-parser/src/slot.py</Filename>
+    <Filename cline="54" cindex="1">/home/filip/cued/tbed-parser/src/trigger.py</Filename>
+    <Filename cline="209" cindex="0">/home/filip/cued/tbed-parser/src/transformation.py</Filename>
+    <Filename cline="41" cindex="0">/home/filip/cued/tbed-parser/src/rule.py</Filename>
   </Filenames>
-  <ActiveWindow cline="75" cindex="46">/home/filip/cued/tbed-parser/src/trigger.py</ActiveWindow>
+  <ActiveWindow cline="209" cindex="0">/home/filip/cued/tbed-parser/src/transformation.py</ActiveWindow>
   <Breakpoints>
   </Breakpoints>
   <Watchpoints>

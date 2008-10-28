@@ -16,8 +16,10 @@ class Slot:
         self.value = None
         self.lexIndex = set()
         
-##        self.leftBorder = None
-##        self.rightBorder = None
+        self.leftBorder = None
+        self.leftMidle = None
+        self.rightMidle = None
+        self.rightBorder = None
 
     def __str__(self):
         return self.renderCUED()
@@ -26,7 +28,7 @@ class Slot:
         if not isinstance(other, Slot):
             return False
             
-        if  self.name == other.name and self.equal == other.equal and self.value == other.value and self.lexIndex == other.lexIndex:
+        if  self.name == other.name and self.equal == other.equal and self.value == other.value:
             return True
         
         return False
@@ -36,12 +38,13 @@ class Slot:
         h += hash(self.equal)
         h += hash(self.value)
         
-        for each in self.lexIndex:
-            h += hash(each)
-            
         return h % (1 << 31) 
 
-    def validate(self, other):
+    def match(self, other):
+        '''
+        This method returns True if the targed 'other' slot has 
+        equal attributes for attributes defined by this slot.
+        '''
         if self.name != None:
             if self.name != other.name:
                 return False
@@ -56,6 +59,31 @@ class Slot:
                 
         return True
     
+    def transform(self, other):
+        ''' 
+        This method modifies atributes of 'other' slot if this 
+        slot defines them.
+        '''
+        
+        if self.name != None:
+            other.name = self.name
+            
+        if self.equal != None:    
+            other.equal = self.equal
+        
+        if self.value != None:
+            other.value = self.value
+    
+    def proximity(self, lexIndex):
+        if self.leftBorder <= lexIndex[0] and lexIndex[1] <= self.rightMidle:
+            return 'left'
+        if self.leftMidle <= lexIndex[0] and lexIndex[1] <= self.rightBorder:
+            return 'right'
+        if self.leftBorder <= lexIndex[0] and lexIndex[1] <= self.rightBorder:
+            return 'both'
+
+        return 'none'
+        
     def parse(self):
         i = self.cuedSlot.find('!=')
         if i == -1:
@@ -82,16 +110,17 @@ class Slot:
         if self.name != None:
             name = self.name
         else:
-            name = '?:'
+            name = '*'
             
         if self.equal != None:
             equal = self.equal
         else:
-            equal = '=?='
+            equal = '*='
             
         if self.value != None:
             value = self.value
         else:
-            value = '"?"'
+            value = '*'
             
+##        return name+equal+value+'|'+str(self.lexIndex)+'|'
         return name+equal+value

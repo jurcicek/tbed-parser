@@ -1,6 +1,7 @@
 #!/usr/bin/env python2.5
 
 from math import *
+from copy import *
 
 class Transformation:
     # I implement only one modification at one time
@@ -21,7 +22,10 @@ class Transformation:
         s += 'SpeechAct: %s - ' % str(self.speechAct)
         s += 'AddSlot: %s - ' % str(self.addSlot)
         s += 'DelSlot: %s - ' % str(self.delSlot)
-        s += 'SubSlot: %s - ' % str(self.subSlot)
+        if self.subSlot != None:
+            s += 'SubSlot: (%s,%s) -' % (str(self.subSlot[0]), str(self.subSlot[1]))
+        else:
+            s += 'SubSlot: None -'
         return s
 
     def __eq__(self, other):
@@ -60,6 +64,8 @@ class Transformation:
                     return -1
                 
         if self.addSlot:
+            ## I should fix this estimate because a slot can be added more than 
+            ## once, Imight return more than 1,  or return less -1
             if self.addSlot in da.slots:
                 if not self.addSlot in da.tbedSlots:
                     return 1
@@ -74,6 +80,8 @@ class Transformation:
                     return -1
                     
         if self.delSlot:
+            ## I can delete more than one slot at once
+            ## according to this I have to compute the benefit
             if not self.delSlot in da.slots:
                 if self.delSlot in da.tbedSlots:
                     return 1
@@ -88,6 +96,15 @@ class Transformation:
                     return -1
 
         if self.subSlot:
+            ## I can correct or damage more than one slot
+            ## I have to correct computation of benefits of the rule
+            
+            # the trigger was validated globaly on the whole sentence,
+            # now I have to validate the trigger localy
+            lexIndexes = trigger.getLexIndexes(da)
+            # now I should perform substitution only in proximity of 
+            # lexIndexes
+            
             if not self.subSlot[0] in da.slots:
                 if self.subSlot[0] in da.tbedSlots:
                     # there is slot which might be benefitial to substitue
@@ -119,26 +136,44 @@ class Transformation:
         # update slots
         if self.addSlot:
             lexIndexes = trigger.getLexIndexes(da)
+##            print '>>>', da
+##            print '---', trigger
+##            print '+++', lexIndexes
             
-            # the trigger was validated globaly on the whole sentence,
-            # now I have to validate the trigger localy, or to track 
-            # where it is triggered on the lexical level
+            # add all triggered slots, I do not care from where they
+            # come from, I just track what lexical items trigeered 
+            # addition of these slots
             for each in lexIndexes:
-                da.tbedSlots.append(self.addSlot)
-                da.tbedSlots[-1].addLexIndex(each)
+                da.tbedSlots.append(deepcopy(self.addSlot))
+                da.tbedSlots[-1].lexIndex.add(each[0])
+                da.tbedSlots[-1].lexIndex.add(each[1])
                 
+            da.computeBorders()
+            
         if self.delSlot:
+            # I do not track deletion of slots
             for slt in da.tbedSlots:
-                if slt == self.delSlot:
+                if self.delSlot.match(slt):
                     da.tbedSlots.remove(slt)
-                    break
 
         if self.subSlot:
+            # the trigger was validated globaly on the whole sentence,
+            # now I have to validate the trigger localy
+            lexIndexes = trigger.getLexIndexes(da)
+            # now I should perform substitution only in proximity of 
+            # lexIndexes
             for slt in da.tbedSlots:
-                if slt == self.subSlot[0]:
-                    da.tbedSlots.remove(slt)
-                    da.tbedSlots.append(self.subSlot[1])
-                    break
+                if self.subSlot[0].match(slt):
+                    # I found matching slot but is the lexical 
+                    # trigger in proximity of this slot?
+                    for lexIndex in lexIndexes:
+                        if slt.proximity(lexIndex) == 'left':
+                            self.subSlot[1].transform(slt)
+                            
+                            # store indexes to the lexical realization of 
+                            # the substituted (transformed) slot
+                            slt.lexIndex.add(lexIndex[0])
+                            slt.lexIndex.add(lexIndex[1])
         
         return
         
@@ -162,14 +197,13 @@ class Transformation:
     def write(self):
         s = ''
         
-        if self.speechAct:
+        if self.speechAct != None:
             s += 'Transformation:SpeechAct:'+str(self.speechAct)+'\n'
-        if self.addSlot:
+        if self.addSlot != None:
             s += 'Transformation:AddSlot:'+str(self.addSlot)+'\n'
-        if self.delSlot:
+        if self.delSlot != None:
             s += 'Transformation:DelSlot:'+str(self.delSlot)+'\n'
-        if self.subSlot:
-            s += 'Transformation:SubSlot:'+str(self.subSlot)+'\n'
-            
+        if self.subSlot != None:
+            s += 'Transformation:SubSlot: (%s,%s)\n ' % (str(self.subSlot[0]),str(self.subSlot[0]))
         return s
         

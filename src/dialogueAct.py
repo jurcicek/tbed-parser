@@ -35,6 +35,33 @@ class DialogueAct:
 
         return s
 
+    def computeBorders(self):
+        '''
+        This method compute borders for each slot in this dialogue act. 
+        Borders of each slot definy proximity 'atrea' where the lexical 
+        triggers must be triggered so that SubSlot operation chould be
+        applied on particular slot.
+        '''
+        for each in self.tbedSlots:
+            each.leftMiddle = min(each.lexIndex)
+            each.rightMiddle = max(each.lexIndex)
+            
+        self.tbedSlots.sort(cmp=lambda x, y: cmp(x.leftMiddle, y.leftMiddle))
+        
+        if len(self.tbedSlots) > 0:
+            self.tbedSlots[0].leftBorder = 0
+            for i in range(1, len(self.tbedSlots)):
+                    self.tbedSlots[i].leftBorder = self.tbedSlots[i-1].rightMiddle
+            
+            for i in range(0, len(self.tbedSlots)-1):
+                    self.tbedSlots[i].rightBorder = self.tbedSlots[i+1].leftMiddle
+            self.tbedSlots[-1].rightBorder = len(self.words)
+        
+##        print '+'*80
+##        print self.text
+##        for each in self.tbedSlots:
+##            print each.renderCUED(), each.leftBorder, each.leftMiddle, each.rightMiddle, each.rightBorder
+            
     def parseDA(self, cuedDA, text):
         words = split(text)
         words = [self.vocabulary[w] for w in words]
@@ -78,32 +105,32 @@ class DialogueAct:
         return
         
     def genGrams(self, trgCond):
-        self.grams = set()
+        self.grams = defaultdict(set)
         # generate unigrams, bigrams, and trigrams from text
         for i in range(len(self.words)):
-            self.grams.add((self.words[i],))
+            self.grams[(self.words[i],)].add((i,i+1))
         
         if trgCond['nGrams'] >=2:
             for i in range(1, len(self.words)):
-                self.grams.add((self.words[i-1],self.words[i]))
+                self.grams[(self.words[i-1],self.words[i])].add((i-1, i+1))
         if trgCond['nGrams'] >=3:
             for i in range(2, len(self.words)):
-                self.grams.add((self.words[i-2],self.words[i-1],self.words[i]))
+                self.grams[(self.words[i-2],self.words[i-1],self.words[i])].add((i-2,i+1))
         if trgCond['nGrams'] >=4:
             for i in range(3, len(self.words)):
-                self.grams.add((self.words[i-3],self.words[i-2],self.words[i-1],self.words[i]))
+                self.grams[(self.words[i-3],self.words[i-2],self.words[i-1],self.words[i])].add((i-3,i+1))
+                self.grams.add()
 
         if trgCond['nStarGrams'] >=3:
             for i in range(2, len(self.words)):
-                self.grams.add((self.words[i-2],'*',self.words[i]))
+                self.grams[(self.words[i-2],'*1',self.words[i])].add((i-2, i+1))
         if trgCond['nStarGrams'] >=4:
             for i in range(3, len(self.words)):
-                self.grams.add((self.words[i-3],'*','*',self.words[i]))
+                self.grams[(self.words[i-3],'*2',self.words[i])].add((i-3, i+1))
         if trgCond['nStarGrams'] >=5:
             for i in range(4, len(self.words)):
-                self.grams.add((self.words[i-4],'*','*','*',self.words[i]))
-            
-                    
+                self.grams[(self.words[i-4],'*3',self.words[i])].add((i-4, i+1))
+        
     def render(self, speechAct, slots):
         DA = self.vocabulary.getKey(speechAct)
         rendered_slots = ""
@@ -111,7 +138,7 @@ class DialogueAct:
         if len(slots) > 0:
             rendered_slots = ""
 
-            for each_slot in sorted(slots):
+            for each_slot in slots:
                 rendered_slots += each_slot.renderCUED() + ','
 
             # remove the last comma
@@ -202,7 +229,19 @@ class DialogueAct:
 
         for extraSlot in extraSlotItems:
             for missingSlot in missingSlotItems:
-                trans.add(Transformation(subSlot=(extraSlot, missingSlot)))
+                if extraSlot.equal != missingSlot.equal and extraSlot.value == missingSlot.value:
+                    es = deepcopy(extraSlot)
+                    ms = deepcopy(missingSlot)
+                    es.name = None
+                    es.value = None
+                    ms.name = None
+                    ms.values = None
+                    if es.equal == '=':
+                        ms.equal = '!='
+                    else:
+                        ms.equal = '='
+                        
+                    trans.add(Transformation(subSlot=(es, ms)))
     
         # do not explode transformations, only one modification 
         # at one time is allowed
