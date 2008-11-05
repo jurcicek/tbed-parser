@@ -2,16 +2,14 @@
 <!DOCTYPE Session SYSTEM "Session-3.8.dtd">
 <!-- eric3 session file for project tbedp -->
 <!-- This file was generated automatically, do not edit. -->
-<!-- Saved: 2008-10-28, 15:22:01 -->
+<!-- Saved: 2008-11-04, 11:23:50 -->
 <Session version="3.8">
   <Filenames>
-    <Filename cline="242" cindex="24">/home/filip/cued/tbed-parser/src/dialogueAct.py</Filename>
-    <Filename cline="61" cindex="0">/home/filip/cued/tbed-parser/src/slot.py</Filename>
-    <Filename cline="54" cindex="1">/home/filip/cued/tbed-parser/src/trigger.py</Filename>
-    <Filename cline="209" cindex="0">/home/filip/cued/tbed-parser/src/transformation.py</Filename>
-    <Filename cline="41" cindex="0">/home/filip/cued/tbed-parser/src/rule.py</Filename>
+    <Filename cline="85" cindex="27">/home/filip/cued/tbed-parser/src/decoder.py</Filename>
+    <Filename cline="38" cindex="15">/home/filip/cued/tbed-parser/src/orangeTab.py</Filename>
+    <Filename cline="147" cindex="0">/home/filip/cued/tbed-parser/src/orangeTest.py</Filename>
   </Filenames>
-  <ActiveWindow cline="209" cindex="0">/home/filip/cued/tbed-parser/src/transformation.py</ActiveWindow>
+  <ActiveWindow cline="147" cindex="0">/home/filip/cued/tbed-parser/src/orangeTest.py</ActiveWindow>
   <Breakpoints>
   </Breakpoints>
   <Watchpoints>

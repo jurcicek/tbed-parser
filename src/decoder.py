@@ -72,7 +72,66 @@ class Decoder:
         
         for da in self.das:
             f.write('%s <=> %s\n' % (da.text, da.renderTBED()))
-                    
+        
+        f.close()
+
+    def writeOrangeTab(self, fn):
+        grams = defaultdict(int)
+        for da in self.das:
+            for g in da.grams:
+                grams[g] += len(da.grams[g])
+
+        gr = []
+        for g in grams:
+            if grams[g] >=4:
+                gr.append(g)
+        
+        grams = sorted(gr)
+
+        slotItems = defaultdict(int)
+        for da in self.das:
+            for si in da.slots:
+                slotItems[si.name] += 1
+                
+        sis = []
+        for si in slotItems:
+            if si == "":
+                continue
+                
+            if slotItems[si] >=4:
+                sis.append(si)
+        
+        slotItems = sorted(sis)
+        slotItems = ['name', 'addr', 'near'] 
+        
+        f = file(fn, 'w')
+        f.write('c#dat')
+        for g in grams:
+            s = str(g).replace('"', "'").replace("', '", '-').replace('(', '').replace(')', '').replace("'", '').replace(",", '')
+            f.write('\tC#'+s)
+        for si in slotItems:
+            s = str(si).replace('"', "'").replace("', '", '-').replace('(', '').replace(')', '').replace("'", '').replace(",", '')
+            f.write('\tC#si_'+s)
+        f.write('\n')
+            
+        for da in self.das:
+            f.write(da.speechAct)
+            for g in grams:
+                if da.grams.has_key(g):
+                    f.write('\t'+str(len(da.grams[g])))
+                else:
+                    f.write('\t0')
+            for si in slotItems:
+                c = 0
+                for i in range(len(da.slots)):
+                    if da.slots[i].name == si:
+                        c +=1
+                        
+                f.write('\t'+str(c))
+            f.write('\n')
+        
+        f.close()
+        
     def writeDecoderPickle(self, fn):
         dd = DecoderData()
         
