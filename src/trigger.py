@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.5
+#!/usr/bin/env python2.5    
 
 from math import *
 
@@ -16,7 +16,10 @@ class Trigger:
         s  = 'TRIGGER:'
         s += 'Gram: %s - ' % str(self.gram)
         s += 'SpeechAct: %s - ' % str(self.speechAct)
-        s += 'Slots: %s - ' % str(self.slots)
+        if self.slots:
+            s += 'Slots: %s - ' % str([str(x) for x in self.slots])
+        else:
+            s += 'Slots: None - ' 
         s += 'Length: %s - ' % str(self.lngth)
         s += 'HasSlots: %s - ' % str(self.hasSlots)
         

@@ -41,7 +41,10 @@ class Trainer(Decoder):
             
         for r in rules:
             r.occurence = rules[r]
-        
+            
+            if r.transformation.subSlot:
+                print '>>> SUB ',r 
+            
         print '========================================================='
         print 'Number of applicable rules: %d' % len(rules)
 
@@ -71,7 +74,7 @@ class Trainer(Decoder):
             # compute netScore for the curent rule
             netScore = 0 
             for i in trg2da[rule.trigger]:
-                netScore += rule.transformation.measureDiff(self.das[i])
+                netScore += rule.transformation.measureDiff(self.das[i], rule.trigger)
             
             if netScore > maxNetScore:
                 maxNetScore = netScore

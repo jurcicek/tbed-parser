@@ -229,13 +229,14 @@ class DialogueAct:
 
         for extraSlot in extraSlotItems:
             for missingSlot in missingSlotItems:
+                # for now allow only to substitute the equal sign
                 if extraSlot.equal != missingSlot.equal and extraSlot.value == missingSlot.value:
                     es = deepcopy(extraSlot)
                     ms = deepcopy(missingSlot)
                     es.name = None
                     es.value = None
                     ms.name = None
-                    ms.values = None
+                    ms.value = None
                     if es.equal == '=':
                         ms.equal = '!='
                     else:

@@ -43,11 +43,11 @@ class Transformation:
         return h % (1 << 31) 
     
     # measure only difference in performance
-    #  1 - for corect modification
+    # >0 - for corect modification
     #  0 - for no mofification
-    # -1 - for wrong modification
+    # <0 - for wrong modification
     # I expect to perform only one modification at on time
-    def measureDiff(self, da):
+    def measureDiff(self, da, trigger):
         if self.speechAct:
             if self.speechAct == da.speechAct:
                 if self.speechAct != da.tbedSpeechAct:
@@ -64,46 +64,61 @@ class Transformation:
                     return -1
                 
         if self.addSlot:
-            ## I should fix this estimate because a slot can be added more than 
-            ## once, Imight return more than 1,  or return less -1
-            if self.addSlot in da.slots:
-                if not self.addSlot in da.tbedSlots:
-                    return 1
-                else:
-                    return 0
+            shouldbeIn = da.slots.count(self.addSlot)
+            alreadyIn  = da.tbedSlots.count(self.addSlot)
+            added      = len(trigger.getLexIndexes(da))
+            needed     = shouldbeIn - alreadyIn
+            
+            if needed >= 0:
+                if needed >= added:
+                    # I reccieve points for all added slots up to needed number
+                    return added
+                if needed < added:
+                    # I want to add more slots than is needed. As a result, i 
+                    # get points for all needed slots but I have to dtract 
+                    # points for all extra slots
+                    return needed - (added - needed)
             else:
-                if self.addSlot in da.tbedSlots:
-                    # this rule is not responsible for adding wrong slot because 
-                    # the slot is already there
-                    return 0
-                else:
-                    return -1
+                # there are already to many slots of this type and I still want 
+                # to add more
+                return -added
                     
         if self.delSlot:
-            ## I can delete more than one slot at once
-            ## according to this I have to compute the benefit
-            if not self.delSlot in da.slots:
-                if self.delSlot in da.tbedSlots:
-                    return 1
-                else:
-                    return 0
-            else:
-                if not self.delSlot in da.tbedSlots:
-                    # this rule is not responsible for deleting correct slot
-                    # because the slot was already deleted before (is missing)
-                    return 0
-                else:
-                    return -1
+            shouldbeIn = da.slots.count(self.delSlot)
+            alreadyIn  = da.tbedSlots.count(self.delSlot)
+            deleted    = alreadyIn - len(trigger.getLexIndexes(da))
+            if deleted < 0:
+                # I cannot delete slots which are not in tbedSlots
+                # at maximum I can delete alreadyIn slots 
+                deleted = alreadyIn
+            notNeeded   = alreadyIn - shouldbeIn
 
+            if notNeeded >= 0:
+                if notNeeded >= deleted:
+                    # I reccieve points for all deleted slots up to not needed 
+                    # number
+                    return deleted
+                if notNeeded < deleted:
+                    # I want to delete more slots than is not needed. As a 
+                    # result, I get points for all needed slots but I have to 
+                    # detract points for all missing slots
+                    return notNeeded - (deleted - notNeeded)
+            else:
+                # there are missing slots of this type and I still want 
+                # to delete some
+                return -deleted
+            
         if self.subSlot:
             ## I can correct or damage more than one slot
             ## I have to correct computation of benefits of the rule
-            
+        
             # the trigger was validated globaly on the whole sentence,
             # now I have to validate the trigger localy
             lexIndexes = trigger.getLexIndexes(da)
             # now I should perform substitution only in proximity of 
             # lexIndexes
+
+            transformable = [slot for slot in da.tbedSlots if self.subSlot[0].match(slot)]
             
             if not self.subSlot[0] in da.slots:
                 if self.subSlot[0] in da.tbedSlots:
