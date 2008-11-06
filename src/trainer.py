@@ -41,9 +41,8 @@ class Trainer(Decoder):
             
         for r in rules:
             r.occurence = rules[r]
-            
-            if r.transformation.subSlot:
-                print '>>> SUB ',r 
+##            if r.transformation.subSlot:
+##                print '>>> SUB ',r 
             
         print '========================================================='
         print 'Number of applicable rules: %d' % len(rules)

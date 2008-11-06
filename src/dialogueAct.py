@@ -229,20 +229,28 @@ class DialogueAct:
 
         for extraSlot in extraSlotItems:
             for missingSlot in missingSlotItems:
-                # for now allow only to substitute the equal sign
-                if extraSlot.equal != missingSlot.equal and extraSlot.value == missingSlot.value:
+                # allow to substitute the equal sign
+##                if extraSlot.equal != missingSlot.equal and extraSlot.value == missingSlot.value:
+                if extraSlot.equal != missingSlot.equal:
                     es = deepcopy(extraSlot)
                     ms = deepcopy(missingSlot)
                     es.name = None
                     es.value = None
                     ms.name = None
                     ms.value = None
-                    if es.equal == '=':
-                        ms.equal = '!='
-                    else:
-                        ms.equal = '='
                         
-                    trans.add(Transformation(subSlot=(es, ms)))
+                    trans.add(Transformation(subSlot=(es, ms, 'left')))
+                    
+                # allow to substitute the name
+                if extraSlot.name != missingSlot.name:
+                    es = deepcopy(extraSlot)
+                    ms = deepcopy(missingSlot)
+                    es.equal = None
+                    es.value = None
+                    ms.equal = None
+                    ms.value = None
+                        
+                    trans.add(Transformation(subSlot=(es, ms, 'left')))
     
         # do not explode transformations, only one modification 
         # at one time is allowed

@@ -17,8 +17,8 @@ class Slot:
         self.lexIndex = set()
         
         self.leftBorder = None
-        self.leftMidle = None
-        self.rightMidle = None
+        self.leftMiddle = None
+        self.rightMiddle = None
         self.rightBorder = None
 
     def __str__(self):
@@ -75,9 +75,9 @@ class Slot:
             other.value = self.value
     
     def proximity(self, lexIndex):
-        if self.leftBorder <= lexIndex[0] and lexIndex[1] <= self.rightMidle:
+        if self.leftBorder <= lexIndex[0] and lexIndex[1] <= self.rightMiddle:
             return 'left'
-        if self.leftMidle <= lexIndex[0] and lexIndex[1] <= self.rightBorder:
+        if self.leftMiddle <= lexIndex[0] and lexIndex[1] <= self.rightBorder:
             return 'right'
         if self.leftBorder <= lexIndex[0] and lexIndex[1] <= self.rightBorder:
             return 'both'

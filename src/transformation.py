@@ -13,8 +13,6 @@ class Transformation:
         self.delSlot = delSlot
         self.subSlot = subSlot
         
-##        print str(self)
-        
         return
         
     def __str__(self):
@@ -23,7 +21,7 @@ class Transformation:
         s += 'AddSlot: %s - ' % str(self.addSlot)
         s += 'DelSlot: %s - ' % str(self.delSlot)
         if self.subSlot != None:
-            s += 'SubSlot: (%s,%s) -' % (str(self.subSlot[0]), str(self.subSlot[1]))
+            s += 'SubSlot: %s -' % str([str(x) for x in self.subSlot])
         else:
             s += 'SubSlot: None -'
         return s
@@ -117,28 +115,35 @@ class Transformation:
             lexIndexes = trigger.getLexIndexes(da)
             # now I should perform substitution only in proximity of 
             # lexIndexes
-
-            transformable = [slot for slot in da.tbedSlots if self.subSlot[0].match(slot)]
             
-            if not self.subSlot[0] in da.slots:
-                if self.subSlot[0] in da.tbedSlots:
-                    # there is slot which might be benefitial to substitue
-                    if self.subSlot[1] in da.slots:
-                        if not self.subSlot[1] in da.tbedSlots:
-                            return 1
+            ret = 0
+            transformable = [slot for slot in da.tbedSlots if self.subSlot[0].match(slot)]
+            for slt in transformable:
+                # I have matching tbedSlot which is not in slots but is the lexical 
+                # trigger in proximity of this slot?
+                for lexIndex in lexIndexes:
+                    if slt.proximity(lexIndex) == self.subSlot[2]:
+                        # the trigger is in proximity of the slot (slt) as the trigger 
+                        # expects (self.subSlot[2])
+                        
+                        if slt in da.slots:
+                            # transformation will introduce errors because this slot 
+                            # is correct (it is in the reference slots) 
+                            ret -= 1
+                            continue
+                            
+                        s = deepcopy(slt)
+                        self.subSlot[1].transform(s)
+                        if s in da.slots:
+                            # the tbed slot was transformed so that it is the same as 
+                            # one of reference slots (da.slots)
+                            ret += 1
                         else:
-                            return 0
-                    else:
-                        return -1
-                else:
-                    return 0
-            else:
-                if not self.subSlot[0] in da.tbedSlots:
-                    # this rule is not responsible for substituting correct slot
-                    # because the slot was already missing before
-                    return 0
-                else:
-                    return -1
+                            # I should not penalize for slots I could not fix, I 
+                            # alreaddy penalized for those which are actualy correct but 
+                            # the mutch subSlot[0]
+                            ret -= 0
+            return ret
                 
         return 0
         
@@ -177,18 +182,22 @@ class Transformation:
             lexIndexes = trigger.getLexIndexes(da)
             # now I should perform substitution only in proximity of 
             # lexIndexes
-            for slt in da.tbedSlots:
-                if self.subSlot[0].match(slt):
-                    # I found matching slot but is the lexical 
-                    # trigger in proximity of this slot?
-                    for lexIndex in lexIndexes:
-                        if slt.proximity(lexIndex) == 'left':
-                            self.subSlot[1].transform(slt)
-                            
-                            # store indexes to the lexical realization of 
-                            # the substituted (transformed) slot
-                            slt.lexIndex.add(lexIndex[0])
-                            slt.lexIndex.add(lexIndex[1])
+            transformable = [slot for slot in da.tbedSlots if self.subSlot[0].match(slot)]
+            for slt in transformable:
+                # I have matching slot but is the lexical 
+                # trigger in proximity of this slot?
+                for lexIndex in lexIndexes:
+##                    print '---', da, 'lexI = ', lexIndex, 'slotI =', slt.leftBorder, slt.leftMiddle, slt.rightMiddle, slt.rightBorder
+##                    print '---', slt, 'proximity =',slt.proximity(lexIndex)
+                    if slt.proximity(lexIndex) == self.subSlot[2]:
+##                        print '>>>', slt, da
+                        self.subSlot[1].transform(slt)
+##                        print '<<<', slt
+                        
+                        # store indexes to the lexical realization of 
+                        # the substituted (transformed) slot
+                        slt.lexIndex.add(lexIndex[0])
+                        slt.lexIndex.add(lexIndex[1])
         
         return
         
@@ -219,6 +228,6 @@ class Transformation:
         if self.delSlot != None:
             s += 'Transformation:DelSlot:'+str(self.delSlot)+'\n'
         if self.subSlot != None:
-            s += 'Transformation:SubSlot: (%s,%s)\n ' % (str(self.subSlot[0]),str(self.subSlot[0]))
+            s += 'Transformation:SubSlot: %s\n ' % str([str(x) for x in self.subSlot])
         return s
         
