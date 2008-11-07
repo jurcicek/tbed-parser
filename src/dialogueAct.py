@@ -18,7 +18,7 @@ class DialogueAct:
         self.vocabulary = vocabulary
 
         self.speechAct = self.vocabulary['']
-        self.tbedSpeechAct = self.vocabulary['inform']
+        self.tbedSpeechAct = self.vocabulary['']
         
         self.slots = []
         self.tbedSlots = []
@@ -41,6 +41,9 @@ class DialogueAct:
         Borders of each slot definy proximity 'atrea' where the lexical 
         triggers must be triggered so that SubSlot operation chould be
         applied on particular slot.
+        
+        FIX: Some slot might dominate the same words; as a result, they shoud have
+        the same borders. It is not implemented now.
         '''
         for each in self.tbedSlots:
             each.leftMiddle = min(each.lexIndex)
@@ -234,9 +237,9 @@ class DialogueAct:
                 if extraSlot.equal != missingSlot.equal:
                     es = deepcopy(extraSlot)
                     ms = deepcopy(missingSlot)
-                    es.name = None
+                    es.name  = None
                     es.value = None
-                    ms.name = None
+                    ms.name  = None
                     ms.value = None
                         
                     trans.add(Transformation(subSlot=(es, ms, 'left')))

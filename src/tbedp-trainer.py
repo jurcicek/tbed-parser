@@ -5,6 +5,7 @@ import getopt
 import sys
 
 trainData   = 'debug500.sem'
+db   = 'debug_db'
 
 trgCond = {'nGrams':2, 'nStarGrams':3, 'tplGrams':1, 'speechAct':1, 'nSlots':1, 'lngth':1, 'hasSlots':1}
 
@@ -57,14 +58,17 @@ Options:
         hasSlots=NUMBER   : 0 - no dependence on whether DA has slots or not
                             1 - a rule can depend on whether DA has slots 
                                 or not
-    --outDict=FILE     : output file speed up dictionary{%s}
+    --outDict=FILE        : output file speed up dictionary{%s}
+    --db=DIR              : directory with TAB files which contains database items 
+                            for slot names and values{%s}
     """ % (trainData,
            tmpData, 
            outBestRulesTXT, 
            outBestRulesPickle,
            outDecoderPickle,
            trgCond,
-           outVocabulary))
+           outVocabulary,
+           dir))
            
 ##############################################################################
 
@@ -76,7 +80,8 @@ try:
          "outDecoderPickle=",
          "trgCond=",
          "tmpData=",
-         'outDict='])
+         'outDict=',
+         'db='])
          
 except getopt.GetoptError, exc:
     print("ERROR: " + exc.msg)
@@ -111,6 +116,8 @@ for o, a in opts:
         outVocabulary = a
     elif o == "--trgCond":
         trgCond = eval(a)
+    elif o == "--db":
+        db = a
 
 if verbose:
     print "---------------------------------------------"
@@ -120,6 +127,7 @@ if verbose:
 trn = Trainer(trgCond = trgCond, tmpData = tmpData)
 print trn.trgCond
 
+trn.loadDB(db)
 trn.loadData(trainData)
 if iniTrain:
     trn.loadTbedData(trainData+'.ini')

@@ -22,6 +22,19 @@ class Trainer(Decoder):
         
         return
 
+    def genRulesFromDB(self):
+        for slot_name in self.db.keys():
+            for slot_value in self.db[slot_name].keys():
+                for slot_value_synonym in self.db[slot_name][slot_value]:
+                    slt = Slot(slot_name+'='+slot_value)
+                    slt.parse()
+                    trg = Trigger(gram=tuple(slot_value_synonym.split()))
+                    trn = Transformation(addSlot=slt)
+                    r = Rule(trg, trn)
+                    self.bestRules.append(r)
+                    self.applyBestRule(r)
+                    self.iRule += 1
+                    
     def findBestRules(self):
         print '=================== FIND BEST START ====================='
         rules = defaultdict(int)
@@ -148,7 +161,9 @@ class Trainer(Decoder):
     def train(self):
         self.bestRules = []
         self.iRule = 0
-                
+        
+        self.genRulesFromDB()
+        
         bestRules = self.findBestRules()
         
         while bestRules[0].netScore >= minNetScore:

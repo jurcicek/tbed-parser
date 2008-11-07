@@ -9,6 +9,7 @@ from utils import *
 from slot import *
 from dialogueAct import *
 from rule import *
+from slotDatabase import *
 
 class DecoderData:
     pass
@@ -17,8 +18,11 @@ class Decoder:
     def __init__(self, trgCond=None):
         self.vocabulary = adict()
         self.trgCond = trgCond
-
+        self.db = SlotDatabase()
         return
+
+    def loadDB(self, dir):
+        self.db.loadTAB(dir)
 
     def loadData(self, inputFile):
         self.das = []
@@ -41,7 +45,7 @@ class Decoder:
                 da.genGrams(self.trgCond)
     
             self.das.append(da)
-            
+                
         return
 
     def loadTbedData(self, inputFile):
@@ -59,7 +63,7 @@ class Decoder:
                 continue
     
             self.das[i].parseTbed(da, sentence)
-
+        
     def decode(self, nRules=-1):
         dcdRules = self.bestRules[:nRules]
         
