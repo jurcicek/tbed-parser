@@ -18,7 +18,7 @@ class DialogueAct:
         self.vocabulary = vocabulary
 
         self.speechAct = self.vocabulary['']
-        self.tbedSpeechAct = self.vocabulary['']
+        self.tbedSpeechAct = self.vocabulary['inform']
         
         self.slots = []
         self.tbedSlots = []
