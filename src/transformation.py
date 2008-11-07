@@ -84,8 +84,8 @@ class Transformation:
         if self.delSlot:
             shouldbeIn = da.slots.count(self.delSlot)
             alreadyIn  = da.tbedSlots.count(self.delSlot)
-            deleted    = alreadyIn - len(trigger.getLexIndexes(da))
-            if deleted < 0:
+            deleted    = len(trigger.getLexIndexes(da))
+            if alreadyIn < deleted:
                 # I cannot delete slots which are not in tbedSlots
                 # at maximum I can delete alreadyIn slots 
                 deleted = alreadyIn
