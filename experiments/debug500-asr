@@ -6,5 +6,6 @@ export TBEDP_TST_SEM_FILE=towninfo-test.sem
 export TBEDP_TST_ASR_FILE=towninfo-test.asr
 export TBEDP_DEV_SEM_FILE=towninfo-dev.sem
 export TBEDP_DEV_ASR_FILE=towninfo-dev.asr
+export TBEDP_DB_DIR=towninfo_db
 export TBEDP_TRG_COND="{'nGrams':2, 'nStarGrams':3, 'tplGrams':1, 'speechAct':1, 'nSlots':1, 'lngth':0, 'hasSlots':0}"
 
