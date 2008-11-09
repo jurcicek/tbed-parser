@@ -122,7 +122,6 @@ class DialogueAct:
         if trgCond['nGrams'] >=4:
             for i in range(3, len(self.words)):
                 self.grams[(self.words[i-3],self.words[i-2],self.words[i-1],self.words[i])].add((i-3,i+1))
-                self.grams.add()
 
         if trgCond['nStarGrams'] >=3:
             for i in range(2, len(self.words)):
