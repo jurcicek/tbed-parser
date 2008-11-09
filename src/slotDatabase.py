@@ -23,12 +23,13 @@ class SlotDatabase:
             
             for l in f.readlines():
                 l = l.strip().replace('"', '').split('\t')
-                
-                # add all value for the slot name
-                self.db[l[1]][l[0]].add(l[0])
-                # add synonyms (if there aare any)
-                for i in range(2, len(l)):
-                    self.db[l[1]][l[0]].add(l[i])
+
+                if len(l) >= 2:
+                    # add all value for the slot name
+                    self.db[l[1]][l[0]].add(l[0])
+                    # add synonyms (if there aare any)
+                    for i in range(2, len(l)):
+                        self.db[l[1]][l[0]].add(l[i])
 
             f.close()
         
