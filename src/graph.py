@@ -67,8 +67,13 @@ def decodeSet(data, iniTest = False):
     print data
     while i<iMax:
         iMax, a, f = decode(data, inPickle, i, iniTest)
-        acc.append(float(a))
-        fm.append(float(f))
+	try:
+            acc.append(float(a))
+            fm.append(float(f))
+	except ValueError:
+	    acc.append(0.0)
+	    fm.append(0.0)
+	    
         nRules.append(i)
         print i, iMax, a, f
         

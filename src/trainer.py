@@ -13,7 +13,7 @@ from rule import *
 from decoder import *
 
 maxOptRules = 10
-minNetScore = 3
+minNetScore = 2
 
 class Trainer(Decoder):
     def __init__(self, trgCond, tmpData):
