@@ -3,7 +3,6 @@
 #$ -cwd
 #$ -j y
 #$ -l lr=1
-#$ -l mem=6000
 #$ -v PATH
 #$ -M fj228
 #$ -m eas
