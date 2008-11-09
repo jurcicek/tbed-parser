@@ -57,8 +57,8 @@ def decodeSet(data, iniTest = False):
     data = os.path.join(dataDir, data)
     inPickle = os.path.join(resultsDir, 'rules.pckl-decoder')
     
-    i = 16
-    iMax = 30
+    i = 180
+    iMax = 200
 
     nRules = []
     acc = []
