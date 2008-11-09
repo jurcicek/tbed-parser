@@ -102,7 +102,7 @@ def getRules(da, trgCond):
                 # I do not want to add slot which was not 
                 # triggered by some lexical item 
                 continue
-                
+
             r = Rule(trigger, tran)
             rules.append(r)
     

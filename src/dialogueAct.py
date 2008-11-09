@@ -274,13 +274,13 @@ class DialogueAct:
         slotsCond = [None,]
         if trgCond['nSlots'] >= 1:
             for slot in self.tbedSlots:
-                slotsCond.append([slot,])
+                slotsCond.append([deepcopy(slot),])
                 
             if trgCond['nSlots'] >= 2:
                 ts = list(self.tbedSlots)
                 for i in range(len(ts)):
                     for j in range(i+1, len(ts)):
-                        slotsCond.append([ts[i],ts[j]])
+                        slotsCond.append([deepcopy(ts[i]),deepcopy(ts[j])])
 
         # sentece length rigger
         lengthCond = [None,]

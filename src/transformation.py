@@ -3,6 +3,8 @@
 from math import *
 from copy import *
 
+slotScoreNorm = 2.0 
+
 class Transformation:
     # I implement only one modification at one time
     # If I allowed to performe more modifications than it would be 
@@ -46,20 +48,34 @@ class Transformation:
     # <0 - for wrong modification
     # I expect to perform only one modification at on time
     def measureDiff(self, da, trigger):
+        """There is serious problem with evalating difference in performance of 
+        operations deletion of .place="castle", I should differentiate between  
+        deleting the slot if there is no "castle slot" in the reference and if 
+        there is the "near="castle" slot. In the first case, I fixed three 
+        errors: .place, =, and "castle". However, in the second case, it fixes
+        only .place error but creates new erros: =, "castle" because it removes 
+        the for the hypothesis.
+        
+        This I might be able to fix only in a new version which would 
+        completely simulate tree editing.
+        """
         if self.speechAct:
+            ret = 0
             if self.speechAct == da.speechAct:
                 if self.speechAct != da.tbedSpeechAct:
-                    return 1
+                    ret = 1
                 else:
-                    return 0
+                    ret = 0
             else:
                 if self.speechAct == da.tbedSpeechAct:
                     # this rule is not responsible for changing 
                     # dialogue act type to wrong dialogue act type because 
                     # the dialogue act type is already wrong
-                    return 0
+                    ret = 0
                 else:
-                    return -1
+                    ret = -1
+                    
+            return ret/slotScoreNorm
                 
         if self.addSlot:
             shouldbeIn = da.slots.count(self.addSlot)
@@ -67,20 +83,23 @@ class Transformation:
             added      = len(trigger.getLexIndexes(da))
             needed     = shouldbeIn - alreadyIn
             
+            ret = 0
             if needed >= 0:
                 if needed >= added:
                     # I reccieve points for all added slots up to needed number
-                    return added
+                    ret = added
                 if needed < added:
                     # I want to add more slots than is needed. As a result, i 
                     # get points for all needed slots but I have to dtract 
                     # points for all extra slots
-                    return needed - (added - needed)
+                    ret = needed - (added - needed)
             else:
                 # there are already to many slots of this type and I still want 
                 # to add more
-                return -added
-                    
+                ret = -added
+            
+            return ret/slotScoreNorm
+            
         if self.delSlot:
             shouldbeIn = da.slots.count(self.delSlot)
             alreadyIn  = da.tbedSlots.count(self.delSlot)
@@ -91,20 +110,23 @@ class Transformation:
                 deleted = alreadyIn
             notNeeded   = alreadyIn - shouldbeIn
 
+            ret  = 0
             if notNeeded >= 0:
                 if notNeeded >= deleted:
                     # I reccieve points for all deleted slots up to not needed 
                     # number
-                    return deleted
+                    ret = deleted
                 if notNeeded < deleted:
                     # I want to delete more slots than is not needed. As a 
                     # result, I get points for all needed slots but I have to 
                     # detract points for all missing slots
-                    return notNeeded - (deleted - notNeeded)
+                    ret = notNeeded - (deleted - notNeeded)
             else:
                 # there are missing slots of this type and I still want 
                 # to delete some
-                return -deleted
+                ret = -deleted
+            
+            return ret/slotScoreNorm
             
         if self.subSlot:
             ## I can correct or damage more than one slot
@@ -113,35 +135,36 @@ class Transformation:
             # the trigger was validated globaly on the whole sentence,
             # now I have to validate the trigger localy
             lexIndexes = trigger.getLexIndexes(da)
+                
             # now I should perform substitution only in proximity of 
             # lexIndexes
             
             ret = 0
             transformable = [slot for slot in da.tbedSlots if self.subSlot[0].match(slot)]
             for slt in transformable:
-                # I have matching tbedSlot which is not in slots but is the lexical 
-                # trigger in proximity of this slot?
+                # I have matching tbedSlot which is not in slots but is the 
+                # lexical trigger in proximity of this slot? If it is not triggered by gram than it is always in proximity
                 for lexIndex in lexIndexes:
                     if slt.proximity(lexIndex) == self.subSlot[2]:
-                        # the trigger is in proximity of the slot (slt) as the trigger 
-                        # expects (self.subSlot[2])
+                        # the trigger is in proximity of the slot (slt) as the 
+                        # trigger expects (self.subSlot[2])
                         
                         if slt in da.slots:
-                            # transformation will introduce errors because this slot 
-                            # is correct (it is in the reference slots) 
-                            ret -= 1
+                            # transformation will introduce errors because this 
+                            # slot is correct (it is in the reference slots) 
+                            ret -= 1 # I break only one third
                             continue
                             
                         s = deepcopy(slt)
                         self.subSlot[1].transform(s)
                         if s in da.slots:
-                            # the tbed slot was transformed so that it is the same as 
-                            # one of reference slots (da.slots)
-                            ret += 1
+                            # the tbed slot was transformed so that it is the 
+                            # same as one of reference slots (da.slots)
+                            ret += 1 # I fix only one third
                         else:
                             # I should not penalize for slots I could not fix, I 
-                            # alreaddy penalized for those which are actualy correct but 
-                            # the mutch subSlot[0]
+                            # alreaddy penalized for those which are actualy 
+                            # correct but they match subSlot[0]
                             ret -= 0
             return ret
                 
