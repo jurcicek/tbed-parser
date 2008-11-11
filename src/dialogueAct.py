@@ -130,7 +130,7 @@ class DialogueAct:
 
                 print sn, sv
                 # find slot which match
-                for slt in self.slots:
+                for slt in self.slots:      
                     if slt.name.endswith(sn) and slt.value == '"'+sv+'"':
                         # I found matching slot, now I have to find slot value in 
                         # the sentence
