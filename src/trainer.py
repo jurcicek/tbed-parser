@@ -162,7 +162,8 @@ class Trainer(Decoder):
         self.bestRules = []
         self.iRule = 0
         
-        self.genRulesFromDB()
+        if self.trgCond['DBItems'] == 'genRules':
+            self.genRulesFromDB()
         
         bestRules = self.findBestRules()
         

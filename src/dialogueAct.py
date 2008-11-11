@@ -11,11 +11,13 @@ from transformation import *
 from trigger import *
       
 class DialogueAct:
-    def __init__(self, cuedDA, text, vocabulary):
+    def __init__(self, cuedDA, text, vocabulary, db, settings):
         # train data values
         self.cuedDA = cuedDA
-        self.text = text
+        self.text = ' '.join(text.split())
         self.vocabulary = vocabulary
+        self.db = db
+        self.settings = settings
 
         self.speechAct = self.vocabulary['']
         self.tbedSpeechAct = self.vocabulary['inform']
@@ -23,7 +25,8 @@ class DialogueAct:
         self.slots = []
         self.tbedSlots = []
         
-        return
+        self.valueDictCounter = defaultdict(int)
+        self.valueDict = defaultdict(str)
 
     def __str__(self):
         s = self.text+' - '
@@ -66,9 +69,6 @@ class DialogueAct:
 ##            print each.renderCUED(), each.leftBorder, each.leftMiddle, each.rightMiddle, each.rightBorder
             
     def parseDA(self, cuedDA, text):
-        words = split(text)
-        words = [self.vocabulary[w] for w in words]
-        
         numOfDAs = len(splitByComma(cuedDA))
         if numOfDAs > 1:
             raise ValueError('Too many DAs in input text.')
@@ -93,43 +93,82 @@ class DialogueAct:
                 slots[i] = Slot(slots[i])
                 slots[i].parse()
                 
-        return words, speechAct, slots
+        return speechAct, slots
 
     def parse(self):
-        self.words, self.speechAct, self.slots = self.parseDA(self.cuedDA, self.text)
-       
-        return
+        self.speechAct, self.slots = self.parseDA(self.cuedDA, self.text)
     
     def parseTbed(self, cuedDA, text):
         if text != self.text:
             raise ValueError('Loaded tbed text must equal to the training text.')
             
-        self.words, self.tbedSpeechAct, self.tbedSlots = self.parseDA(cuedDA, text)
-        return
+        self.tbedSpeechAct, self.tbedSlots = self.parseDA(cuedDA, text)
+    
+    def replaceSV(self, text, sn, sv, i):
+        return text[0:i]+sn+text[i+len(sv):]
         
-    def genGrams(self, trgCond):
+    def replaceDBItems(self):
+        if self.settings == None:
+            return
+            
+        if self.settings['DBItems'] != 'replace':
+            return
+        
+        print self.text, [str(x) for x in self.slots]
+        
+        for (sn, sv, svs, c) in self.db.values:
+            i = self.text.find(svs)
+            if i != -1:
+                # I found the slot value synonym from database in the sentence, 
+                # I must replace it
+                newSV = 'sv_'+sn
+                self.valueDictCounter[newSV] += 1
+                newSV = newSV+'-'+str(self.valueDictCounter[newSV])
+                self.valueDict[newSV] = sv
+                
+                self.text = self.replaceSV(self.text, newSV, svs, i)
+
+                print sn, sv
+                # find slot which match
+                for slt in self.slots:
+                    if slt.name.endswith(sn) and slt.value == '"'+sv+'"':
+                        # I found matching slot, now I have to find slot value in 
+                        # the sentence
+                        slt.origValue = slt.value
+                        slt.value = '"'+newSV+'"'
+                        break                
+                
+        self.words = split(self.text)
+        self.words = [self.vocabulary[w] for w in self.words]
+
+        print self.text, [str(x) for x in self.slots]
+        
+    def genGrams(self):
+        if self.settings == None:
+            return
+            
         self.grams = defaultdict(set)
         # generate unigrams, bigrams, and trigrams from text
         for i in range(len(self.words)):
             self.grams[(self.words[i],)].add((i,i+1))
         
-        if trgCond['nGrams'] >=2:
+        if self.settings['nGrams'] >=2:
             for i in range(1, len(self.words)):
                 self.grams[(self.words[i-1],self.words[i])].add((i-1, i+1))
-        if trgCond['nGrams'] >=3:
+        if self.settings['nGrams'] >=3:
             for i in range(2, len(self.words)):
                 self.grams[(self.words[i-2],self.words[i-1],self.words[i])].add((i-2,i+1))
-        if trgCond['nGrams'] >=4:
+        if self.settings['nGrams'] >=4:
             for i in range(3, len(self.words)):
                 self.grams[(self.words[i-3],self.words[i-2],self.words[i-1],self.words[i])].add((i-3,i+1))
 
-        if trgCond['nStarGrams'] >=3:
+        if self.settings['nStarGrams'] >=3:
             for i in range(2, len(self.words)):
                 self.grams[(self.words[i-2],'*1',self.words[i])].add((i-2, i+1))
-        if trgCond['nStarGrams'] >=4:
+        if self.settings['nStarGrams'] >=4:
             for i in range(3, len(self.words)):
                 self.grams[(self.words[i-3],'*2',self.words[i])].add((i-3, i+1))
-        if trgCond['nStarGrams'] >=5:
+        if self.settings['nStarGrams'] >=5:
             for i in range(4, len(self.words)):
                 self.grams[(self.words[i-4],'*3',self.words[i])].add((i-4, i+1))
         
@@ -259,12 +298,12 @@ class DialogueAct:
         
         return trans
         
-    def genTriggers(self, trgCond):
+    def genTriggers(self):
         # collect all posible triggers for all dimmensions 
         #   (speechAct, grams, slots)
         
         saCond = [None,]
-        if trgCond['speechAct'] >=1:
+        if self.settings['speechAct'] >=1:
             saCond.append(self.tbedSpeechAct)
         
         gramsCond = [None,]
@@ -272,11 +311,11 @@ class DialogueAct:
             gramsCond.append(gram1)
             
         slotsCond = [None,]
-        if trgCond['nSlots'] >= 1:
+        if self.settings['nSlots'] >= 1:
             for slot in self.tbedSlots:
                 slotsCond.append([deepcopy(slot),])
                 
-            if trgCond['nSlots'] >= 2:
+            if self.settings['nSlots'] >= 2:
                 ts = list(self.tbedSlots)
                 for i in range(len(ts)):
                     for j in range(i+1, len(ts)):
@@ -284,12 +323,12 @@ class DialogueAct:
 
         # sentece length rigger
         lengthCond = [None,]
-        if trgCond['lngth'] >= 1:
+        if self.settings['lngth'] >= 1:
             lengthCond.append(len(self.words))
         
         # sentece length rigger, None mean I do not care
         hasSlotsCond = [None,]
-        if trgCond['hasSlots'] >= 1:
+        if self.settings['hasSlots'] >= 1:
             if len(self.tbedSlots) == 0:
                 hasSlotsCond.append(1) # False
             else:

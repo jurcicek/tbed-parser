@@ -39,10 +39,10 @@ class Decoder:
             if len(sentence) == 0 or len(da) == 0:
                 continue
     
-            da = DialogueAct(da, sentence, self.vocabulary)
+            da = DialogueAct(da, sentence, self.vocabulary, self.db, self.trgCond)
             da.parse()
-            if self.trgCond:
-                da.genGrams(self.trgCond)
+            da.replaceDBItems()
+            da.genGrams()
     
             self.das.append(da)
                 

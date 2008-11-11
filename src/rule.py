@@ -94,7 +94,7 @@ class Rule:
 def getRules(da, trgCond):
     # explode trans & triggers
     rules = []
-    triggers = da.genTriggers(trgCond)
+    triggers = da.genTriggers()
     
     for tran in da.genTrans():
         for trigger in triggers:
