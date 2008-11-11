@@ -43,8 +43,6 @@ class SlotDatabase:
         
         self.values.sort(cmp=lambda x,y: cmp(x[3], y[3]),
 reverse=True)
-
-        return
     
     def isNameInDB(self, name):
         """Add better matching for slot names."""

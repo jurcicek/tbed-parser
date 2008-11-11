@@ -22,7 +22,7 @@ class Slot:
         self.rightBorder = None
 
     def __str__(self):
-        return self.renderCUED()
+        return self.renderCUED(False, None)
 
     def __eq__(self, other):
         if not isinstance(other, Slot):
@@ -103,10 +103,9 @@ class Slot:
         self.value = self.cuedSlot[i:]
         self.value = self.value.replace('!', '')
         self.value = self.value.replace('=', '')
-        self.value = '"'+self.value.replace('"', '')+'"'
-        self.value = self.value.replace('""', '')
+        self.value = self.value.replace('"', '')
         
-    def renderCUED(self):
+    def renderCUED(self, origSV, valueDict):
         if self.name != None:
             name = self.name
         else:
@@ -116,9 +115,15 @@ class Slot:
             equal = self.equal
         else:
             equal = '*='
-            
+        
         if self.value != None:
-            value = self.value
+            if origSV and self.value in valueDict:
+                value = valueDict[self.value][0]
+            else:
+                value = self.value
+                
+            if value:
+                value = '"'+value+'"'
         else:
             value = '*'
             

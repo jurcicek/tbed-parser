@@ -7,6 +7,7 @@ export TBEDP_TEST_DATA_SEM=../../data/towninfo-test.sem
 export TBEDP_TEST_DATA_ASR=../../data/towninfo-test.asr
 export TBEDP_DEV_DATA_SEM=../../data/towninfo-dev.sem
 export TBEDP_DEV_DATA_ASR=../../data/towninfo-dev.asr
+export TBEDP_DB=../../data/towninfo_db
 export TBEDP_OUT_PICKLE=rules.pckl-bestrules
 export TBEDP_OUT_DECODER_PICKLE=rules.pckl-decoder
 export TBEDP_OUT_SEM_HYP=rules.sem.hyp

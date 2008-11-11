@@ -26,7 +26,7 @@ class DialogueAct:
         self.tbedSlots = []
         
         self.valueDictCounter = defaultdict(int)
-        self.valueDict = defaultdict(str)
+        self.valueDict = {}
 
     def __str__(self):
         s = self.text+' - '
@@ -108,13 +108,22 @@ class DialogueAct:
         return text[0:i]+sn+text[i+len(sv):]
         
     def replaceDBItems(self):
+        """
+        This method replace all lexical ralizations of database items
+        by some tags in form 'sv_slotname-N', where N is counter of occurence in 
+        the sentence. There is a problem if some slot value occures in different 
+        slots (names). Than only one association is made in greedy manner. 
+        
+        There is also another issue with db items. Some words are replaced 
+        although they are not db items. For example a word 'one' is replaced by 
+        'sv-stars-1' in sentence 'I would like this one', which is apparently 
+        wrong.
+        """
         if self.settings == None:
             return
             
         if self.settings['DBItems'] != 'replace':
             return
-        
-        print self.text, [str(x) for x in self.slots]
         
         for (sn, sv, svs, c) in self.db.values:
             i = self.text.find(svs)
@@ -126,8 +135,8 @@ class DialogueAct:
                 continue
                     
             if i != -1:
-                # I found the slot value synonym from database in the sentence, 
-                # I must replace it
+                # I found the slot value synonym from database in the 
+                # sentence, I must replace it
                 newSV = 'sv_'+sn
                 self.valueDictCounter[newSV] += 1
                 newSV = newSV+'-'+str(self.valueDictCounter[newSV])
@@ -135,21 +144,18 @@ class DialogueAct:
                 
                 self.text = self.replaceSV(self.text, newSV, svs, i)
 
-                print '###', newSV, sn, sv
                 # find slot which match
                 for slt in self.slots:      
-                    if slt.name.endswith(sn) and slt.value == '"'+sv+'"':
-                        # I found matching slot, now I have to find slot value in 
-                        # the sentence
+                    if slt.name.endswith(sn) and slt.value == sv:
+                        # I found matching slot, now I have to find slot 
+                        # value in the sentence
                         slt.origValue = slt.value
-                        slt.value = '"'+newSV+'"'
+                        slt.value = newSV
                         break                
                 
         self.words = split(self.text)
         self.words = [self.vocabulary[w] for w in self.words]
 
-        print self.text, [str(x) for x in self.slots]
-        
     def genGrams(self):
         if self.settings == None:
             return
@@ -179,28 +185,18 @@ class DialogueAct:
             for i in range(4, len(self.words)):
                 self.grams[(self.words[i-4],'*3',self.words[i])].add((i-4, i+1))
         
-    def render(self, speechAct, slots):
+    def render(self, speechAct, slots, origSV):
         DA = self.vocabulary.getKey(speechAct)
-        rendered_slots = ""
-        
-        if len(slots) > 0:
-            rendered_slots = ""
-
-            for each_slot in slots:
-                rendered_slots += each_slot.renderCUED() + ','
-
-            # remove the last comma
-            rendered_slots = re.sub(r',$', '', rendered_slots)
-
+        rendered_slots = ','.join([each_slot.renderCUED(origSV,self.valueDict) for each_slot in slots])
         DA += '('+rendered_slots+')'
 
         return DA
 
-    def renderCUED(self):
-        return self.render(self.speechAct, self.slots)
+    def renderCUED(self, origSV=False):
+        return self.render(self.speechAct, self.slots, origSV)
         
-    def renderTBED(self):
-        return self.render(self.tbedSpeechAct, self.tbedSlots)
+    def renderTBED(self, origSV = True):
+        return self.render(self.tbedSpeechAct, self.tbedSlots, origSV)
 
     def renderText(self):
         ws=[]

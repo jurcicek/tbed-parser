@@ -19,7 +19,7 @@ Description:
 
 Options: 
     -h                : print this help message and exit
-    -v                : produce verbose output
+    -v           ########     : produce verbose output
     -i                : initialize decoding with 'testData'.ini file
     --testData=FILE   : tes data - CUED format dialogue acts {%s}
     --inPickle=FILE   : input decoder file from trainer with rules and 
