@@ -27,10 +27,13 @@ Options:
                         suitable for Python pograms {%s}
     --inDict=FILE     : input speed up dict {%s}
     --outSem=FILE     : decoded CUED format dialogue acts {%s}
+    --db=DIR          : directory with TAB files which contains database items 
+                        for slot names and values{%s}
     """ % (testData, 
            inPickle,
            inDict,
-           outSem))
+           outSem,
+           db))
            
 ##############################################################################
 
@@ -39,7 +42,8 @@ try:
         ["testData=",
          "inPickle=",
          'inDict=',
-         "outSem="])
+         "outSem=",
+         "db="])
          
 except getopt.GetoptError, exc:
     print("ERROR: " + exc.msg)
@@ -65,6 +69,8 @@ for o, a in opts:
         inDict = a
     elif o == "--outSem":
         outSem = a
+    elif o == "--db":
+        db = a
 
 if verbose:
     print "---------------------------------------------"
@@ -75,6 +81,7 @@ print inPickle
 dcd = Decoder.readDecoderPickle(inPickle)
 print dcd.trgCond
 
+dcd.loadDB(db)
 dcd.loadData(testData)
 if iniTest:
     dcd.loadTbedData(testData+'.ini')

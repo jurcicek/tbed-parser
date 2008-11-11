@@ -68,7 +68,7 @@ Options:
            outDecoderPickle,
            trgCond,
            outVocabulary,
-           dir))
+           db))
            
 ##############################################################################
 

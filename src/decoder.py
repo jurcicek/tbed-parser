@@ -75,7 +75,7 @@ class Decoder:
         f = file(fn, 'w')
         
         for da in self.das:
-            f.write('%s <=> %s\n' % (da.text, da.renderTBED()))
+            f.write('%s <=> %s\n' % (da.renderText(), da.renderTBED()))
         
         f.close()
 

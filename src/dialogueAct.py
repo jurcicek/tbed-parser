@@ -118,17 +118,24 @@ class DialogueAct:
         
         for (sn, sv, svs, c) in self.db.values:
             i = self.text.find(svs)
+            # test wheether there are sspaces around the word, that it is not a 
+            # substring of another word
+            if i > 0 and self.text[i-1] != ' ':
+                continue
+            if i < len(self.text)-len(svs) and self.text[i+len(svs)] != ' ':
+                continue
+                    
             if i != -1:
                 # I found the slot value synonym from database in the sentence, 
                 # I must replace it
                 newSV = 'sv_'+sn
                 self.valueDictCounter[newSV] += 1
                 newSV = newSV+'-'+str(self.valueDictCounter[newSV])
-                self.valueDict[newSV] = sv
+                self.valueDict[newSV] = (sv, svs)
                 
                 self.text = self.replaceSV(self.text, newSV, svs, i)
 
-                print sn, sv
+                print '###', newSV, sn, sv
                 # find slot which match
                 for slt in self.slots:      
                     if slt.name.endswith(sn) and slt.value == '"'+sv+'"':
@@ -194,6 +201,15 @@ class DialogueAct:
         
     def renderTBED(self):
         return self.render(self.tbedSpeechAct, self.tbedSlots)
+
+    def renderText(self):
+        ws=[]
+        for ew in self.words:
+            if ew in self.valueDict:
+                ws.append(self.valueDict[ew][1])
+            else:
+                ws.append(ew)
+        return ' '.join(ws)
         
     def getNumOfSlots(self):
         return len(self.slots)
