@@ -31,13 +31,14 @@ for o, a in opts:
     elif o == "--dataDir":
         dataDir = a
 
-def decode(data, inPickle, nRules = 0, iniTest = False):
+def decode(data, db, inPickle, nRules = 0, iniTest = False):
     outSem = 'graph.sem'
     
     dcd = Decoder.readDecoderPickle(inPickle)
     print dcd.trgCond
 
     try:
+        dcd.loadDB(db)
         dcd.loadData(data)
         if iniTest:
             dcd.loadTbedData(data+'.ini')
@@ -53,12 +54,13 @@ def decode(data, inPickle, nRules = 0, iniTest = False):
     return len(dcd.bestRules), o[0], o[3]
 
     
-def decodeSet(data, iniTest = False):
+def decodeSet(data, db, iniTest = False):
     data = os.path.join(dataDir, data)
+    db = os.path.join(dataDir, db)
     inPickle = os.path.join(resultsDir, 'rules.pckl-decoder')
     
-    i = 180
-    iMax = 200
+    i = 20
+    iMax = 100
 
     nRules = []
     acc = []
@@ -66,14 +68,14 @@ def decodeSet(data, iniTest = False):
     
     print data
     while i<iMax:
-        iMax, a, f = decode(data, inPickle, i, iniTest)
-	try:
+        iMax, a, f = decode(data, db, inPickle, i, iniTest)
+        try:
             acc.append(float(a))
             fm.append(float(f))
-	except ValueError:
-	    acc.append(0.0)
-	    fm.append(0.0)
-	    
+        except ValueError:
+            acc.append(0.0)
+            fm.append(0.0)
+    
         nRules.append(i)
         print i, iMax, a, f
         
@@ -86,7 +88,6 @@ def decodeSet(data, iniTest = False):
             i = iMax-1
             
     return acc, fm, nRules
-    
 
 def findMax(data):
     max = 0
@@ -111,9 +112,9 @@ for s in f.readlines():
 f.close()
 
 outGraph = os.path.join(resultsDir,'rules.performance.clean.eps')
-trainCleanAcc, trainCleanF, nRules1 = decodeSet('towninfo-train.sem', iniTest)
-devCleanAcc, devCleanF, nRules2 = decodeSet('towninfo-dev.sem', iniTest)
-testCleanAcc, testCleanF, nRules3 = decodeSet('towninfo-test.sem', iniTest)
+trainCleanAcc, trainCleanF, nRules1 = decodeSet('towninfo-train.sem', 'towninfo_db', iniTest)
+devCleanAcc, devCleanF, nRules2 = decodeSet('towninfo-dev.sem', 'towninfo_db', iniTest)
+testCleanAcc, testCleanF, nRules3 = decodeSet('towninfo-test.sem', 'towninfo_db',iniTest)
 
 fig = figure(figsize=(11.7, 8.3))
 
