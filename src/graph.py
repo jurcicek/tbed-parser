@@ -162,9 +162,9 @@ print commands.getoutput("rm -f %s" % (outGraph))
 
 
 outGraph = os.path.join(resultsDir,'rules.performance.asr.eps')
-trainCleanAcc, trainCleanF, nRules1 = decodeSet('towninfo-train.asr', iniTest)
-devCleanAcc, devCleanF, nRules2 = decodeSet('towninfo-dev.asr', iniTest)
-testCleanAcc, testCleanF, nRules3 = decodeSet('towninfo-test.asr', iniTest)
+trainCleanAcc, trainCleanF, nRules1 = decodeSet('towninfo-train.asr', 'towninfo_db', iniTest)
+devCleanAcc, devCleanF, nRules2 = decodeSet('towninfo-dev.asr', 'towninfo_db', iniTest)
+testCleanAcc, testCleanF, nRules3 = decodeSet('towninfo-test.asr', 'towninfo_db', iniTest)
 
 fig = figure(figsize=(11.7, 8.3))
 title('ASR test data')

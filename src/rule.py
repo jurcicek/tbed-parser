@@ -102,6 +102,12 @@ def getRules(da, trgCond):
                 # I do not want to add slot which was not 
                 # triggered by some lexical item 
                 continue
+            if tran.addSlot != None and tran.addSlot.value.startswith('sv_'):
+                if tran.addSlot.value not in trigger.gram:
+                    # I do not want to add slot item with generalized (based not database)
+                    # slot value if it was not triggered by found slot value in the input
+                    # word sequence
+                    continue
 
             r = Rule(trigger, tran)
             rules.append(r)

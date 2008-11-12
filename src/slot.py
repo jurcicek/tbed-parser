@@ -105,6 +105,9 @@ class Slot:
         self.value = self.value.replace('=', '')
         self.value = self.value.replace('"', '')
         
+        if self.value == 'value':
+            raise ValueError('FIX: Francois has in the training data slot items with values "value". These slots should be ignored!')
+        
     def renderCUED(self, origSV, valueDict):
         if self.name != None:
             name = self.name

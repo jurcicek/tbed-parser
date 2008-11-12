@@ -80,6 +80,7 @@ class DialogueAct:
         slots = slots.replace('(', '')
         slots = slots.replace(')', '')
         
+        slts = []
         if slots == '':
             # no slots to process
             slots = []
@@ -89,11 +90,16 @@ class DialogueAct:
             
             # split slots
             slots = splitByComma(slots)
-            for i in range(len(slots)):
-                slots[i] = Slot(slots[i])
-                slots[i].parse()
-                
-        return speechAct, slots
+            for slt in slots:
+                try:
+                    s = Slot(slt)
+                    s.parse()
+                    slts.append(s)
+                except ValueError:
+                    # check for Francois invalid slot items
+                    pass
+                    
+        return speechAct, slts
 
     def parse(self):
         self.speechAct, self.slots = self.parseDA(self.cuedDA, self.text)

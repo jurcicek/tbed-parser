@@ -13,7 +13,7 @@ from rule import *
 from decoder import *
 
 maxOptRules = 10
-minNetScore = 1
+minNetScore = 2
 
 class Trainer(Decoder):
     def __init__(self, trgCond, tmpData):
@@ -44,7 +44,7 @@ class Trainer(Decoder):
             rs, ts = getRules(self.das[i], self.trgCond)
             
             for r in rs:
-                rules[r] += 1
+                rules[r] += 2
             
             for t in ts:
                 # collect indexes of DAs for which the trigger satisfies the 
