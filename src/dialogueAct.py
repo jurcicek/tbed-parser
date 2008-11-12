@@ -132,32 +132,35 @@ class DialogueAct:
             return
         
         for (sn, sv, svs, c) in self.db.values:
-            i = self.text.find(svs)
-            # test wheether there are sspaces around the word, that it is not a 
-            # substring of another word
-            if i > 0 and self.text[i-1] != ' ':
-                continue
-            if i < len(self.text)-len(svs) and self.text[i+len(svs)] != ' ':
-                continue
+            while True:
+                i = self.text.find(svs)
+                if i != -1:
+                    # test wheather there are spaces around the word. that it is not a 
+                    # substring of another word!
+                    if i > 0 and self.text[i-1] != ' ':
+                        break
+                    if i < len(self.text)-len(svs) and self.text[i+len(svs)] != ' ':
+                        break
+                            
+                    # I found the slot value synonym from database in the 
+                    # sentence, I must replace it
+                    newSV = 'sv_'+sn
+                    self.valueDictCounter[newSV] += 1
+                    newSV = newSV+'-'+str(self.valueDictCounter[newSV])
+                    self.valueDict[newSV] = (sv, svs)
                     
-            if i != -1:
-                # I found the slot value synonym from database in the 
-                # sentence, I must replace it
-                newSV = 'sv_'+sn
-                self.valueDictCounter[newSV] += 1
-                newSV = newSV+'-'+str(self.valueDictCounter[newSV])
-                self.valueDict[newSV] = (sv, svs)
-                
-                self.text = self.replaceSV(self.text, newSV, svs, i)
+                    self.text = self.replaceSV(self.text, newSV, svs, i)
 
-                # find slot which match
-                for slt in self.slots:      
-                    if slt.name.endswith(sn) and slt.value == sv:
-                        # I found matching slot, now I have to find slot 
-                        # value in the sentence
-                        slt.origValue = slt.value
-                        slt.value = newSV
-                        break                
+                    # find slot which match
+                    for slt in self.slots:      
+                        if slt.name.endswith(sn) and slt.value in self.db[sn][sv]:
+                            # I found matching slot, now I have to find slot 
+                            # value in the sentence
+                            slt.origValue = slt.value
+                            slt.value = newSV
+                            break
+                else:
+                    break
                 
         self.words = split(self.text)
         self.words = [self.vocabulary[w] for w in self.words]

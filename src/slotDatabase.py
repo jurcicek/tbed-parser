@@ -39,7 +39,7 @@ class SlotDatabase:
         for sn in self.db:
             for sv in self.db[sn]:
                 for svs in self.db[sn][sv]:
-                    self.values.append((sn, sv, svs, len(svs))) 
+                    self.values.append((sn, sv, svs, svs.count(' '))) 
         
         self.values.sort(cmp=lambda x,y: cmp(x[3], y[3]),
 reverse=True)
