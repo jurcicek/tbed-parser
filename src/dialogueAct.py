@@ -125,13 +125,17 @@ class DialogueAct:
         'sv-stars-1' in sentence 'I would like this one', which is apparently 
         wrong.
         """
+                
         if self.settings == None:
             return
             
         if self.settings['DBItems'] != 'replace':
             return
         
-        for (sn, sv, svs, c) in self.db.values:
+##        f = file('log.txt', 'a')
+##        f.write('#'*80+'\n')
+        
+        for (sn, sv, svs, c, cc) in self.db.values:
             while True:
                 i = self.text.find(svs)
                 if i != -1:
@@ -153,7 +157,10 @@ class DialogueAct:
 
                     # find slot which match
                     for slt in self.slots:      
-                        if slt.name.endswith(sn) and slt.value in self.db[sn][sv]:
+##                        if slt.name.endswith(sn) and slt.value in self.db[sn][sv]:
+                        # I do not is on the same name of the slot I chose a wrong slot
+                        # value label so I will use it in the slot
+                        if slt.value in self.db[sn][sv]:
                             # I found matching slot, now I have to find slot 
                             # value in the sentence
                             slt.origValue = slt.value
@@ -161,7 +168,12 @@ class DialogueAct:
                             break
                 else:
                     break
-                
+        
+##        f.write(self.text+'\n')
+##        f.write(str([str(x) for x in self.slots]))
+##        f.write('\n')
+##        f.close()
+        
         self.words = split(self.text)
         self.words = [self.vocabulary[w] for w in self.words]
 

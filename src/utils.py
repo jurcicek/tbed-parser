@@ -3,6 +3,21 @@
 from string import *
 import re, pickle
 
+def powerset(s):
+    result = set()
+
+    l = len(s)
+    for i in range(2**l):
+        n = i
+        x = []
+        for j in range(l):
+            if n & 1:
+                x.append(s[j])
+            n >>= 1
+        if x:
+            result.add(tuple(x))
+    return result
+
 def splitByComma(text):
     parentheses = 0
     splitList = []
@@ -27,6 +42,35 @@ def splitByComma(text):
 
     return splitList
 
+def splitTAB(text):
+    parentheses = 0
+    splitList = []
+
+    oldI=0
+    swith = True
+    for i in range(len(text)):
+        if swith and text[i] == '"':
+            parentheses +=1
+            swith = False
+        elif not swith and text[i] == '"':
+            parentheses -=1
+            swith = True
+            if parentheses < 0:
+                raise ValueError("Missing a left \".") 
+        elif text[i] in ('\t', ' '):
+            if parentheses == 0:
+                if oldI == i:
+                    print text
+                    print i, '"',text[i],'"'
+                    raise ValueError("Splited segmend do not have to start with a separator.") 
+                else:
+                    splitList.append(text[oldI:i].strip())
+                    oldI = i+1
+    else:
+        splitList.append(text[oldI:].strip())
+
+    return splitList
+    
 class adict(dict):
     def __init__(self, invisible=True):
         dict.__init__(self)
