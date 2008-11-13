@@ -159,6 +159,48 @@ class Decoder:
         decoder.bestRules = dd.bestRules
         decoder.trgCond = dd.trgCond
         
+##        print 'Number of read rules:     ', len(decoder.bestRules)
+##        print 'Number of unique rules:   ', len(set(decoder.bestRules))
+##        
+##        compresedRules = []
+##        
+##        for r in decoder.bestRules:
+##            r = deepcopy(r)
+##            # modify trigger gram
+##            if r.trigger.gram != None:
+##                g = list(r.trigger.gram)
+##                for i, w in enumerate(g):
+##                    if w.startswith('sv_'):
+##                        g[i] = re.sub('-\d+', '', w)
+##                
+##                r.trigger.gram = tuple(g)
+##                
+##            # modify trigger slots
+##            if r.trigger.slots != None:
+##                for i, s in enumerate(r.trigger.slots):
+##                    if s.value.startswith('sv_'):
+##                        r.trigger.slots[i].value = re.sub('-\d+', '', s.value)
+##                
+##            # modify trans
+##            if r.transformation.addSlot != None:
+##                if r.transformation.addSlot.value.startswith('sv_'):
+##                    r.transformation.addSlot.value = re.sub('-\d+', '', r.transformation.addSlot.value)
+##                
+##            if r.transformation.delSlot != None:
+##                if r.transformation.delSlot.value.startswith('sv_'):
+##                    r.transformation.delSlot.value = re.sub('-\d+', '', r.transformation.delSlot.value)
+##                
+##            if r not in compresedRules:
+##                compresedRules.append(r)
+##               
+##        print 'Number of compresed rules:', len(set(compresedRules))
+##        
+##        # print rules
+##        f = file('rules.compresed.txt','w')
+##        for i in range(len(compresedRules)):
+##            f.write(compresedRules[i].write(i))
+##        f.close
+        
         return decoder
         
     def writeBestRulesPickle(self, fn):

@@ -153,7 +153,7 @@ class DialogueAct:
                     # sentence, I must replace it
                     newSV = 'sv_'+sn
                     self.valueDictCounter[newSV] += 1
-                    newSV = newSV+'-'+str(self.valueDictCounter[newSV])
+##                    newSV = newSV+'-'+str(self.valueDictCounter[newSV])
                     self.valueDict[newSV] = (sv, svs)
                     
                     self.text = self.replaceSV(self.text, newSV, svs, i)
@@ -205,7 +205,7 @@ class DialogueAct:
                     # sentence, I must replace it
                     newSV = 'sv_'+sn
                     self.tbedValueDictCounter[newSV] += 1
-                    newSV = newSV+'-'+str(self.tbedValueDictCounter[newSV])
+##                    newSV = newSV+'-'+str(self.tbedValueDictCounter[newSV])
                     self.tbedValueDict[newSV] = (sv, svs)
                     
                     self.tbedText = self.replaceSV(self.tbedText, newSV, svs, i)
