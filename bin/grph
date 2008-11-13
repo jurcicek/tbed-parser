@@ -1,8 +1,36 @@
 #!/bin/sh
 #$ -S /bin/bash
 
+export TBEDP_TRAIN_DATA_SEM=../../data/towninfo-train.sem
+export TBEDP_TRAIN_DATA_ASR=../../data/towninfo-train.asr
+export TBEDP_TEST_DATA_SEM=../../data/towninfo-test.sem
+export TBEDP_TEST_DATA_ASR=../../data/towninfo-test.asr
+export TBEDP_DEV_DATA_SEM=../../data/towninfo-dev.sem
+export TBEDP_DEV_DATA_ASR=../../data/towninfo-dev.asr
+export TBEDP_DB=../../data/towninfo_db
+export TBEDP_OUT_PICKLE=rules.pckl-bestrules
+export TBEDP_OUT_DECODER_PICKLE=rules.pckl-decoder
+export TBEDP_OUT_SEM_HYP=rules.sem.hyp
+export TBEDP_OUT_ASR_HYP=rules.asr.hyp
+export TBEDP_OUT_DEV_SEM_HYP=rules.dev.sem.hyp
+export TBEDP_OUT_DEV_ASR_HYP=rules.dev.asr.hyp
+export TBEDP_OUT_TRN_SEM_HYP=rules.trn.sem.hyp
+export TBEDP_OUT_TRN_ASR_HYP=rules.trn.asr.hyp
+export TBEDP_OUT_DICT=rules.pckl-vocabulary
+
 ../../src/graph.py $1 \
   --resultsDir='' \
-  --dataDir='../../data'
+  --dbDir=$TBEDP_DB \
+  --trainData=$TBEDP_TRAIN_DATA_SEM \
+  --testData=$TBEDP_TEST_DATA_SEM \
+  --devData=$TBEDP_DEV_DATA_SEM \
+  --output='rules.performance.clean'
   
+../../src/graph.py $1 \
+  --resultsDir='' \
+  --dbDir=$TBEDP_DB \
+  --trainData=$TBEDP_TRAIN_DATA_ASR \
+  --testData=$TBEDP_TEST_DATA_ASR \
+  --devData=$TBEDP_DEV_DATA_ASR \
+  --output='rules.performance.asr'
 

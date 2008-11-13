@@ -4,6 +4,7 @@ from math import *
 from copy import *
 
 slotScoreNorm = 1.0 
+subScoreNorm = 2.0
 
 class Transformation:
     # I implement only one modification at one time
@@ -166,7 +167,7 @@ class Transformation:
                             # alreaddy penalized for those which are actualy 
                             # correct but they match subSlot[0]
                             ret -= 0
-            return ret*2
+            return ret*subScoreNorm
                 
         return 0
         

@@ -30,7 +30,9 @@ Options:
 try:
     opts, args = getopt.gnu_getopt(sys.argv[1:], "hv", 
         ["refData=",
-         "hypData="])
+         "hypData=",
+         'db=',
+         'settings='])
          
 except getopt.GetoptError, exc:
     print("ERROR: " + exc.msg)
@@ -50,9 +52,15 @@ for o, a in opts:
         refData = a
     elif o == "--hypData":
         hypData = a
+    elif o == "--db":
+        db = a
+    elif o == "--settings":
+        print a
+        settings = eval(a)
 
-dcd = Decoder()
+dcd = Decoder(settings)
 
+dcd.loadDB(db)
 dcd.loadData(refData)
 dcd.loadTbedData(hypData)
 

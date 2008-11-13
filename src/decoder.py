@@ -63,6 +63,7 @@ class Decoder:
                 continue
     
             self.das[i].parseTbed(da, sentence)
+            self.das[i].replaceDBItemsTbed()
         
     def decode(self, nRules=-1):
         dcdRules = self.bestRules[:nRules]
@@ -225,9 +226,14 @@ class Decoder:
             print 'Confusions for:', k, 'Occurence:' , len(v)
             print '='*80
             for each in v:
-                print 'Text:         ', each.text
-                print 'HYP Semantics:', each.renderTBED()
-                print 'REF Semantics:', each.renderCUED()
+                print 'Text:         ', each.renderText()
+                print 'DB Text:      ', each.text
+                for k, v in sorted(each.valueDict.items()):
+                    print 'Subst value:  ', k , '=>', v 
+                print 'HYP Semantics:', each.renderTBED(False)
+                print 'HYP Semantics:', each.renderTBED(True)
+                print 'REF Semantics:', each.renderCUED(False)
+                print 'REF Semantics:', each.renderCUED(True)
                 print '-'*80
             
         print '*'*80
@@ -238,9 +244,14 @@ class Decoder:
             print 'Missing slot item:', k, 'Occurence:' , len(v)
             print '='*80
             for each in v:
-                print 'Text:         ', each.text
-                print 'HYP Semantics:', each.renderTBED()
-                print 'REF Semantics:', each.renderCUED()
+                print 'Text:         ', each.renderText()
+                print 'DB Text:      ', each.text
+                for k, v in sorted(each.valueDict.items()):
+                    print 'Subst value:  ', k , '=>', v 
+                print 'HYP Semantics:', each.renderTBED(False)
+                print 'HYP Semantics:', each.renderTBED(True)
+                print 'REF Semantics:', each.renderCUED(False)
+                print 'REF Semantics:', each.renderCUED(True)
                 print '-'*80
 
         print '*'*80
@@ -251,9 +262,14 @@ class Decoder:
             print 'Extra slot item:', k, 'Occurence:' , len(v)
             print '='*80
             for each in v:
-                print 'Text:         ', each.text
-                print 'HYP Semantics:', each.renderTBED()
-                print 'REF Semantics:', each.renderCUED()
+                print 'Text:         ', each.renderText()
+                print 'DB Text:      ', each.text
+                for k, v in sorted(each.valueDict.items()):
+                    print 'Subst value:  ', k , '=>', v 
+                print 'HYP Semantics:', each.renderTBED(False)
+                print 'HYP Semantics:', each.renderTBED(True)
+                print 'REF Semantics:', each.renderCUED(False)
+                print 'REF Semantics:', each.renderCUED(True)
                 print '-'*80
 
         print 'Global statistics'

@@ -43,8 +43,15 @@ class Trainer(Decoder):
         for i in xrange(len(self.das)):
             rs, ts = getRules(self.das[i], self.trgCond)
             
+            # the rules can fix more than one error in one sentence but I still
+            # use this simple measuere to sort them
             for r in rs:
-                rules[r] += 2
+                if r.transformation.subSlot != None:
+                    # substitution is prefered because it fix two error at once one 
+                    # deletion and one substitution
+                    rules[r] += 2
+                else:
+                    rules[r] += 1
             
             for t in ts:
                 # collect indexes of DAs for which the trigger satisfies the 

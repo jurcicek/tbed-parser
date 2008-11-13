@@ -13,6 +13,7 @@ export TBEDP_TEST_DATA_SEM=../../data/towninfo-test.sem
 export TBEDP_TEST_DATA_ASR=../../data/towninfo-test.asr
 export TBEDP_DEV_DATA_SEM=../../data/towninfo-dev.sem
 export TBEDP_DEV_DATA_ASR=../../data/towninfo-dev.asr
+export TBEDP_DB=../../data/towninfo_db
 export TBEDP_OUT_PICKLE=rules.pckl-bestrules
 export TBEDP_OUT_DECODER_PICKLE=rules.pckl-decoder
 export TBEDP_OUT_SEM_HYP=rules.sem.hyp
@@ -22,12 +23,12 @@ export TBEDP_OUT_DEV_ASR_HYP=rules.dev.asr.hyp
 export TBEDP_OUT_TRN_SEM_HYP=rules.trn.sem.hyp
 export TBEDP_OUT_TRN_ASR_HYP=rules.trn.asr.hyp
 export TBEDP_OUT_DICT=rules.pckl-vocabulary
+export TBEDP_TRG_COND="{'nGrams':2, 'nStarGrams':3, 'tplGrams':1, 'speechAct':1, 'nSlots':1, 'lngth':0, 'hasSlots':0, 'DBItems':'replace'}"
 
 # only dev data - both asr and clean
-../../src/analyzeHyp.py --hypData=$TBEDP_OUT_DEV_SEM_HYP --refData=$TBEDP_DEV_DATA_SEM > $TBEDP_OUT_DEV_SEM_HYP.anlz
-../../src/analyzeHyp.py --hypData=$TBEDP_OUT_DEV_ASR_HYP --refData=$TBEDP_DEV_DATA_ASR > $TBEDP_OUT_DEV_ASR_HYP.anlz
+../../src/analyzeHyp.py --settings="$TBEDP_TRG_COND" --db=$TBEDP_DB --hypData=$TBEDP_OUT_DEV_SEM_HYP --refData=$TBEDP_DEV_DATA_SEM > $TBEDP_OUT_DEV_SEM_HYP.anlz
+../../src/analyzeHyp.py --settings="$TBEDP_TRG_COND" --db=$TBEDP_DB --hypData=$TBEDP_OUT_DEV_ASR_HYP --refData=$TBEDP_DEV_DATA_ASR > $TBEDP_OUT_DEV_ASR_HYP.anlz
 
 # only train data
-../../src/analyzeHyp.py --hypData=$TBEDP_OUT_TRN_SEM_HYP --refData=$TBEDP_TRAIN_DATA_SEM > $TBEDP_OUT_TRN_SEM_HYP.anlz
-../../src/analyzeHyp.py --hypData=$TBEDP_OUT_TRN_ASR_HYP --refData=$TBEDP_TRAIN_DATA_ASR > $TBEDP_OUT_TRN_ASR_HYP.anlz
-
+../../src/analyzeHyp.py --settings="$TBEDP_TRG_COND" --db=$TBEDP_DB --hypData=$TBEDP_OUT_TRN_SEM_HYP --refData=$TBEDP_TRAIN_DATA_SEM > $TBEDP_OUT_TRN_SEM_HYP.anlz
+../../src/analyzeHyp.py --settings="$TBEDP_TRG_COND" --db=$TBEDP_DB --hypData=$TBEDP_OUT_TRN_ASR_HYP --refData=$TBEDP_TRAIN_DATA_ASR > $TBEDP_OUT_TRN_ASR_HYP.anlz

@@ -78,10 +78,21 @@ time ./src/tbedp-trainer.py -v $TBEDP_OPTS \
 ./src/analyzeHyp.py --hypData=$TBEDP_OUT_DEV_ASR_HYP --refData=$TBEDP_DEV_DATA_ASR > $TBEDP_OUT_DEV_ASR_HYP.anlz
 ./src/analyzeHyp.py --hypData=$TBEDP_OUT_TRN_HYP --refData=$TBEDP_TRAIN_DATA > $TBEDP_OUT_TRN_HYP.anlz
 
-OLD_PWD=`pwd`
-cd $TBEDP_RESULTS_DIR
-grph $TBEDP_OPTS 
-cd $OLD_PWD
+../../src/graph.py $TBEDP_OPTS \
+  --resultsDir='' \
+  --dbDir=$TBEDP_DB \
+  --trainData=$TBEDP_TRAIN_DATA_SEM \
+  --testData=$TBEDP_TEST_DATA_SEM \
+  --devData=$TBEDP_DEV_DATA_SEM \
+  --output='rules.performance.clean'
+  
+../../src/graph.py $TBEDP_OPTS \
+  --resultsDir='' \
+  --dbDir=$TBEDP_DB \
+  --trainData=$TBEDP_TRAIN_DATA_ASR \
+  --testData=$TBEDP_TEST_DATA_ASR \
+  --devData=$TBEDP_DEV_DATA_ASR \
+  --output='rules.performance.asr'
 
 date
 
