@@ -200,6 +200,21 @@ class Decoder:
 ##        for i in range(len(compresedRules)):
 ##            f.write(compresedRules[i].write(i))
 ##        f.close
+
+        # print rules
+        f = file('rules.filtered.txt','w')
+        a = [x for x in decoder.bestRules if x.transformation.addSlot != None]
+        d = [x for x in decoder.bestRules if x.transformation.delSlot != None]
+        s = [x for x in decoder.bestRules if x.transformation.subSlot != None]
+        
+        for i in range(len(a)):
+            f.write(a[i].write(i))
+        for i in range(len(d)):
+            f.write(d[i].write(i))
+        for i in range(len(s)):
+            f.write(s[i].write(i))
+            
+        f.close
         
         return decoder
         

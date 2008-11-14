@@ -135,8 +135,9 @@ class DialogueAct:
         if self.settings['DBItems'] != 'replace':
             return
         
-##        f = file('log.txt', 'a')
-##        f.write('#'*80+'\n')
+        f = file('dbItemsReplacement.txt', 'a')
+        f.write('#'*80+'\n')
+        f.write('Text:         '+ self.text+'\n')
         
         for (sn, sv, svs, c, cc) in self.db.values:
             while True:
@@ -153,7 +154,7 @@ class DialogueAct:
                     # sentence, I must replace it
                     newSV = 'sv_'+sn
                     self.valueDictCounter[newSV] += 1
-##                    newSV = newSV+'-'+str(self.valueDictCounter[newSV])
+                    newSV = newSV+'-'+str(self.valueDictCounter[newSV])
                     self.valueDict[newSV] = (sv, svs)
                     
                     self.text = self.replaceSV(self.text, newSV, svs, i)
@@ -172,10 +173,12 @@ class DialogueAct:
                 else:
                     break
         
-##        f.write(self.text+'\n')
-##        f.write(str([str(x) for x in self.slots]))
-##        f.write('\n')
-##        f.close()
+        for k, v in sorted(self.valueDict.items()):
+            f.write('Subst value:  %s => %s\n' % (k , v))
+        f.write('DB Text:      '+ self.text+'\n')
+        f.write('Slots:        '+ str([str(x) for x in self.slots]))
+        f.write('\n')
+        f.close()
         
         self.words = split(self.text)
         self.words = [self.vocabulary[w] for w in self.words]
@@ -205,7 +208,7 @@ class DialogueAct:
                     # sentence, I must replace it
                     newSV = 'sv_'+sn
                     self.tbedValueDictCounter[newSV] += 1
-##                    newSV = newSV+'-'+str(self.tbedValueDictCounter[newSV])
+                    newSV = newSV+'-'+str(self.tbedValueDictCounter[newSV])
                     self.tbedValueDict[newSV] = (sv, svs)
                     
                     self.tbedText = self.replaceSV(self.tbedText, newSV, svs, i)
