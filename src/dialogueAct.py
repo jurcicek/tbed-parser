@@ -117,7 +117,7 @@ class DialogueAct:
                 except ValueError:
                     # check for Francois invalid slot items
                     pass
-                    
+
         return speechAct, slts
 
     def parse(self):
@@ -244,9 +244,14 @@ class DialogueAct:
                     break
         
     def genGrams(self):
-        if self.settings == None:
+        if not hasattr(self, 'settings'):
             return
-            
+        
+        if not hasattr(self, 'word'):
+            # I did not run replaceDBItems(); as a result, I have to split text
+            self.words = split(self.text)
+            self.words = [self.vocabulary[w] for w in self.words]
+        
         self.grams = defaultdict(set)
         # generate unigrams, bigrams, and trigrams from text
         for i in range(len(self.words)):
