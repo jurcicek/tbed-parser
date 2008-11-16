@@ -60,17 +60,33 @@ class DialogueAct:
         if len(self.tbedSlots) > 0:
             self.tbedSlots[0].leftBorder = 0
             for i in range(1, len(self.tbedSlots)):
-                    self.tbedSlots[i].leftBorder = self.tbedSlots[i-1].rightMiddle
+                self.tbedSlots[i].leftBorder = self.tbedSlots[i-1].rightMiddle+1
             
             for i in range(0, len(self.tbedSlots)-1):
-                    self.tbedSlots[i].rightBorder = self.tbedSlots[i+1].leftMiddle
-            self.tbedSlots[-1].rightBorder = len(self.words)
-        
+                self.tbedSlots[i].rightBorder = self.tbedSlots[i+1].leftMiddle-1
+                    
+            self.tbedSlots[-1].rightBorder = len(self.words)-1
+            
+            for i in range(len(self.tbedSlots)):
+                if self.tbedSlots[i].leftBorder > self.tbedSlots[i].leftMiddle:
+                    self.tbedSlots[i].leftBorder = self.tbedSlots[i].leftMiddle
+                if self.tbedSlots[i].rightBorder < self.tbedSlots[i].rightMiddle:
+                    self.tbedSlots[i].rightBorder = self.tbedSlots[i].rightMiddle
+            
 ##        print '+'*80
 ##        print self.text
 ##        for each in self.tbedSlots:
 ##            print each.renderCUED(), each.leftBorder, each.leftMiddle, each.rightMiddle, each.rightBorder
+
+    def writeAlignment(self, f):
+        f.write('.'*80+'\n')
+        f.write(' '.join(['%s'  % w for w in self.words])+'\n')
+        f.write(' '.join(['%*d' % (len(w), i) for i, w in enumerate(self.words)])+'\n')
             
+        for each in self.tbedSlots:
+            f.write('%50s (%.2d,%.2d,%.2d,%.2d) <= %s\n' % (each.renderCUED(False, self.valueDict), each.leftBorder, each.leftMiddle, each.rightMiddle, each.rightBorder, str(sorted(each.lexIndex))))
+        f.write('.'*80+'\n')
+
     def parseDA(self, cuedDA, text):
         numOfDAs = len(splitByComma(cuedDA))
         if numOfDAs > 1:
@@ -234,27 +250,27 @@ class DialogueAct:
         self.grams = defaultdict(set)
         # generate unigrams, bigrams, and trigrams from text
         for i in range(len(self.words)):
-            self.grams[(self.words[i],)].add((i,i+1))
+            self.grams[(self.words[i],)].add((i,i))
         
         if self.settings['nGrams'] >=2:
             for i in range(1, len(self.words)):
-                self.grams[(self.words[i-1],self.words[i])].add((i-1, i+1))
+                self.grams[(self.words[i-1],self.words[i])].add((i-1, i))
         if self.settings['nGrams'] >=3:
             for i in range(2, len(self.words)):
-                self.grams[(self.words[i-2],self.words[i-1],self.words[i])].add((i-2,i+1))
+                self.grams[(self.words[i-2],self.words[i-1],self.words[i])].add((i-2,i))
         if self.settings['nGrams'] >=4:
             for i in range(3, len(self.words)):
-                self.grams[(self.words[i-3],self.words[i-2],self.words[i-1],self.words[i])].add((i-3,i+1))
+                self.grams[(self.words[i-3],self.words[i-2],self.words[i-1],self.words[i])].add((i-3,i))
 
         if self.settings['nStarGrams'] >=3:
             for i in range(2, len(self.words)):
-                self.grams[(self.words[i-2],'*1',self.words[i])].add((i-2, i+1))
+                self.grams[(self.words[i-2],'*1',self.words[i])].add((i-2, i))
         if self.settings['nStarGrams'] >=4:
             for i in range(3, len(self.words)):
-                self.grams[(self.words[i-3],'*2',self.words[i])].add((i-3, i+1))
+                self.grams[(self.words[i-3],'*2',self.words[i])].add((i-3, i))
         if self.settings['nStarGrams'] >=5:
             for i in range(4, len(self.words)):
-                self.grams[(self.words[i-4],'*3',self.words[i])].add((i-4, i+1))
+                self.grams[(self.words[i-4],'*3',self.words[i])].add((i-4, i))
         
     def render(self, speechAct, slots, origSV):
         DA = self.vocabulary.getKey(speechAct)

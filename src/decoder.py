@@ -80,6 +80,25 @@ class Decoder:
         
         f.close()
 
+    def writeAlignment(self, fn):
+        f = file(fn, 'w')
+        
+        for each in self.das:
+            f.write('Text:          %s\n' % each.renderText())
+            f.write('DB Text:       %s\n' % each.text)
+            for k, v in sorted(each.valueDict.items()):
+                f.write('Subst value:   %s => %s\n' % (k, v))
+                
+            each.writeAlignment(f)
+            
+            f.write('HYP Semantics: %s\n' % each.renderTBED(False))
+            f.write('HYP Semantics: %s\n' % each.renderTBED(True))
+            f.write('REF Semantics: %s\n' % each.renderCUED(False))
+            f.write('REF Semantics: %s\n' % each.renderCUED(True))
+            f.write('='*80+'\n')
+            
+        f.close()
+        
     def writeOrangeTab(self, fn):
         grams = defaultdict(int)
         for da in self.das:
