@@ -86,7 +86,7 @@ class Decoder:
         for each in self.das:
             f.write('Text:          %s\n' % each.renderText())
             f.write('DB Text:       %s\n' % each.text)
-            for k, v in sorted(each.valueDict.items()):
+            for k, v in sorted(each.valueDictPositions.items()):
                 f.write('Subst value:   %s => %s\n' % (k, v))
                 
             each.writeAlignment(f)
@@ -281,7 +281,9 @@ class Decoder:
         
         return
         
-    def analyze(self):
+    def writeAnalyze(self, fn):
+        f = file(fn, 'w')
+        
         incorrectTbed = []
         dats = defaultdict(list)
         missingSlots = defaultdict(list)
@@ -294,64 +296,53 @@ class Decoder:
         for each in incorrectTbed:
             each.getErrors(dats, missingSlots, extraSlots)
 
-        print '*'*80
-        print 'Confused dialogue act types'
-        print '*'*80
-        print 
+        f.write('*'*80+'\n')
+        f.write('Confused dialogue act types\n')
+        f.write('*'*80+'\n\n')
+        
         for k, v in sorted(dats.iteritems()):
-            print 'Confusions for:', k, 'Occurence:' , len(v)
-            print '='*80
+            f.write('Confusions for: %s Occurence: %d\n' %(k, len(v)))
+            f.write('='*80+'\n')
             for each in v:
-                print 'Text:         ', each.renderText()
-                print 'DB Text:      ', each.text
-                for k, v in sorted(each.valueDict.items()):
-                    print 'Subst value:  ', k , '=>', v 
-                print 'HYP Semantics:', each.renderTBED(False)
-                print 'HYP Semantics:', each.renderTBED(True)
-                print 'REF Semantics:', each.renderCUED(False)
-                print 'REF Semantics:', each.renderCUED(True)
-                print '-'*80
+                self.writeAnalyzeDA(f, each)
             
-        print '*'*80
-        print 'Missing slot items (recall error)'
-        print '*'*80
-        print 
+        f.write('*'*80+'\n')
+        f.write('Missing slot items (recall error)\n')
+        f.write('*'*80+'\n\n')
+        
         for k, v in sorted(missingSlots.iteritems()):
-            print 'Missing slot item:', k, 'Occurence:' , len(v)
-            print '='*80
+            f.write('Missing slot item: %s Occurence: %d\n' %(k.renderCUED(True), len(v)))
+            f.write('='*80+'\n')
             for each in v:
-                print 'Text:         ', each.renderText()
-                print 'DB Text:      ', each.text
-                for k, v in sorted(each.valueDict.items()):
-                    print 'Subst value:  ', k , '=>', v 
-                print 'HYP Semantics:', each.renderTBED(False)
-                print 'HYP Semantics:', each.renderTBED(True)
-                print 'REF Semantics:', each.renderCUED(False)
-                print 'REF Semantics:', each.renderCUED(True)
-                print '-'*80
+                self.writeAnalyzeDA(f, each)
 
-        print '*'*80
-        print 'Extra slot items (precision error)'
-        print '*'*80
-        print 
+        f.write('*'*80+'\n')
+        f.write('Extra slot items (precision error)\n')
+        f.write('*'*80+'\n\n')
+        
         for k, v in sorted(extraSlots.iteritems()):
-            print 'Extra slot item:', k, 'Occurence:' , len(v)
-            print '='*80
+            f.write('Extra slot item: %s Occurence: %d\n' %(k.renderCUED(True), len(v)))
+            f.write('='*80+'\n')
             for each in v:
-                print 'Text:         ', each.renderText()
-                print 'DB Text:      ', each.text
-                for k, v in sorted(each.valueDict.items()):
-                    print 'Subst value:  ', k , '=>', v 
-                print 'HYP Semantics:', each.renderTBED(False)
-                print 'HYP Semantics:', each.renderTBED(True)
-                print 'REF Semantics:', each.renderCUED(False)
-                print 'REF Semantics:', each.renderCUED(True)
-                print '-'*80
+                self.writeAnalyzeDA(f, each)
 
-        print 'Global statistics'
-        print '='*80
-        print '   Dialogue act type substitutions:', sum([len(x) for x in dats.itervalues()]), 'Avg per DAT type:', sum([len(x) for x in dats.itervalues()])*1.0/len(dats)
-        print ' Missing slot items (recall error):', sum([len(x) for x in missingSlots.itervalues()]), 'Avg per MSI type:', sum([len(x) for x in missingSlots.itervalues()])*1.0/len(extraSlots)
-        print 'Extra slot items (precision error):', sum([len(x) for x in extraSlots.itervalues()]), 'Avg per ESI type:', sum([len(x) for x in extraSlots.itervalues()])*1.0/len(extraSlots)
+        f.write('Global statistics\n')
+        f.write('='*80+'\n')
+        f.write('   Dialogue act type substitutions: %d Avg per DAT type: %d\n' % ( sum([len(x) for x in dats.itervalues()]), sum([len(x) for x in dats.itervalues()])*1.0/len(dats)))
+        f.write(' Missing slot items (recall error): %d Avg per MSI type: %d\n' % (sum([len(x) for x in missingSlots.itervalues()]), sum([len(x) for x in missingSlots.itervalues()])*1.0/len(extraSlots)))
+        f.write('Extra slot items (precision error): %d Avg per ESI type: %d\n' % ( sum([len(x) for x in extraSlots.itervalues()]), sum([len(x) for x in extraSlots.itervalues()])*1.0/len(extraSlots)))
 
-        return
+        f.close()
+
+    def writeAnalyzeDA(self, f, each):
+        f.write('Text:          %s\n' % each.renderText())
+        f.write('DB Text:       %s\n' % each.text)
+        for k, v in sorted(each.valueDictPositions.items()):
+            f.write('Subst value:   %d => %s\n' % (k, v))
+        f.write('HYP Semantics: %s\n' % each.renderTBED(False))
+        f.write('HYP Semantics: %s\n' % each.renderTBED(True))
+        f.write('REF Semantics: %s\n' % each.renderCUED(False))
+        f.write('REF Semantics: %s\n' % each.renderCUED(True))
+        f.write('-'*80+'\n')
+        
+        

@@ -89,6 +89,7 @@ if iniTest:
 dcd.decode()
 dcd.writeOutput(outSem)
 dcd.writeAlignment(outSem+'.algn')
+dcd.writeAnalyze(outSem+'.anlz')
     
 if verbose:
     print "---------------------------------------------"

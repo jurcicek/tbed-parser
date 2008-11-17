@@ -52,6 +52,9 @@ class DialogueAct:
         the same borders. It is not implemented now.
         '''
         for each in self.tbedSlots:
+            if not each.lexIndex:
+                raise ValueError('Slot has lexical alignment set.')
+                
             each.leftMiddle = min(each.lexIndex)
             each.rightMiddle = max(each.lexIndex)
             
@@ -84,7 +87,7 @@ class DialogueAct:
         f.write(' '.join(['%*d' % (len(w), i) for i, w in enumerate(self.words)])+'\n')
             
         for each in self.tbedSlots:
-            f.write('%50s (%.2d,%.2d,%.2d,%.2d) <= %s\n' % (each.renderCUED(False, self.valueDict), each.leftBorder, each.leftMiddle, each.rightMiddle, each.rightBorder, str(sorted(each.lexIndex))))
+            f.write('%50s (%.2d,%.2d,%.2d,%.2d) <= %s\n' % (each.renderTBED(False, self.valueDictPositions, self.words), each.leftBorder, each.leftMiddle, each.rightMiddle, each.rightBorder, str(sorted(each.lexIndex))))
         f.write('.'*80+'\n')
 
     def parseDA(self, cuedDA, text):
@@ -168,36 +171,47 @@ class DialogueAct:
                             
                     # I found the slot value synonym from database in the 
                     # sentence, I must replace it
-                    newSV = 'sv_'+sn
-                    self.valueDictCounter[newSV] += 1
-                    newSV = newSV+'-'+str(self.valueDictCounter[newSV])
-                    self.valueDict[newSV] = (sv, svs)
+                    newSV1 = 'sv_'+sn
+                    self.valueDictCounter[newSV1] += 1
+                    newSV2 = newSV1+'-'+str(self.valueDictCounter[newSV1])
+                    self.valueDict[newSV2] = (sv, svs)
                     
-                    self.text = self.replaceSV(self.text, newSV, svs, i)
+                    self.text = self.replaceSV(self.text, newSV2, svs, i)
 
                     # find slot which match
                     for slt in self.slots:      
 ##                        if slt.name.endswith(sn) and slt.value in self.db[sn][sv]:
-                        # I do not is on the same name of the slot I chose a wrong slot
-                        # value label so I will use it in the slot
+                        # I do not check wheter there is the same name of the slot name
+                        # for the substituted  slot value. If I chose a wrong slot
+                        # value label, I have to lear how to fix it
                         if slt.value in self.db[sn][sv]:
-                            # I found matching slot, now I have to find slot 
-                            # value in the sentence
                             slt.origValue = slt.value
-                            slt.value = newSV
+                            slt.value = newSV1
                             break
                 else:
                     break
+
+        self.words = split(self.text)
+        self.words = [self.vocabulary[w] for w in self.words]
         
-        for k, v in sorted(self.valueDict.items()):
+        # now I have to get rid of indexes and create dictionary
+        # with positions and correct slot values
+        self.valueDictPositions = {}
+        for i, w in enumerate(self.words):
+            if w.startswith('sv_'):
+                self.valueDictPositions[i] = self.valueDict[w]
+        
+        self.text = re.sub('-\d+','',self.text)
+        self.words = split(self.text)
+        self.words = [self.vocabulary[w] for w in self.words]
+        
+        for k, v in sorted(self.valueDictPositions.items()):
             f.write('Subst value:  %s => %s\n' % (k , v))
         f.write('DB Text:      '+ self.text+'\n')
-        f.write('Slots:        '+ str([str(x) for x in self.slots]))
+        f.write('Slots:        '+ str([x.renderCUED(False) for x in self.slots]))
         f.write('\n')
         f.close()
         
-        self.words = split(self.text)
-        self.words = [self.vocabulary[w] for w in self.words]
 
     def replaceDBItemsTbed(self):
         if self.settings == None:
@@ -224,7 +238,7 @@ class DialogueAct:
                     # sentence, I must replace it
                     newSV = 'sv_'+sn
                     self.tbedValueDictCounter[newSV] += 1
-                    newSV = newSV+'-'+str(self.tbedValueDictCounter[newSV])
+##                    newSV = newSV+'-'+str(self.tbedValueDictCounter[newSV])
                     self.tbedValueDict[newSV] = (sv, svs)
                     
                     self.tbedText = self.replaceSV(self.tbedText, newSV, svs, i)
@@ -232,11 +246,10 @@ class DialogueAct:
                     # find slot which match
                     for slt in self.tbedSlots:      
 ##                        if slt.name.endswith(sn) and slt.value in self.db[sn][sv]:
-                        # I do not is on the same name of the slot I chose a wrong slot
-                        # value label so I will use it in the slot
+                        # I do not check wheter there is the same name of the slot name
+                        # for the substituted  slot value. If I chose a wrong slot
+                        # value label, I have to lear how to fix it
                         if slt.value in self.db[sn][sv]:
-                            # I found matching slot, now I have to find slot 
-                            # value in the sentence
                             slt.origValue = slt.value
                             slt.value = newSV
                             break
@@ -277,24 +290,25 @@ class DialogueAct:
             for i in range(4, len(self.words)):
                 self.grams[(self.words[i-4],'*3',self.words[i])].add((i-4, i))
         
-    def render(self, speechAct, slots, origSV):
-        DA = self.vocabulary.getKey(speechAct)
-        rendered_slots = ','.join([each_slot.renderCUED(origSV,self.valueDict) for each_slot in slots])
+    def renderCUED(self, origSV=False):
+        DA = self.vocabulary.getKey(self.speechAct)
+        rendered_slots = ','.join([each_slot.renderCUED(origSV) for each_slot in self.slots])
+        DA += '('+rendered_slots+')'
+
+        return DA
+        
+    def renderTBED(self, origSV = True):
+        DA = self.vocabulary.getKey(self.tbedSpeechAct)
+        rendered_slots = ','.join([each_slot.renderTBED(origSV, self.valueDictPositions,self.words) for each_slot in self.tbedSlots])
         DA += '('+rendered_slots+')'
 
         return DA
 
-    def renderCUED(self, origSV=False):
-        return self.render(self.speechAct, self.slots, origSV)
-        
-    def renderTBED(self, origSV = True):
-        return self.render(self.tbedSpeechAct, self.tbedSlots, origSV)
-
     def renderText(self):
         ws=[]
-        for ew in self.words:
-            if ew in self.valueDict:
-                ws.append(self.valueDict[ew][1])
+        for i, ew in enumerate(self.words):
+            if i in self.valueDictPositions:
+                ws.append(self.valueDictPositions[i][1])
             else:
                 ws.append(ew)
         return ' '.join(ws)

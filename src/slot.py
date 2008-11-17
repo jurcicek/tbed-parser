@@ -22,7 +22,7 @@ class Slot:
         self.rightBorder = None
 
     def __str__(self):
-        return self.renderCUED(False, None)
+        raise ValueError('Program must decide whether thios slot is CUED or TBED.')
 
     def __eq__(self, other):
         if not isinstance(other, Slot):
@@ -108,7 +108,7 @@ class Slot:
         if self.value == 'value':
             raise ValueError('FIX: Francois has in the training data slot items with values "value". These slots should be ignored!')
         
-    def renderCUED(self, origSV, valueDict):
+    def renderCUED(self, origSV):
         if self.name != None:
             name = self.name
         else:
@@ -120,8 +120,42 @@ class Slot:
             equal = '*='
         
         if self.value != None:
-            if origSV and self.value in valueDict:
-                value = valueDict[self.value][0]
+            if origSV and hasattr(self, 'origValue'):
+                value = self.origValue
+            else:
+                value = self.value
+                
+            if value:
+                value = '"'+value+'"'
+        else:
+            value = '*'
+            
+##        return name+equal+value+'|'+str(self.lexIndex)+'|'
+        return name+equal+value
+
+    def renderTBED(self, origSV, valueDictPositions, words):
+        if self.name != None:
+            name = self.name
+        else:
+            name = '*'
+            
+        if self.equal != None:
+            equal = self.equal
+        else:
+            equal = '*='
+        
+        if self.value != None:
+            if origSV and self.value.startswith('sv_'):
+##                print name, equal, self.value, self.lexIndex, words
+                
+                value = 'not_recovered_slot_value'
+                # I have to find the original value for the slot value
+                for i in range(self.leftBorder, self.rightBorder+1):
+                    # find the positon of the slot value in the sentence
+                    if self.value == words[i]:
+                        # I found the position of teh slot value, now I have to recover 
+                        # the original value
+                        value = valueDictPositions[i][0]
             else:
                 value = self.value
                 

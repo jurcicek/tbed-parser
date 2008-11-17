@@ -21,10 +21,18 @@ class Transformation:
     def __str__(self):
         s  = 'TRANS:'
         s += 'SpeechAct: %s - ' % str(self.speechAct)
-        s += 'AddSlot: %s - ' % str(self.addSlot)
-        s += 'DelSlot: %s - ' % str(self.delSlot)
+        if self.addSlot != None:
+            s += 'AddSlot: %s - ' % self.addSlot.renderCUED(False)
+        else:
+            s += 'AddSlot: None - '
+            
+        if self.delSlot != None:
+            s += 'DelSlot: %s - ' % self.delSlot.renderCUED(False)
+        else:
+            s += 'DelSlot: None - '
+            
         if self.subSlot != None:
-            s += 'SubSlot: %s -' % str([str(x) for x in self.subSlot])
+            s += 'SubSlot: %s -' % str((self.subSlot[0].renderCUED(False), self.subSlot[1].renderCUED(False),self.subSlot[2]))
         else:
             s += 'SubSlot: None -'
         return s
@@ -248,10 +256,10 @@ class Transformation:
         if self.speechAct != None:
             s += 'Transformation:SpeechAct:'+str(self.speechAct)+'\n'
         if self.addSlot != None:
-            s += 'Transformation:AddSlot:'+str(self.addSlot)+'\n'
+            s += 'Transformation:AddSlot:'+self.addSlot.renderCUED(False)+'\n'
         if self.delSlot != None:
-            s += 'Transformation:DelSlot:'+str(self.delSlot)+'\n'
+            s += 'Transformation:DelSlot:'+self.delSlot.renderCUED(False)+'\n'
         if self.subSlot != None:
-            s += 'Transformation:SubSlot: %s\n ' % str([str(x) for x in self.subSlot])
+            s += 'Transformation:SubSlot: %s\n ' % str((self.subSlot[0].renderCUED(False), self.subSlot[1].renderCUED(False),self.subSlot[2]))
         return s
         

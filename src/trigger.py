@@ -17,7 +17,7 @@ class Trigger:
         s += 'Gram: %s - ' % str(self.gram)
         s += 'SpeechAct: %s - ' % str(self.speechAct)
         if self.slots:
-            s += 'Slots: %s - ' % str([str(x) for x in self.slots])
+            s += 'Slots: %s - ' % str([x.renderCUED(False) for x in self.slots])
         else:
             s += 'Slots: None - ' 
         s += 'Length: %s - ' % str(self.lngth)
@@ -112,7 +112,7 @@ class Trigger:
         
         if self.slots:
             for each in self.slots:
-                s += 'Trigger:Slot:'+str(each)+'\n'
+                s += 'Trigger:Slot:'+each.renderCUED(False)+'\n'
         
         if self.lngth != None:
             s += 'Trigger:Length:'+str(self.lngth)+'\n'
