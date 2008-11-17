@@ -74,10 +74,6 @@ time ./src/tbedp-trainer.py -v $TBEDP_OPTS \
 
 ./bin/cuedSemScore.pl $TBEDP_OUT_TRN_HYP $TBEDP_TRAIN_DATA > $TBEDP_OUT_TRN_HYP.rslt
 
-./src/analyzeHyp.py --hypData=$TBEDP_OUT_DEV_SEM_HYP --refData=$TBEDP_DEV_DATA_SEM > $TBEDP_OUT_DEV_SEM_HYP.anlz
-./src/analyzeHyp.py --hypData=$TBEDP_OUT_DEV_ASR_HYP --refData=$TBEDP_DEV_DATA_ASR > $TBEDP_OUT_DEV_ASR_HYP.anlz
-./src/analyzeHyp.py --hypData=$TBEDP_OUT_TRN_HYP --refData=$TBEDP_TRAIN_DATA > $TBEDP_OUT_TRN_HYP.anlz
-
 ../../src/graph.py $TBEDP_OPTS \
   --resultsDir='' \
   --dbDir=$TBEDP_DB \
