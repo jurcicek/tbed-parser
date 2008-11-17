@@ -80,14 +80,15 @@ class Trainer(Decoder):
         # apply each rule and measure the score
         R = 0
         maxNetScore = 0
+        lastOccurence = 0
         N = len(self.das)
         for rule in self.rls:
-            if rule.occurence < maxNetScore:
+            if lastOccurence > rule.occurence and rule.occurence < maxNetScore:
                 # the best possible benefit of the rule is lower than the
                 # benefit of some already tested rule. And because the rules 
                 # are sorted w.r.t occurence, I can not find a better rule.
                 break
-                
+            lastOccurence = rule.occurence    
             R += 1
 
             # compute netScore for the curent rule
