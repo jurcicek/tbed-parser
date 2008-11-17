@@ -350,9 +350,20 @@ class DialogueAct:
         
     def renderTBED(self, origSV = True):
         DA = self.vocabulary.getKey(self.tbedSpeechAct)
-        rendered_slots = ','.join([each_slot.renderTBED(origSV, self.valueDictPositions,self.words) for each_slot in self.tbedSlots])
-        DA += '('+rendered_slots+')'
-
+        rendered_slots = [each_slot.renderTBED(origSV, self.valueDictPositions,self.words) for each_slot in self.tbedSlots]
+        
+        # I filter out sequencial duplicities among slot
+        # in other words on the output of the parser cannot be two same slots behind each 
+        # other => must be true: slts[i] != slts[i+1]
+        rendered_slots_filtered = []
+        if len(rendered_slots) > 0:
+            rendered_slots_filtered.append(rendered_slots[0])
+            for slt in rendered_slots[1:]:
+                if slt != rendered_slots_filtered[-1]:
+                    rendered_slots_filtered.append(slt)
+                
+        DA += '('+','.join(rendered_slots_filtered)+')'
+        
         return DA
 
     def renderText(self):
