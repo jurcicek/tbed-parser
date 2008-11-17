@@ -6,6 +6,9 @@ from operator import *
 
 from utils import *
 
+slot_value_search = 0
+slot_value_extra = 0
+
 class Slot:
     def __init__(self, cuedSlot):
         self.cuedSlot = cuedSlot
@@ -134,6 +137,8 @@ class Slot:
         return name+equal+value
 
     def renderTBED(self, origSV, valueDictPositions, words):
+        global slot_value_search, slot_value_extra
+        
         if self.name != None:
             name = self.name
         else:
@@ -146,16 +151,30 @@ class Slot:
         
         if self.value != None:
             if origSV and self.value.startswith('sv_'):
-##                print name, equal, self.value, self.lexIndex, words
-                
                 value = 'not_recovered_slot_value'
                 # I have to find the original value for the slot value
+                match = []
                 for i in range(self.leftBorder, self.rightBorder+1):
+##                for i in range(self.leftMiddle, self.rightMiddle+1):
                     # find the positon of the slot value in the sentence
                     if self.value == words[i]:
                         # I found the position of teh slot value, now I have to recover 
                         # the original value
-                        value = valueDictPositions[i][0]
+                        match.append(i)
+
+                slot_value_search += 1
+                slot_value_extra += len(match) - 1 
+                
+                if len(match) > 2:
+                    print name, equal, self.value, self.lexIndex, words
+                
+                    for i in range(self.leftBorder, self.rightBorder+1):
+##                    for i in range(self.leftMiddle, self.rightMiddle+1):
+                        print words[i]
+                        
+                    print 'Slot value search: %d Slot values extra: %d' % (slot_value_search,slot_value_extra)
+                
+                value = valueDictPositions[match[-1]][0]
             else:
                 value = self.value
                 

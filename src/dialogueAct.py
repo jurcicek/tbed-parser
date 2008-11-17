@@ -186,7 +186,7 @@ class DialogueAct:
                         # value label, I have to lear how to fix it
                         if slt.value in self.db[sn][sv]:
                             slt.origValue = slt.value
-                            slt.value = newSV1
+                            slt.value = newSV2
                             break
                 else:
                     break
@@ -196,14 +196,63 @@ class DialogueAct:
         
         # now I have to get rid of indexes and create dictionary
         # with positions and correct slot values
+        
         self.valueDictPositions = {}
         for i, w in enumerate(self.words):
             if w.startswith('sv_'):
                 self.valueDictPositions[i] = self.valueDict[w]
+
+##        print self.text
+##        r = re.compile('\w+-\d+')
+##        pos = 0
+##        while True:
+##            m = r.search(self.text, pos)
+##            if m == None:
+##                break
+##            pos = m.end()
+##            print m.start(), m.end(), self.text[m.start():m.end()]
+##        
         
-        self.text = re.sub('-\d+','',self.text)
         self.words = split(self.text)
         self.words = [self.vocabulary[w] for w in self.words]
+
+        sv_count = {}
+        sv_map = {}
+        for p in sorted(self.valueDictPositions):
+            sv_count[self.words[p][:-2]] = 0
+        for p in sorted(self.valueDictPositions):
+            sv_map[self.words[p]] = self.words[p][:-2]+'-'+str(sv_count[self.words[p][:-2]] % 2)
+            sv_count[self.words[p][:-2]] += 1
+            
+##        print '-'*80
+##        print self.text
+####        print sv_count
+##        print sv_map
+####        print
+##        
+##        for p in sorted(self.valueDictPositions):
+##            print p, self.words[p], sv_map[self.words[p]], self.valueDictPositions[p]
+        
+        # update self.words
+        for i, w in enumerate(self.words): 
+            if w.startswith('sv_'):
+                self.words[i] = sv_map[w]
+        # as a result, I have to update text        
+        self.text = ' '.join(self.words)
+        
+        # update slot values
+##        print self.renderCUED()
+        for slt in self.slots:      
+            if slt.value in sv_map:
+                slt.value = sv_map[slt.value]
+        
+##        print self.text
+##        print self.renderCUED()
+        
+        
+##        self.text = re.sub('-\d+','',self.text)
+##        self.words = split(self.text)
+##        self.words = [self.vocabulary[w] for w in self.words]
         
         for k, v in sorted(self.valueDictPositions.items()):
             f.write('Subst value:  %s => %s\n' % (k , v))
@@ -214,6 +263,8 @@ class DialogueAct:
         
 
     def replaceDBItemsTbed(self):
+        ''' I guess that this metyhod is not neded anymmore.'''
+        
         if self.settings == None:
             return
             
