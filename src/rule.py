@@ -37,6 +37,9 @@ class Rule:
         
         return h % (1 << 31) 
     
+    def getOccurance(self):
+        return self.transformation.getOccurance()
+        
     # measure whether the difference in accuracy after applying 
     # the rule 
     def measureDiff(self, da):
@@ -93,6 +96,8 @@ class Rule:
 
 def getRules(da, trgCond):
     # explode trans & triggers
+    # performe cartesion product of triggers and transformations
+    
     rules = []
     triggers = da.genTriggers()
     
@@ -109,6 +114,16 @@ def getRules(da, trgCond):
                     # word sequence
                     continue
 
+            if tran.delSlot != None and trigger.gram == None:
+                # I do not want to del slot with rule which was not 
+                # triggered by some lexical item 
+                continue
+                
+            if tran.subSlot != None and trigger.gram == None:
+                # I do not want to sub slot with rule which was not 
+                # triggered by some lexical item 
+                continue
+                
             r = Rule(trigger, tran)
             rules.append(r)
     

@@ -77,15 +77,28 @@ class Slot:
         if self.value != None:
             other.value = self.value
     
-    def proximity(self, lexIndex):
-        if self.leftBorder <= lexIndex[0] and lexIndex[1] <= self.rightMiddle:
-            return 'left'
-        if self.leftMiddle <= lexIndex[0] and lexIndex[1] <= self.rightBorder:
-            return 'right'
+    def proximity(self, lexIndex, type):
+        prx = 'none'
         if self.leftBorder <= lexIndex[0] and lexIndex[1] <= self.rightBorder:
-            return 'both'
+            prx = 'both'
+        if self.leftBorder <= lexIndex[0] and lexIndex[1] <= self.rightMiddle:
+            prx = 'left'
+        if self.leftMiddle <= lexIndex[0] and lexIndex[1] <= self.rightBorder:
+            prx = 'right'
+        if self.leftMiddle <= lexIndex[0] and lexIndex[1] <= self.rightMiddle:
+            prx = 'centre'
 
-        return 'none'
+        if type == 'left':
+            if prx == 'left' or prx == 'centre':
+                return True
+        elif type == 'right':
+            if prx == 'right' or prx == 'centre':
+                return True
+        elif type == 'both':
+            if prx == 'both' or prx == 'right' or prx == 'left' or prx == 'centre':
+                return True
+                
+        return False
         
     def parse(self):
         i = self.cuedSlot.find('!=')

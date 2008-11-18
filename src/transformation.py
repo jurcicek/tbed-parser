@@ -15,6 +15,7 @@ class Transformation:
         self.addSlot = addSlot
         self.delSlot = delSlot
         self.subSlot = subSlot
+        self.occurence = 0
         
         return
         
@@ -51,6 +52,14 @@ class Transformation:
         
         return h % (1 << 31) 
     
+    def getOccurance(self):
+        if self.subSlot != None:
+            # substitution is prefered because it fix two error at once one 
+            # deletion and one addition
+            return self.occurence*2
+        
+        return self.occurence
+        
     # measure only difference in performance
     # >0 - for corect modification
     #  0 - for no mofification
@@ -110,36 +119,67 @@ class Transformation:
             return ret/slotScoreNorm
             
         if self.delSlot:
-            shouldbeIn = da.slots.count(self.delSlot)
-            alreadyIn  = da.tbedSlots.count(self.delSlot)
-            deleted    = len(trigger.getLexIndexes(da))
-            if alreadyIn < deleted:
-                # I cannot delete slots which are not in tbedSlots
-                # at maximum I can delete alreadyIn slots 
-                deleted = alreadyIn
-            notNeeded   = alreadyIn - shouldbeIn
+            # I can delete more than one slot. What I want to do is to delete 
+            # a slot only when 
+##            shouldbeIn = da.slots.count(self.delSlot)
+##            alreadyIn  = da.tbedSlots.count(self.delSlot)
+##            deleted    = len(trigger.getLexIndexes(da))
+##            if alreadyIn < deleted:
+##                # I cannot delete slots which are not in tbedSlots
+##                # at maximum I can delete alreadyIn slots 
+##                deleted = alreadyIn
+##            notNeeded   = alreadyIn - shouldbeIn
+##
+##            ret  = 0
+##            if notNeeded >= 0:
+##                if notNeeded >= deleted:
+##                    # I reccieve points for all deleted slots up to not needed 
+##                    # number
+##                    ret = deleted
+##                if notNeeded < deleted:
+##                    # I want to delete more slots than is not needed. As a 
+##                    # result, I get points for all needed slots but I have to 
+##                    # detract points for all missing slots
+##                    ret = notNeeded - (deleted - notNeeded)
+##            else:
+##                # there are missing slots of this type and I still want 
+##                # to delete some
+##                ret = -deleted
+##            
+##            return ret/slotScoreNorm
 
-            ret  = 0
-            if notNeeded >= 0:
-                if notNeeded >= deleted:
-                    # I reccieve points for all deleted slots up to not needed 
-                    # number
-                    ret = deleted
-                if notNeeded < deleted:
-                    # I want to delete more slots than is not needed. As a 
-                    # result, I get points for all needed slots but I have to 
-                    # detract points for all missing slots
-                    ret = notNeeded - (deleted - notNeeded)
-            else:
-                # there are missing slots of this type and I still want 
-                # to delete some
-                ret = -deleted
+            # the trigger was validated globaly on the whole sentence,
+            # now I have to validate the trigger localy
+            lexIndexes = trigger.getLexIndexes(da)
+                
+            # now I should perform deletions only in proximity of lexIndexes
+            ret = 0
+            deletable = [slot for slot in da.tbedSlots if self.delSlot.match(slot)]
+            for slt in deletable:
+                # I have matching tbedSlot
+                # but is the lexical trigger in proximity of this slot? 
+                
+                for lexIndex in lexIndexes:
+                    if slt.proximity(lexIndex, 'both'):
+                        # the trigger is in proximity 'both' of the slot (slt)
+                        
+                        if slt in da.slots:
+                            # transformation will introduce errors because this 
+                            # slot is correct (it is in the reference slots) 
+                            ret -= 1 
+                        else:
+                            # in this case I really delete a slot which is not 
+                            # in the reference semantics
+                            ret += 1 
+                            
+            return ret*subScoreNorm
             
-            return ret/slotScoreNorm
+##########################################################################
+##########################################################################
             
         if self.subSlot:
-            ## I can correct or damage more than one slot
-            ## I have to correct computation of benefits of the rule
+            # I can correct or damage more than one slot
+            # I have to correct computation of benefits of the rule
         
             # the trigger was validated globaly on the whole sentence,
             # now I have to validate the trigger localy
@@ -151,10 +191,10 @@ class Transformation:
             ret = 0
             transformable = [slot for slot in da.tbedSlots if self.subSlot[0].match(slot)]
             for slt in transformable:
-                # I have matching tbedSlot which is not in slots but is the 
-                # lexical trigger in proximity of this slot? If it is not triggered by gram than it is always in proximity
+                # I have matching tbedSlot but is the 
+                # lexical trigger in proximity of this slot? 
                 for lexIndex in lexIndexes:
-                    if slt.proximity(lexIndex) == self.subSlot[2]:
+                    if slt.proximity(lexIndex, self.subSlot[2]):
                         # the trigger is in proximity of the slot (slt) as the 
                         # trigger expects (self.subSlot[2])
                         
@@ -204,10 +244,29 @@ class Transformation:
             
         if self.delSlot:
             # I do not track deletion of slots
-            for slt in da.tbedSlots:
-                if self.delSlot.match(slt):
-                    da.tbedSlots.remove(slt)
-
+            
+            # the trigger was validated globaly on the whole sentence,
+            # now I have to validate the trigger localy
+            lexIndexes = trigger.getLexIndexes(da)
+            # now I should perform substitution only in proximity of 
+            # lexIndexes
+            deletable = [(i, slot) for (i, slot) in enumerate(da.tbedSlots) if self.delSlot.match(slot)]
+            toDelete = set()
+            for (i, slt) in deletable:
+                # I have matching slot but is the lexical 
+                # trigger in proximity of this slot?
+                for lexIndex in lexIndexes:
+                    if slt.proximity(lexIndex, 'both'):
+                        # the trigger is in the proximity => delete slot
+                        toDelete.add(i)
+            
+            # keep only those slots which indexes are not in toDelete list
+            da.tbedSlots = [slt for (i, slt) in enumerate(da.tbedSlots) if i not in toDelete]
+                        
+        
+##################################################################################
+##################################################################################
+                    
         if self.subSlot:
             # the trigger was validated globaly on the whole sentence,
             # now I have to validate the trigger localy
@@ -221,7 +280,7 @@ class Transformation:
                 for lexIndex in lexIndexes:
 ##                    print '---', da, 'lexI = ', lexIndex, 'slotI =', slt.leftBorder, slt.leftMiddle, slt.rightMiddle, slt.rightBorder
 ##                    print '---', slt, 'proximity =',slt.proximity(lexIndex)
-                    if slt.proximity(lexIndex) == self.subSlot[2]:
+                    if slt.proximity(lexIndex, self.subSlot[2]):
 ##                        print '>>>', slt, da
                         self.subSlot[1].transform(slt)
 ##                        print '<<<', slt

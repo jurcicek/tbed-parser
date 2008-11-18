@@ -427,13 +427,17 @@ class DialogueAct:
         
     def genTrans(self):
         # return a set of all posible modifications of the current DA
-        trans = set()
+        # I use the dictionary to measure how many times the transformation
+        # can be potentinaly usevul for this DA. Most of teh time the value 
+        # will be equal zero but of DAs it might be different. 
+        # If I estimate occurences properly. I can sort rules more preciselly.
+        trans = defaultdict(int)
         
         # speech acts
         # return transformation for speech act only if the 
         # tbedSpeechAct is wrong
         if self.speechAct != self.tbedSpeechAct:
-            trans.add(Transformation(speechAct=self.speechAct))
+            trans[Transformation(speechAct=self.speechAct)] += 1
         
         # slot & values
         # return transformation for slot & value only if the 
@@ -443,10 +447,10 @@ class DialogueAct:
         extraSlotItems = self.getExtraSlotItems()
         
         for slot in missingSlotItems:
-            trans.add(Transformation(addSlot=slot))
+            trans[Transformation(addSlot=slot)] += 1 
             
         for slot in extraSlotItems:
-            trans.add(Transformation(delSlot=slot))
+            trans[Transformation(delSlot=slot)] += 1 
 
         for extraSlot in extraSlotItems:
             for missingSlot in missingSlotItems:
@@ -460,7 +464,7 @@ class DialogueAct:
                     ms.name  = None
                     ms.value = None
                         
-                    trans.add(Transformation(subSlot=(es, ms, 'left')))
+                    trans[Transformation(subSlot=(es, ms, 'left'))] += 1 
                     
                 # allow to substitute the name
                 if extraSlot.name != missingSlot.name:
@@ -471,25 +475,25 @@ class DialogueAct:
                     ms.equal = None
                     ms.value = None
                         
-                    trans.add(Transformation(subSlot=(es, ms, 'left')))
-    
+                    trans[Transformation(subSlot=(es, ms, 'left'))] += 1 
+        
+        for t in trans:
+            t.occurence += trans[t]
+            
         # do not explode transformations, only one modification 
         # at one time is allowed
         
-        return trans
+        return set(trans.keys())
         
     def genTriggers(self):
         # collect all posible triggers for all dimmensions 
         #   (speechAct, grams, slots)
+        # a gram must be always part of the trigger
         
         saCond = [None,]
         if self.settings['speechAct'] >=1:
             saCond.append(self.tbedSpeechAct)
         
-        gramsCond = [None,]
-        for gram1 in self.grams:
-            gramsCond.append(gram1)
-            
         slotsCond = [None,]
         if self.settings['nSlots'] >= 1:
             for slot in self.tbedSlots:
@@ -518,7 +522,7 @@ class DialogueAct:
         triggers = set()
         # explode trigger combinations
         for sa in saCond:
-            for gram in gramsCond:
+            for gram in self.grams:
                 for slot in slotsCond:
                     for lngth in lengthCond:
                         for hasSlots in hasSlotsCond:
