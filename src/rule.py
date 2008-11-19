@@ -53,8 +53,10 @@ class Rule:
     def apply(self, da):
         # apply transformation on the dialogue act
         if self.trigger.validate(da):
-            self.transformation.apply(da, self.trigger)
+            applied = self.transformation.apply(da, self.trigger)
         
+            if applied:
+                da.ruleTracker.append((self, da.renderTBED(False)))
         return 
     
     def complexity(self):

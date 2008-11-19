@@ -288,14 +288,45 @@ class Decoder:
         dats = defaultdict(list)
         missingSlots = defaultdict(list)
         extraSlots = defaultdict(list)
+        substitutedSlots = defaultdict(dlist_factory)
         
         for each in self.das:
             if each.incorrectTbed():
                 incorrectTbed.append(each)
         
         for each in incorrectTbed:
-            each.getErrors(dats, missingSlots, extraSlots)
+            each.getErrors(dats, missingSlots, extraSlots, substitutedSlots)
 
+        f.write('Global statistics\n')
+        f.write('='*80+'\n')
+        
+        f.write('   Average number of applied rules: %3.1f\n' % (sum([len(x.ruleTracker) for x in self.das])*1.0/len(self.das),))
+        
+        f.write('   Dialogue act type substitutions: %3d Avg per DAT type: %d\n' % ( sum([len(x) for x in dats.itervalues()]), sum([len(x) for x in dats.itervalues()])*1.0/len(dats)))
+        f.write(' Missing slot items (recall error): %3d Avg per MSI type: %d\n' % (sum([len(x) for x in missingSlots.itervalues()]), sum([len(x) for x in missingSlots.itervalues()])*1.0/len(extraSlots)))
+        f.write('Extra slot items (precision error): %3d Avg per ESI type: %d\n' % ( sum([len(x) for x in extraSlots.itervalues()]), sum([len(x) for x in extraSlots.itervalues()])*1.0/len(extraSlots)))
+
+        numberOfSubstitutionsA = 0
+        numberOfSubstitutions = 0
+        for mi, eis in sorted(substitutedSlots.iteritems()):
+            for ei, v in sorted(eis.iteritems()):
+                numberOfSubstitutions += 1
+                numberOfSubstitutionsA += len(v)
+        f.write('                Substitution pairs: %3d Avg per SP type: %d\n' % ( numberOfSubstitutions, numberOfSubstitutionsA/numberOfSubstitutions))
+        
+        f.write('-'*80+'\n')
+        for k, v in sorted(missingSlots.iteritems()):
+            f.write('Missing slot item: %50s Occurence: %d\n' %(k.renderCUED(False), len(v)))
+        f.write('-'*80+'\n')
+        for k, v in sorted(extraSlots.iteritems()):
+            f.write('Extra slot item:   %50s Occurence: %d\n' %(k.renderTBED(False, None, None), len(v)))
+        f.write('-'*80+'\n')
+        f.write('SP: %50s    %50s \n' %('REF', 'HYP'))
+        for mi, eis in sorted(substitutedSlots.iteritems()):
+            for ei, v in sorted(eis.iteritems()):
+                f.write('SP: %50s => %50s Occurence: %d\n' %(mi.renderCUED(False), ei.renderTBED(False, None, None), len(v)))
+
+        f.write('\n')
         f.write('*'*80+'\n')
         f.write('Confused dialogue act types\n')
         f.write('*'*80+'\n\n')
@@ -321,16 +352,21 @@ class Decoder:
         f.write('*'*80+'\n\n')
         
         for k, v in sorted(extraSlots.iteritems()):
-            f.write('Extra slot item: %s Occurence: %d\n' %(k.renderCUED(True), len(v)))
+            f.write('Extra slot item: %s Occurence: %d\n' %(k.renderTBED(False, None, None), len(v)))
             f.write('='*80+'\n')
             for each in v:
                 self.writeAnalyzeDA(f, each)
+                
+        f.write('*'*80+'\n')
+        f.write('Substituted slot items (precision error)\n')
+        f.write('*'*80+'\n\n')
 
-        f.write('Global statistics\n')
-        f.write('='*80+'\n')
-        f.write('   Dialogue act type substitutions: %d Avg per DAT type: %d\n' % ( sum([len(x) for x in dats.itervalues()]), sum([len(x) for x in dats.itervalues()])*1.0/len(dats)))
-        f.write(' Missing slot items (recall error): %d Avg per MSI type: %d\n' % (sum([len(x) for x in missingSlots.itervalues()]), sum([len(x) for x in missingSlots.itervalues()])*1.0/len(extraSlots)))
-        f.write('Extra slot items (precision error): %d Avg per ESI type: %d\n' % ( sum([len(x) for x in extraSlots.itervalues()]), sum([len(x) for x in extraSlots.itervalues()])*1.0/len(extraSlots)))
+        for mi, eis in sorted(substitutedSlots.iteritems()):
+            for ei, v in sorted(eis.iteritems()):
+                f.write('Substituted slot item: %s => %s Occurence: %d\n' %(mi.renderCUED(False), ei.renderTBED(False, None, None), len(v)))
+                f.write('='*80+'\n')
+                for each in v:
+                    self.writeAnalyzeDA(f, each)
 
         f.close()
 
@@ -343,6 +379,11 @@ class Decoder:
         f.write('HYP Semantics: %s\n' % each.renderTBED(True))
         f.write('REF Semantics: %s\n' % each.renderCUED(False))
         f.write('REF Semantics: %s\n' % each.renderCUED(True))
+        
+        f.write('AppliedRules:  %d\n' % len(each.ruleTracker))
+        for r in each.ruleTracker:
+            f.write('%s\nDA:AFTER:THE:RULE: %s\n\n' % r)
+        
         f.write('-'*80+'\n')
         
         

@@ -4,9 +4,6 @@ from collections import *
 from utils import *
 import glob,re
 
-def dset_factory():
-    return defaultdict(set)
-    
 class SlotDatabase:
     def __init__(self):
         self.db  = defaultdict(dset_factory)

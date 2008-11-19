@@ -222,8 +222,11 @@ class Transformation:
     def apply(self, da, trigger):
         # change the speech act
         if self.speechAct:
-            da.tbedSpeechAct = self.speechAct
-            return
+            if da.tbedSpeechAct != self.speechAct:
+                da.tbedSpeechAct = self.speechAct
+                return True
+        
+        applied = False
         
         # update slots
         if self.addSlot:
@@ -239,6 +242,9 @@ class Transformation:
                 da.tbedSlots.append(deepcopy(self.addSlot))
                 da.tbedSlots[-1].lexIndex.add(each[0])
                 da.tbedSlots[-1].lexIndex.add(each[1])
+            
+            if len(lexIndexes) > 0:
+                applied = True
                 
             da.computeBorders()
             
@@ -259,14 +265,11 @@ class Transformation:
                     if slt.proximity(lexIndex, 'both'):
                         # the trigger is in the proximity => delete slot
                         toDelete.add(i)
+                        applied = True
             
             # keep only those slots which indexes are not in toDelete list
             da.tbedSlots = [slt for (i, slt) in enumerate(da.tbedSlots) if i not in toDelete]
                         
-        
-##################################################################################
-##################################################################################
-                    
         if self.subSlot:
             # the trigger was validated globaly on the whole sentence,
             # now I have to validate the trigger localy
@@ -289,8 +292,10 @@ class Transformation:
                         # the substituted (transformed) slot
                         slt.lexIndex.add(lexIndex[0])
                         slt.lexIndex.add(lexIndex[1])
+                        
+                        applied = True
         
-        return
+        return applied
         
     def complexity(self):
         if self.speechAct:

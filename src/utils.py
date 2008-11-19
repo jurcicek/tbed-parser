@@ -1,7 +1,15 @@
 #!/usr/bin/env python2.5
 
-from string import *
 import re, pickle
+
+from collections import *
+from string import *
+
+def dset_factory():
+    return defaultdict(set)
+
+def dlist_factory():
+    return defaultdict(list)
 
 def powerset(s):
     result = set()

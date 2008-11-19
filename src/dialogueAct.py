@@ -30,6 +30,10 @@ class DialogueAct:
         self.valueDict = {}
         self.tbedValueDictCounter = defaultdict(int)
         self.tbedValueDict = {}
+        
+        # in this array I store all rules applied on the DA in 
+        # the sequencial order
+        self.ruleTracker = []
 
     def __str__(self):
         s = self.text+' - '
@@ -400,7 +404,7 @@ class DialogueAct:
         
         return False
     
-    def getErrors(self, dats, missingSlots, extraSlots):
+    def getErrors(self, dats, missingSlots, extraSlots, substitutedSlots):
         if self.speechAct != self.tbedSpeechAct:
             dats[self.speechAct].append(self)
             
@@ -409,6 +413,11 @@ class DialogueAct:
         for each in self.getExtraSlotItems():
             extraSlots[each].append(self)
         
+        for mi in self.getMissingSlotItems():
+            for ei in self.getExtraSlotItems():
+                if mi.value == ei.value:
+                    substitutedSlots[mi][ei].append(self)
+                    
         return
     
     def getMissingSlotItems(self):
