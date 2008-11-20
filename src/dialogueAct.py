@@ -259,7 +259,7 @@ class DialogueAct:
 ##        self.words = [self.vocabulary[w] for w in self.words]
         
         for k, v in sorted(self.valueDictPositions.items()):
-            f.write('Subst value:  %s => %s\n' % (k , v))
+            f.write('Subst value:  %2d => %30s = %s\n' % (k, v, self.words[k]))
         f.write('DB Text:      '+ self.text+'\n')
         f.write('Slots:        '+ str([x.renderCUED(False) for x in self.slots]))
         f.write('\n')
