@@ -375,6 +375,9 @@ class Decoder:
         f.write('DB Text:       %s\n' % each.text)
         for k, v in sorted(each.valueDictPositions.items()):
             f.write('Subst value:   %2d => %30s = %s\n' % (k, v, each.words[k]))
+            
+        each.writeAlignment(f)
+        
         f.write('HYP Semantics: %s\n' % each.renderTBED(False))
         f.write('HYP Semantics: %s\n' % each.renderTBED(True))
         f.write('REF Semantics: %s\n' % each.renderCUED(False))

@@ -123,6 +123,8 @@ class Slot:
         
         if self.value == 'value':
             raise ValueError('FIX: Francois has in the training data slot items with values "value". These slots should be ignored!')
+        if self.value == 'pm':
+            raise ValueError('FIX: Francois has in the training data slot items with values "pm". These slots should be ignored!')
         
     def renderCUED(self, origSV):
         if self.name != None:

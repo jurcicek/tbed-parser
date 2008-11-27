@@ -91,6 +91,17 @@ class DialogueAct:
         f.write(' '.join(['%*d' % (len(w), i) for i, w in enumerate(self.words)])+'\n')
             
         for each in self.tbedSlots:
+            numberOfLeftDots = sum([len(w)+1 for i, w in enumerate(self.words) if i < each.leftBorder])
+            numberOfLeftDashes = sum([len(w)+1 for i, w in enumerate(self.words) if i >= each.leftBorder and i<each.leftMiddle])
+            numberOfEquals = sum([len(w)+1 for i, w in enumerate(self.words) if i >= each.leftMiddle and i<=each.rightMiddle])
+            numberOfRightDashes = sum([len(w)+1 for i, w in enumerate(self.words) if i > each.rightMiddle and i<=each.rightBorder])
+            numberOfRightDots = sum([len(w)+1 for i, w in enumerate(self.words) if i > each.rightBorder])
+            f.write(' '*numberOfLeftDots)
+            f.write('-'*numberOfLeftDashes)
+            f.write('='*numberOfEquals)
+            f.write('-'*numberOfRightDashes)
+            f.write(' '*numberOfRightDots+'\n')
+            
             f.write('%50s (%.2d,%.2d,%.2d,%.2d) <= %s\n' % (each.renderTBED(False, self.valueDictPositions, self.words), each.leftBorder, each.leftMiddle, each.rightMiddle, each.rightBorder, str(sorted(each.lexIndex))))
         f.write('.'*80+'\n')
 
