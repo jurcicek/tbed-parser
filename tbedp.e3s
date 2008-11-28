@@ -2,29 +2,21 @@
 <!DOCTYPE Session SYSTEM "Session-3.8.dtd">
 <!-- eric3 session file for project tbedp -->
 <!-- This file was generated automatically, do not edit. -->
-<!-- Saved: 2008-11-27, 21:04:36 -->
+<!-- Saved: 2008-11-28, 18:02:07 -->
 <Session version="3.8">
   <Filenames>
     <Filename cline="378" cindex="8">/home/filip/cued/tbed-parser/src/decoder.py</Filename>
     <Filename cline="46" cindex="0">/home/filip/cued/tbed-parser/src/trainer.py</Filename>
     <Filename cline="176" cindex="23">/home/filip/cued/tbed-parser/src/dialogueAct.py</Filename>
-    <Filename cline="126" cindex="95">/home/filip/cued/tbed-parser/src/slot.py</Filename>
+    <Filename cline="79" cindex="24">/home/filip/cued/tbed-parser/src/slot.py</Filename>
     <Filename cline="52" cindex="0">/home/filip/cued/tbed-parser/src/rule.py</Filename>
-    <Filename cline="224" cindex="33">/home/filip/cued/tbed-parser/src/transformation.py</Filename>
+    <Filename cline="193" cindex="0">/home/filip/cued/tbed-parser/src/transformation.py</Filename>
     <Filename cline="18" cindex="22">/home/filip/cued/tbed-parser/src/trigger.py</Filename>
     <Filename cline="61" cindex="94">/home/filip/cued/tbed-parser/src/slotDatabase.py</Filename>
-    <Filename cline="98" cindex="39">/home/filip/cued/tbed-parser/src/genATISdata.py</Filename>
+    <Filename cline="214" cindex="0">/home/filip/cued/tbed-parser/src/genATISdata.py</Filename>
   </Filenames>
-  <ActiveWindow cline="98" cindex="39">/home/filip/cued/tbed-parser/src/genATISdata.py</ActiveWindow>
+  <ActiveWindow cline="79" cindex="24">/home/filip/cued/tbed-parser/src/slot.py</ActiveWindow>
   <Breakpoints>
-    <Breakpoint>
-      <BpFilename>/home/filip/cued/tbed-parser/src/genATISdata.py</BpFilename>
-      <Linenumber value="73" />
-      <Condition>None</Condition>
-      <Temporary value="0" />
-      <Enabled value="1" />
-      <Count value="0" />
-    </Breakpoint>
   </Breakpoints>
   <Watchpoints>
   </Watchpoints>

@@ -122,9 +122,7 @@ class Slot:
         self.value = self.value.replace('"', '')
         
         if self.value == 'value':
-            raise ValueError('FIX: Francois has in the training data slot items with values "value". These slots should be ignored!')
-        if self.value == 'pm':
-            raise ValueError('FIX: Francois has in the training data slot items with values "pm". These slots should be ignored!')
+            raise ValueError('FIX: Ignore slots for which no values were found in the database.')
         
     def renderCUED(self, origSV):
         if self.name != None:

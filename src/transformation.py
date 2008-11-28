@@ -178,9 +178,6 @@ class Transformation:
 ##########################################################################
             
         if self.subSlot:
-            # I can correct or damage more than one slot
-            # I have to correct computation of benefits of the rule
-        
             # the trigger was validated globaly on the whole sentence,
             # now I have to validate the trigger localy
             lexIndexes = trigger.getLexIndexes(da)
