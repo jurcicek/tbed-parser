@@ -88,8 +88,17 @@ class Trainer(Decoder):
 
             # compute netScore for the curent rule
             netScore = 0 
+            posScore = 0
+            negScore = 0
+            
             for i in trg2da[rule.trigger]:
-                netScore += rule.transformation.measureDiff(self.das[i], rule.trigger)
+                nsp, psp, ngsp = rule.transformation.measureDiff(self.das[i], rule.trigger)
+                netScore += nsp
+                posScore += psp
+                negScore += ngsp
+            
+            
+##            netScore = harmonicMean(netScore, posScore/(negScore + 1))
             
             if netScore > maxNetScore:
                 maxNetScore = netScore

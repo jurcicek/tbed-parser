@@ -525,12 +525,12 @@ class DialogueAct:
                     for j in range(i+1, len(ts)):
                         slotsCond.append([deepcopy(ts[i]),deepcopy(ts[j])])
 
-        # sentece length rigger
+        # sentece length trigger
         lengthCond = [None,]
         if self.settings['lngth'] >= 1:
             lengthCond.append(len(self.words))
         
-        # sentece length rigger, None mean I do not care
+        # sentece length trigger, None mean I do not care
         hasSlotsCond = [None,]
         if self.settings['hasSlots'] >= 1:
             if len(self.tbedSlots) == 0:

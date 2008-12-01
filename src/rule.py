@@ -103,30 +103,31 @@ def getRules(da, trgCond):
     rules = []
     triggers = da.genTriggers()
     
-    for tran in da.genTrans():
-        for trigger in triggers:
-            if tran.addSlot != None and trigger.gram == None:
-                # I do not want to add slot which was not 
-                # triggered by some lexical item 
-                continue
-            if tran.addSlot != None and tran.addSlot.value.startswith('sv_'):
-                if tran.addSlot.value not in trigger.gram:
-                    # I do not want to add slot item with generalized (based not database)
-                    # slot value if it was not triggered by found slot value in the input
-                    # word sequence
+    if len(triggers) != 0:
+        for tran in da.genTrans():
+            for trigger in triggers:
+                if tran.addSlot != None and trigger.gram == None:
+                    # I do not want to add slot which was not 
+                    # triggered by some lexical item 
                     continue
+                if tran.addSlot != None and tran.addSlot.value.startswith('sv_'):
+                    if tran.addSlot.value not in trigger.gram:
+                        # I do not want to add slot item with generalized (based not database)
+                        # slot value if it was not triggered by found slot value in the input
+                        # word sequence
+                        continue
 
-            if tran.delSlot != None and trigger.gram == None:
-                # I do not want to del slot with rule which was not 
-                # triggered by some lexical item 
-                continue
-                
-            if tran.subSlot != None and trigger.gram == None:
-                # I do not want to sub slot with rule which was not 
-                # triggered by some lexical item 
-                continue
-                
-            r = Rule(trigger, tran)
-            rules.append(r)
+                if tran.delSlot != None and trigger.gram == None:
+                    # I do not want to del slot with rule which was not 
+                    # triggered by some lexical item 
+                    continue
+                    
+                if tran.subSlot != None and trigger.gram == None:
+                    # I do not want to sub slot with rule which was not 
+                    # triggered by some lexical item 
+                    continue
+                    
+                r = Rule(trigger, tran)
+                rules.append(r)
     
     return rules, triggers

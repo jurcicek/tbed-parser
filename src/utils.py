@@ -5,6 +5,12 @@ import re, pickle
 from collections import *
 from string import *
 
+def harmonicMean(x,y):
+    try:
+        return 2*x*y/(x+y)
+    except ZeroDivisionError:
+        return 0
+    
 def dset_factory():
     return defaultdict(set)
 

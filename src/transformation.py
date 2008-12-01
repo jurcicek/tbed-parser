@@ -3,8 +3,10 @@
 from math import *
 from copy import *
 
-slotScoreNorm = 1.0 
-subScoreNorm = 2.0
+addSlotScoreWeight = 1.0 
+delScoreWeight = 1.0
+subScoreWeight = 2.0
+# subScoreWeight = 0.5 # this works very well
 
 class Transformation:
     # I implement only one modification at one time
@@ -77,23 +79,29 @@ class Transformation:
         This I might be able to fix only in a new version which would 
         completely simulate tree editing.
         """
+        
+        netScore = 0.0
+        posScore = 0.0
+        negScore = 0.0
+
         if self.speechAct:
-            ret = 0
             if self.speechAct == da.speechAct:
                 if self.speechAct != da.tbedSpeechAct:
-                    ret = 1
+                    netScore = 1
+                    posScore = 1
                 else:
-                    ret = 0
+                    netScore = 0
             else:
                 if self.speechAct == da.tbedSpeechAct:
                     # this rule is not responsible for changing 
                     # dialogue act type to wrong dialogue act type because 
                     # the dialogue act type is already wrong
-                    ret = 0
+                    netScore = 0
                 else:
-                    ret = -1
+                    netScore = -1
+                    negScore = +1
                     
-            return ret/slotScoreNorm
+            return netScore*addSlotScoreWeight, posScore*addSlotScoreWeight, negScore*addSlotScoreWeight
                 
         if self.addSlot:
             shouldbeIn = da.slots.count(self.addSlot)
@@ -101,59 +109,34 @@ class Transformation:
             added      = len(trigger.getLexIndexes(da))
             needed     = shouldbeIn - alreadyIn
             
-            ret = 0
             if needed >= 0:
                 if needed >= added:
                     # I reccieve points for all added slots up to needed number
-                    ret = added
+                    netScore = added
+                    posScore = added
                 if needed < added:
                     # I want to add more slots than is needed. As a result, i 
-                    # get points for all needed slots but I have to dtract 
+                    # get points for all needed slots but I have to detract 
                     # points for all extra slots
-                    ret = needed - (added - needed)
+                    netScore = needed - (added - needed)
+                    posScore = netScore
             else:
                 # there are already to many slots of this type and I still want 
                 # to add more
-                ret = -added
+                netScore = -added
+                negScore = +added
             
-            return ret/slotScoreNorm
+            return netScore*addSlotScoreWeight, posScore*addSlotScoreWeight, negScore*addSlotScoreWeight
             
         if self.delSlot:
             # I can delete more than one slot. What I want to do is to delete 
             # a slot only when 
-##            shouldbeIn = da.slots.count(self.delSlot)
-##            alreadyIn  = da.tbedSlots.count(self.delSlot)
-##            deleted    = len(trigger.getLexIndexes(da))
-##            if alreadyIn < deleted:
-##                # I cannot delete slots which are not in tbedSlots
-##                # at maximum I can delete alreadyIn slots 
-##                deleted = alreadyIn
-##            notNeeded   = alreadyIn - shouldbeIn
-##
-##            ret  = 0
-##            if notNeeded >= 0:
-##                if notNeeded >= deleted:
-##                    # I reccieve points for all deleted slots up to not needed 
-##                    # number
-##                    ret = deleted
-##                if notNeeded < deleted:
-##                    # I want to delete more slots than is not needed. As a 
-##                    # result, I get points for all needed slots but I have to 
-##                    # detract points for all missing slots
-##                    ret = notNeeded - (deleted - notNeeded)
-##            else:
-##                # there are missing slots of this type and I still want 
-##                # to delete some
-##                ret = -deleted
-##            
-##            return ret/slotScoreNorm
 
             # the trigger was validated globaly on the whole sentence,
             # now I have to validate the trigger localy
             lexIndexes = trigger.getLexIndexes(da)
                 
             # now I should perform deletions only in proximity of lexIndexes
-            ret = 0
             deletable = [slot for slot in da.tbedSlots if self.delSlot.match(slot)]
             for slt in deletable:
                 # I have matching tbedSlot
@@ -166,13 +149,15 @@ class Transformation:
                         if slt in da.slots:
                             # transformation will introduce errors because this 
                             # slot is correct (it is in the reference slots) 
-                            ret -= 1 
+                            netScore -= 1
+                            negScore += 1
                         else:
                             # in this case I really delete a slot which is not 
                             # in the reference semantics
-                            ret += 1 
+                            netScore += 1 
+                            posScore += 1
                             
-            return ret*subScoreNorm
+            return netScore*delScoreWeight, posScore*delScoreWeight, negScore*delScoreWeight
             
 ##########################################################################
 ##########################################################################
@@ -185,7 +170,6 @@ class Transformation:
             # now I should perform substitution only in proximity of 
             # lexIndexes
             
-            ret = 0
             transformable = [slot for slot in da.tbedSlots if self.subSlot[0].match(slot)]
             for slt in transformable:
                 # I have matching tbedSlot but is the 
@@ -198,7 +182,8 @@ class Transformation:
                         if slt in da.slots:
                             # transformation will introduce errors because this 
                             # slot is correct (it is in the reference slots) 
-                            ret -= 1 # I break only one third
+                            netScore -= 1 # I break only one third
+                            negScore += 1
                             continue
                             
                         s = deepcopy(slt)
@@ -206,13 +191,14 @@ class Transformation:
                         if s in da.slots:
                             # the tbed slot was transformed so that it is the 
                             # same as one of reference slots (da.slots)
-                            ret += 1 # I fix only one third
+                            netScore += 1 # I fix only one third
+                            posScore += 1
                         else:
                             # I should not penalize for slots I could not fix, I 
                             # alreaddy penalized for those which are actualy 
                             # correct but they match subSlot[0]
-                            ret -= 0
-            return ret*subScoreNorm
+                            netScore -= 0
+            return netScore*subScoreWeight, posScore*subScoreWeight, negScore*subScoreWeight
                 
         return 0
         
