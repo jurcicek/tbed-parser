@@ -3,10 +3,10 @@
 from math import *
 from copy import *
 
+# chaging weights does not significantly change performace of the parser
 addSlotScoreWeight = 1.0 
 delScoreWeight = 1.0
-subScoreWeight = 2.0
-# subScoreWeight = 0.5 # this works very well
+subScoreWeight = 2.0    
 
 class Transformation:
     # I implement only one modification at one time
