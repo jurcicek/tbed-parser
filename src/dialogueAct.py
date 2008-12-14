@@ -332,7 +332,8 @@ class DialogueAct:
             self.words = [self.vocabulary[w] for w in self.words]
         
         self.grams = defaultdict(set)
-        # generate unigrams, bigrams, and trigrams from text
+        # generate regular unigrams, bigrams, trigrams, ... from text
+        
         for i in range(len(self.words)):
             self.grams[(self.words[i],)].add((i,i))
         
@@ -346,6 +347,7 @@ class DialogueAct:
             for i in range(3, len(self.words)):
                 self.grams[(self.words[i-3],self.words[i-2],self.words[i-1],self.words[i])].add((i-3,i))
 
+        # generate skiping (I call it star) bigrams
         if self.settings['nStarGrams'] >=3:
             for i in range(2, len(self.words)):
                 self.grams[(self.words[i-2],'*1',self.words[i])].add((i-2, i))
@@ -355,7 +357,40 @@ class DialogueAct:
         if self.settings['nStarGrams'] >=5:
             for i in range(4, len(self.words)):
                 self.grams[(self.words[i-4],'*3',self.words[i])].add((i-4, i))
+                
+        # generate nearest POS tag lemma bigrams
+        for i, w in enumerate(self.words):
+            # generate long ranging dependencies only for slot values
+            if w.startswith('sv_'):
+                # generate LRD for all pos tags, the learning alg. will 
+                # chose all suitable POS resp. triggers
+                for pos in self.getAllPOSTags():
+                    # find nearest left POS tag
+                    for j in range(i, -1, -1):
+##                        if self.words[j] == 'leaving':
+##                            print pos, w, j, self.getPOSTag(j), self.words[j], self.getLemma(j), self.words
+                        if self.getPOSTag(j) == pos:
+                            
+                            # I got the nearest left POS tag
+                            self.grams[(self.getLemma(j),'*nl-'+pos,w)].add((i, i))
+                            
+##                            print (self.getLemma(j),'*nl-'+pos,w), (j, i)
+    
+    def getAllPOSTags(self):
+        return ['VB', 'IN']
         
+    def getPOSTag(self, j):
+        try:
+            return posDict[lemmaDict[self.words[j]]]
+        except:
+            return 'UNK'
+            
+    def getLemma(self, j):
+        try:
+            return lemmaDict[self.words[j]]
+        except:
+            return self.words[j]
+    
     def renderCUED(self, origSV=False):
         DA = self.vocabulary.getKey(self.speechAct)
         rendered_slots = ','.join([each_slot.renderCUED(origSV) for each_slot in self.slots])
