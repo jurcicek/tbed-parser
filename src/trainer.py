@@ -35,6 +35,21 @@ class Trainer(Decoder):
                     self.applyBestRule(r)
                     self.iRule += 1
                     
+    def findRuleForDAT(self):
+        datStat = defaultdict(int)
+        
+        for da in self.das:
+            datStat[da.speechAct] += 1
+        
+        dat = [(datStat[sa], sa) for sa in datStat]
+        dat.sort(reverse = True)
+        
+        # return rule which assignes to dat the most common speech act
+        r = Rule(Trigger(), Transformation(speechAct=dat[0][1]))
+        r.netScore = minNetScore
+        
+        return [r,]
+    
     def findBestRules(self):
         print '=================== FIND BEST START ====================='
         rules = defaultdict(int)
@@ -177,7 +192,7 @@ class Trainer(Decoder):
         if self.trgCond['DBItems'] == 'genRules':
             self.genRulesFromDB()
         
-        bestRules = self.findBestRules()
+        bestRules = self.findRuleForDAT()
         
         while bestRules[0].netScore >= minNetScore:
             # store the selected rules
