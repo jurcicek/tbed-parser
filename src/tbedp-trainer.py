@@ -14,7 +14,6 @@ iniTrain = False
 outBestRulesTXT='results.rules'
 outBestRulesPickle='results.pckl-bestrules'
 outDecoderPickle='results.pckl-decoder'
-outVocabulary='results.pckl-vocabulary'
 
 ##############################################################################
 def usage():
@@ -58,7 +57,6 @@ Options:
         hasSlots=NUMBER   : 0 - no dependence on whether DA has slots or not
                             1 - a rule can depend on whether DA has slots 
                                 or not
-    --outDict=FILE        : output file speed up dictionary{%s}
     --db=DIR              : directory with TAB files which contains database items 
                             for slot names and values{%s}
     """ % (trainData,
@@ -67,7 +65,6 @@ Options:
            outBestRulesPickle,
            outDecoderPickle,
            trgCond,
-           outVocabulary,
            db))
            
 ##############################################################################
@@ -150,7 +147,6 @@ else:
 trn.writeDecoderPickle(outDecoderPickle)
 trn.writeBestRulesTXT(outBestRulesTXT)
 trn.writeBestRulesPickle(outBestRulesPickle)
-trn.writeVocabulary(outVocabulary)
 
 if verbose:
     print "---------------------------------------------"

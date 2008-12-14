@@ -12,15 +12,15 @@ posDict = { 'arrive':   'VB',
             'travel':   'VB', 
             'show':     'VB', 
             'connect':  'VB', 
-	    'return':	'VB',
+            'return':	'VB',
             'from':     'IN', 
             'to':       'IN', 
             'at':       'IN', 
             'on':       'IN',
             'before':   'IN',
             'after':    'IN',
-	    'in':	'IN',
-	    'into':	'IN'
+            'in':	'IN',
+            'into':	'IN'
             }
             
 lemmaDict= {'arrive':       'arrive',
@@ -51,10 +51,10 @@ lemmaDict= {'arrive':       'arrive',
             'connecting':   'connect',
             'connects':     'connect',
             'connected':    'connect',
-	    'return':       'return',
-	    'returning':    'return',
-	    'returns':      'return',
-	    'returned':     'return',
+            'return':       'return',
+            'returning':    'return',
+            'returns':      'return',
+            'returned':     'return',
             'stop':         'stop',
             'stoping':      'stop',
             'stops':        'stop',
@@ -65,8 +65,8 @@ lemmaDict= {'arrive':       'arrive',
             'on':           'on',
             'before':       'before',
             'after':        'after',
-	    'in':           'in',
-	    'into':         'into'
+            'in':           'in',
+            'into':         'into'
             }
 
 def harmonicMean(x,y):
@@ -149,43 +149,43 @@ def splitTAB(text):
 
     return splitList
     
-class adict(dict):
-    def __init__(self, invisible=True):
-        dict.__init__(self)
-        self.iter = 0
-        self.rev = {}
-        self.invisible = invisible
-        
-    def __getitem__(self, key):
-        try:
-            return dict.__getitem__(self, key)
-        except KeyError:
-            self.iter += 1
-            
-            if self.invisible:
-                dict.__setitem__(self, key, key)
-                self.rev[key] = key
-                return key
-            else:
-                dict.__setitem__(self, key, self.iter)
-                self.rev[self.iter] = key
-                return self.iter
-                        
-    def getKey(self, value):
-        try:
-            return self.rev[value]
-        except KeyError:
-            raise ValueError('Wrong dict value.')
-            
-    def write(self, fn):
-        f = file(fn, 'wb')
-        pickle.dump(self, f)
-        f.close()
-        return
-    
-    @classmethod
-    def read(cls, fn):
-        f = file(fn, 'rb')
-        c = pickle.load(f)
-        f.close()
-        return c
+##class adict(dict):
+##    def __init__(self, invisible=True):
+##        dict.__init__(self)
+##        self.iter = 0
+##        self.rev = {}
+##        self.invisible = invisible
+##        
+##    def __getitem__(self, key):
+##        try:
+##            return dict.__getitem__(self, key)
+##        except KeyError:
+##            self.iter += 1
+##            
+##            if self.invisible:
+##                dict.__setitem__(self, key, key)
+##                self.rev[key] = key
+##                return key
+##            else:
+##                dict.__setitem__(self, key, self.iter)
+##                self.rev[self.iter] = key
+##                return self.iter
+##                        
+##    def getKey(self, value):
+##        try:
+##            return self.rev[value]
+##        except KeyError:
+##            raise ValueError('Wrong dict value.')
+##            
+##    def write(self, fn):
+##        f = file(fn, 'wb')
+##        pickle.dump(self, f)
+##        f.close()
+##        return
+##    
+##    @classmethod
+##    def read(cls, fn):
+##        f = file(fn, 'rb')
+##        c = pickle.load(f)
+##        f.close()
+##        return c

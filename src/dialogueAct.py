@@ -11,17 +11,16 @@ from transformation import *
 from trigger import *
       
 class DialogueAct:
-    def __init__(self, cuedDA, text, vocabulary, db, settings):
+    def __init__(self, cuedDA, text, db, settings):
         # train data values
         self.cuedDA = cuedDA
         self.text = ' '.join(text.split())
         self.tbedText = ' '.join(text.split())
-        self.vocabulary = vocabulary
         self.db = db
         self.settings = settings
 
-        self.speechAct = self.vocabulary['']
-        self.tbedSpeechAct = self.vocabulary['inform']
+        self.speechAct = ''
+        self.tbedSpeechAct = 'inform'
         
         self.slots = []
         self.tbedSlots = []
@@ -38,8 +37,8 @@ class DialogueAct:
     def __str__(self):
         s = self.text+' - '
         s+= self.cuedDA+' - '
-        s+= self.vocabulary.getKey(self.speechAct)+' - '
-        s+= self.vocabulary.getKey(self.tbedSpeechAct)+' - '
+        s+= self.speechAct+' - '
+        s+= self.tbedSpeechAct+' - '
         s+= str(self.slots)+' - '
         s+= str(self.tbedSlots)+' - '
 
@@ -112,7 +111,7 @@ class DialogueAct:
 
         # get the speech-act
         i = cuedDA.index("(")
-        speechAct = self.vocabulary[cuedDA[:i]]
+        speechAct = cuedDA[:i]
         slots = cuedDA[i:].lower()
         slots = slots.replace('(', '')
         slots = slots.replace(')', '')
@@ -168,11 +167,7 @@ class DialogueAct:
             
         if self.settings['DBItems'] != 'replace':
             return
-        
-        f = file('dbItemsReplacement.txt', 'a')
-        f.write('#'*80+'\n')
-        f.write('Text:         '+ self.text+'\n')
-        
+      
         for (sn, sv, svs, c, cc) in self.db.values:
             while True:
                 i = self.text.find(svs)
@@ -207,7 +202,6 @@ class DialogueAct:
                     break
 
         self.words = split(self.text)
-        self.words = [self.vocabulary[w] for w in self.words]
         
         # now I have to get rid of indexes and create dictionary
         # with positions and correct slot values
@@ -229,7 +223,6 @@ class DialogueAct:
 ##        
         
         self.words = split(self.text)
-        self.words = [self.vocabulary[w] for w in self.words]
 
         sv_count = {}
         sv_map = {}
@@ -264,17 +257,18 @@ class DialogueAct:
 ##        print self.text
 ##        print self.renderCUED()
         
-        
 ##        self.text = re.sub('-\d+','',self.text)
 ##        self.words = split(self.text)
-##        self.words = [self.vocabulary[w] for w in self.words]
         
-        for k, v in sorted(self.valueDictPositions.items()):
-            f.write('Subst value:  %2d => %30s = %s\n' % (k, v, self.words[k]))
-        f.write('DB Text:      '+ self.text+'\n')
-        f.write('Slots:        '+ str([x.renderCUED(False) for x in self.slots]))
-        f.write('\n')
-        f.close()
+##        f = file('dbItemsReplacement.txt', 'a')
+##        f.write('#'*80+'\n')
+##        f.write('Text:         '+ self.text+'\n')
+##        for k, v in sorted(self.valueDictPositions.items()):
+##            f.write('Subst value:  %2d => %30s = %s\n' % (k, v, self.words[k]))
+##        f.write('DB Text:      '+ self.text+'\n')
+##        f.write('Slots:        '+ str([x.renderCUED(False) for x in self.slots]))
+##        f.write('\n')
+##        f.close()
         
 
     def replaceDBItemsTbed(self):
@@ -322,14 +316,13 @@ class DialogueAct:
                 else:
                     break
         
-    def genGrams(self):
+    def genGrams(self, gramIDF):
         if not hasattr(self, 'settings'):
             return
         
         if not hasattr(self, 'word'):
             # I did not run replaceDBItems(); as a result, I have to split text
             self.words = split(self.text)
-            self.words = [self.vocabulary[w] for w in self.words]
         
         self.grams = defaultdict(set)
         # generate regular unigrams, bigrams, trigrams, ... from text
@@ -374,8 +367,27 @@ class DialogueAct:
                             # I got the nearest left POS tag
                             self.grams[(self.getLemma(j),'*nl-'+pos,w)].add((i, i))
                             
-##                            print (self.getLemma(j),'*nl-'+pos,w), (j, i)
+##                            print (self.getLemma(j),'*nl-'+pos,w), (i, i)
     
+        for g in self.grams:
+            gramIDF[g] += 1.0
+
+    def removeGrams(self, remGrams):
+        """ I prune all grams from the list remGrams. Only singleton grams across 
+        all dialogue acts should be removed. The method returns all deleted grams.
+        
+        Once deleted gram does not have to be tested again becasue we know that was 
+        a singleton across all DAs.
+        """
+        
+        ret = []
+        for rg in remGrams:
+            if rg in self.grams:
+                del self.grams[rg]
+                ret.append(rg)
+                
+        return ret
+            
     def getAllPOSTags(self):
         return ['VB', 'IN']
         
@@ -392,14 +404,14 @@ class DialogueAct:
             return self.words[j]
     
     def renderCUED(self, origSV=False):
-        DA = self.vocabulary.getKey(self.speechAct)
+        DA = self.speechAct
         rendered_slots = ','.join([each_slot.renderCUED(origSV) for each_slot in self.slots])
         DA += '('+rendered_slots+')'
 
         return DA
         
     def renderTBED(self, origSV = True):
-        DA = self.vocabulary.getKey(self.tbedSpeechAct)
+        DA = self.tbedSpeechAct
         rendered_slots = [each_slot.renderTBED(origSV, self.valueDictPositions,self.words) for each_slot in self.tbedSlots]
         
         # I filter out sequencial duplicities among slot

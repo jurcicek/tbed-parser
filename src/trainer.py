@@ -191,7 +191,6 @@ class Trainer(Decoder):
             self.writeDecoderPickle(os.path.join(self.tmpData,'rules.pckl-decoder'))
             self.writeBestRulesTXT(os.path.join(self.tmpData,'rules.txt'))
             self.writeBestRulesPickle(os.path.join(self.tmpData,'rules.pckl-bestrules'))
-            self.writeVocabulary(os.path.join(self.tmpData,'rules.pckl-vocabulary'))
 
             self.iRule += 1
             bestRules = self.findBestRules()

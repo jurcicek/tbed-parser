@@ -4,6 +4,7 @@ from string import *
 import re, pickle
 from copy import *
 from collections import *
+from math import *
 
 from utils import *
 from slot import *
@@ -16,7 +17,6 @@ class DecoderData:
 
 class Decoder:
     def __init__(self, trgCond=None):
-        self.vocabulary = adict()
         self.trgCond = trgCond
         self.db = SlotDatabase()
         return
@@ -26,6 +26,8 @@ class Decoder:
 
     def loadData(self, inputFile):
         self.das = []
+        self.gramIDF = defaultdict(int)
+        
         # read the training data
         # build all DAs
         sem = file(inputFile, 'r')
@@ -39,13 +41,31 @@ class Decoder:
             if len(sentence) == 0 or len(da) == 0:
                 continue
     
-            da = DialogueAct(da, sentence, self.vocabulary, self.db, self.trgCond)
+            da = DialogueAct(da, sentence, self.db, self.trgCond)
             da.parse()
             da.replaceDBItems()
-            da.genGrams()
+            da.genGrams(self.gramIDF)
     
             self.das.append(da)
+        
+
+        self.remGrams = [g for g in self.gramIDF if self.gramIDF[g] == 1]
                 
+##        f = file('removedGrams.txt', 'w')
+##        for i, g in enumerate(self.remGrams):
+##            f.write('%d %s\n' % (i, g))
+##        f.close()
+        
+        # delete all singleton grams from grams in DAs
+        # search for rules will be faster 
+        for da in self.das:
+            ret = da.removeGrams(self.remGrams)
+            
+            for rg in ret:
+                # I do not have to search for rg gram because it was already deleted
+                # it was a singleton.
+                self.remGrams.remove(rg)
+        
         return
 
     def loadTbedData(self, inputFile):
@@ -159,13 +179,55 @@ class Decoder:
     def writeDecoderPickle(self, fn):
         dd = DecoderData()
         
-        dd.vocabulary = self.vocabulary
         dd.bestRules = self.bestRules
         dd.trgCond = self.trgCond
         
         f = file(fn,'wb')
         pickle.dump(dd, f)
         f.close()
+
+    def analyzeRules(self):
+        print 'Number of read rules:     ', len(decoder.bestRules)
+        print 'Number of unique rules:   ', len(set(decoder.bestRules))
+        
+        compresedRules = []
+        
+        for r in decoder.bestRules:
+            r = deepcopy(r)
+            # modify trigger gram
+            if r.trigger.gram != None:
+                g = list(r.trigger.gram)
+                for i, w in enumerate(g):
+                    if w.startswith('sv_'):
+                        g[i] = re.sub('-\d+', '', w)
+                
+                r.trigger.gram = tuple(g)
+                
+            # modify trigger slots
+            if r.trigger.slots != None:
+                for i, s in enumerate(r.trigger.slots):
+                    if s.value.startswith('sv_'):
+                        r.trigger.slots[i].value = re.sub('-\d+', '', s.value)
+                
+            # modify trans
+            if r.transformation.addSlot != None:
+                if r.transformation.addSlot.value.startswith('sv_'):
+                    r.transformation.addSlot.value = re.sub('-\d+', '', r.transformation.addSlot.value)
+                
+            if r.transformation.delSlot != None:
+                if r.transformation.delSlot.value.startswith('sv_'):
+                    r.transformation.delSlot.value = re.sub('-\d+', '', r.transformation.delSlot.value)
+                
+            if r not in compresedRules:
+                compresedRules.append(r)
+               
+        print 'Number of compresed rules:', len(set(compresedRules))
+        
+        # print rules
+        f = file('rules.compresed.txt','w')
+        for i in range(len(compresedRules)):
+            f.write(compresedRules[i].write(i))
+        f.close
     
     @classmethod
     def readDecoderPickle(cls, fn):
@@ -174,52 +236,9 @@ class Decoder:
         f.close()
         
         decoder = cls()
-        decoder.vocabulary = dd.vocabulary
         decoder.bestRules = dd.bestRules
         decoder.trgCond = dd.trgCond
         
-##        print 'Number of read rules:     ', len(decoder.bestRules)
-##        print 'Number of unique rules:   ', len(set(decoder.bestRules))
-##        
-##        compresedRules = []
-##        
-##        for r in decoder.bestRules:
-##            r = deepcopy(r)
-##            # modify trigger gram
-##            if r.trigger.gram != None:
-##                g = list(r.trigger.gram)
-##                for i, w in enumerate(g):
-##                    if w.startswith('sv_'):
-##                        g[i] = re.sub('-\d+', '', w)
-##                
-##                r.trigger.gram = tuple(g)
-##                
-##            # modify trigger slots
-##            if r.trigger.slots != None:
-##                for i, s in enumerate(r.trigger.slots):
-##                    if s.value.startswith('sv_'):
-##                        r.trigger.slots[i].value = re.sub('-\d+', '', s.value)
-##                
-##            # modify trans
-##            if r.transformation.addSlot != None:
-##                if r.transformation.addSlot.value.startswith('sv_'):
-##                    r.transformation.addSlot.value = re.sub('-\d+', '', r.transformation.addSlot.value)
-##                
-##            if r.transformation.delSlot != None:
-##                if r.transformation.delSlot.value.startswith('sv_'):
-##                    r.transformation.delSlot.value = re.sub('-\d+', '', r.transformation.delSlot.value)
-##                
-##            if r not in compresedRules:
-##                compresedRules.append(r)
-##               
-##        print 'Number of compresed rules:', len(set(compresedRules))
-##        
-##        # print rules
-##        f = file('rules.compresed.txt','w')
-##        for i in range(len(compresedRules)):
-##            f.write(compresedRules[i].write(i))
-##        f.close
-
         # print rules
         f = file('rules.filtered.txt','w')
         a = [x for x in decoder.bestRules if x.transformation.addSlot != None]
@@ -254,12 +273,6 @@ class Decoder:
             
         return n
 
-    def writeVocabulary(self, fn):
-        self.vocabulary.write(fn)
-        
-    def readVocabulary(self, fn):
-        self.vocabulary = self.vocabulary.read(fn)
-        
     def writeBestRulesTXT(self, fn):
         # print rules
         f = file(fn,'w')
