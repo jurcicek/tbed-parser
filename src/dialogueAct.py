@@ -20,7 +20,7 @@ class DialogueAct:
         self.settings = settings
 
         self.speechAct = ''
-        self.tbedSpeechAct = 'inform'
+        self.tbedSpeechAct = ''
         
         self.slots = []
         self.tbedSlots = []

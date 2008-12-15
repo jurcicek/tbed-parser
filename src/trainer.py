@@ -44,8 +44,11 @@ class Trainer(Decoder):
         dat = [(datStat[sa], sa) for sa in datStat]
         dat.sort(reverse = True)
         
-        # return rule which assignes to dat the most common speech act
+        # return rule which assigns to dat the most common speech act
         r = Rule(Trigger(), Transformation(speechAct=dat[0][1]))
+        r.netScore = minNetScore
+        
+        r = Rule(Trigger(), Transformation(speechAct='unknown'))
         r.netScore = minNetScore
         
         return [r,]
