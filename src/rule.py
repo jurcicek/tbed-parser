@@ -62,8 +62,15 @@ class Rule:
     def complexity(self):
         return self.trigger.complexity()+self.transformation.complexity()
 
-    # cmp function for sort()
+    def cmpOcc(self, r):
+        ''' cmp function for sort() '''
+        ret = cmp(self.occurence, r.occurence)
+        
+        return ret
+        
     def cmpPlx(self, r):
+        ''' cmp function for sort() '''
+        
         if self.netScore == r.netScore == -1000000:
             return 0
             
@@ -71,7 +78,7 @@ class Rule:
         
         if ret == 0:
             ret = cmp(self.complexity(),r.complexity())
-        
+            
         return ret
     
     def setPerformance(self, netScore):

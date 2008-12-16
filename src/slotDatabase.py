@@ -1,13 +1,13 @@
 #!/usr/bin/env python2.5
 
-from collections import *
 from utils import *
-import glob,re
+
+from collections import *
+import glob,re,commands
 
 class SlotDatabase:
     def __init__(self):
         self.db  = defaultdict(dset_factory)
-##        self.db['near']['cinema'].add('cinema')
         self.values = []
         self.slotNamesValues  = defaultdict(list)
         
@@ -33,6 +33,7 @@ class SlotDatabase:
                 if len(l) >= 2:
                     synonyms = set()
                     
+                    # add the the first lexical form
                     exp = tuple(l[0].split(' '))
                     synonyms.add(exp)
                     # add synonyms (if there are any)
@@ -40,14 +41,26 @@ class SlotDatabase:
                         exp = tuple(l[i].split(' '))
                         synonyms.add(exp)
                     
-##                    extSynonyms = set()
-##                    for syn in synonyms:
-##                        extSynonyms.update(powerset(syn))
-##                    
                     extSynonyms = synonyms
                     extSynonyms = set([' '.join(x) for x in extSynonyms])
+                    
+##                    morphSynonyms = set()
+##                    for each in extSynonyms:
+##                        # call morphological analyzer from RASP-2.0
+##                        (status, mrph) = commands.getstatusoutput('morpha "%s"' % each)
+##                        if status != 0:
+##                            break
+##                        
+##                        print each, mrph
+##                            
+##                        morphSynonyms.add(mrph)
+##                    
+##                    extSynonyms.update(morphSynonyms)
 
-                
+                    extSynonyms.update([x.replace(' ', '-') for x in extSynonyms])
+                    
+            
+                    
                     # add all value for the slot name
                     if extSynonyms:
                         self.db[l[1]][l[0]].update(extSynonyms)
@@ -57,7 +70,7 @@ class SlotDatabase:
         for sn in self.db:
             for sv in self.db[sn]:
                 for svs in self.db[sn][sv]:
-                    self.values.append((sn, sv, svs, svs.count(' '), len(svs))) 
+                    self.values.append((sn, sv, svs, svs.count(' ')+svs.count('-'), len(svs))) 
 
         self.values.sort(cmp=lambda x,y: cmp(x[3], y[3]) if x[3] != y[3] else cmp(x[4], y[4]), reverse=True)
 
@@ -115,10 +128,13 @@ class SlotDatabase:
                         # self.db['name']['primus hotel'] 
                         #       = ['primus hotel', 'primus']
                         pass
-                        
-                    # delete origonal duplicit svs
-                    for (sn, sv) in svsDict[svs]:
-                        self.db[sn][sv].remove(svs) 
+
+                    # I do not want to delete the duplicates becasue
+                    # during DB raplecemnts I would not be able to find 
+                    # for 'new york city' slot value 'new york'
+##                    # delete origonal duplicit svs
+##                    for (sn, sv) in svsDict[svs]:
+##                        self.db[sn][sv].remove(svs) 
             
             # regenerate the list of slot value synonyms
             self.values = []

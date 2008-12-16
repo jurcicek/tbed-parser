@@ -94,11 +94,14 @@ def prepareForRASP(text, db):
 
 def tagReduction(match):
     value = match.group()
+##    print value
     try:
-        value = value[:2]
+        value = value[:3]
     except:
         pass
 
+##    print value
+    
     return value
 
 def genTrainData():
@@ -229,7 +232,7 @@ def genTrainData():
     rasp = atisTrainRASPOut.readlines()
     wordNumber = re.compile(r':\d+_')
     tagNumber = re.compile(r'\d+\|')
-    tag = re.compile(r'([A-Z]+)|')
+    tag = re.compile(r'_([A-Z]+)|')
     
     i = 0
     while i < len(rasp) :
@@ -343,7 +346,7 @@ def genTestData(atisFrmFN, atisNorFN, atisOutFN, atisCapsOutFN, atisRASPOutFN, a
     rasp = atisRASPOut.readlines()
     wordNumber = re.compile(r':\d+_')
     tagNumber = re.compile(r'\d+\|')
-    tag = re.compile(r'([A-Z]+)|')
+    tag = re.compile(r'_([A-Z]+)|')
     
     i = 0
     while i < len(rasp) :

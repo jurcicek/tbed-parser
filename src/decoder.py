@@ -32,16 +32,24 @@ class Decoder:
         # build all DAs
         sem = file(inputFile, 'r')
         semLines = sem.readlines()
+        
+        if self.trgCond['useDeps'] == 1:
+            dep = file(inputFile+'.dep', 'r')
+            depLines = dep.readlines()
 
-        for line in semLines:
+        for (i, line) in enumerate(semLines):
             splt = split(line, '<=>')
             sentence = strip(splt[0])
             da = strip(splt[1])
 
             if len(sentence) == 0 or len(da) == 0:
                 continue
-    
-            da = DialogueAct(da, sentence, self.db, self.trgCond)
+            
+            if self.trgCond['useDeps'] == 0:
+                da = DialogueAct(da, sentence, self.db, self.trgCond, origSentence = sentence)
+            else:
+                da = DialogueAct(da, depLines[i], self.db, self.trgCond, origSentence = sentence)
+                
             da.parse()
             da.replaceDBItems()
             da.genGrams(self.gramIDF)

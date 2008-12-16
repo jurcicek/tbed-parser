@@ -84,8 +84,7 @@ class Trainer(Decoder):
         print '                 pruned to: %d' % len(rules)
 
         self.rls = rules.keys() 
-        # I might delete rules it seem that I do not need it any more
-        self.rls.sort(cmp=lambda x,y: cmp(x.occurence, y.occurence), reverse=True)
+        self.rls.sort(cmp=lambda x,y: x.cmpOcc(y), reverse=True)
 
         # apply each rule and measure the score
         R = 0

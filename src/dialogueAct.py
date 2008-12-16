@@ -11,24 +11,40 @@ from transformation import *
 from trigger import *
       
 class DialogueAct:
-    def __init__(self, cuedDA, text, db, settings):
+    def __init__(self, cuedDA, sentence, db, settings, origSentence):
         # train data values
         self.cuedDA = cuedDA
-        self.text = ' '.join(text.split())
-        self.tbedText = ' '.join(text.split())
         self.db = db
         self.settings = settings
-
-        self.speechAct = ''
-        self.tbedSpeechAct = ''
+        self.origText = origSentence
         
+        if self.settings['useDeps'] == 0:
+            self.text = ' '.join(sentence.split())
+        else:
+            # separate deps and text
+            self.text = sentence.split('|||')
+            self.deps = self.text[1]
+            self.text = self.text[0]
+            
+        # separate text, lemmas, and POS tags
+        self.posTags = self.getPOSTags(self.text)
+        self.lemmas = self.getLemmas(self.text)
+        self.text = self.getText(self.text)
+        
+        if len(self.text.split(' ')) != len(self.origText.split(' '))+1:
+            print len(self.origText.split(' '))+1, self.origText
+            print len(self.text.split(' ')), self.text
+            print
+            
+        
+        self.speechAct = ''
         self.slots = []
+        
+        self.tbedSpeechAct = ''
         self.tbedSlots = []
         
         self.valueDictCounter = defaultdict(int)
         self.valueDict = {}
-        self.tbedValueDictCounter = defaultdict(int)
-        self.tbedValueDict = {}
         
         # in this array I store all rules applied on the DA in 
         # the sequencial order
@@ -104,7 +120,32 @@ class DialogueAct:
             f.write('%50s (%.2d,%.2d,%.2d,%.2d) <= %s\n' % (each.renderTBED(False, self.valueDictPositions, self.words), each.leftBorder, each.leftMiddle, each.rightMiddle, each.rightBorder, str(sorted(each.lexIndex))))
         f.write('.'*80+'\n')
 
-    def parseDA(self, cuedDA, text):
+    def getPOSTags(self, text):
+        t = text.split()
+        p = re.compile(r'.*_')
+        pos = [p.sub('', x) for x in t]
+        
+        self.allPOSTags = set(pos)
+        
+        return pos
+
+    def getLemmas(self, text):
+        t = text.split()
+        p = re.compile(r'(\+\w+|):\d+_\S+$')
+        pos = [p.sub('', x) for x in t]
+        
+        return pos
+        
+    def getText(self, text):
+        t = text.split()
+        p = re.compile(r':\d+_\S+$')
+        pos = ' '.join([p.sub('', x) for x in t])
+        
+        return pos
+        
+    def parse(self):
+        cuedDA = self.cuedDA
+        
         numOfDAs = len(splitByComma(cuedDA))
         if numOfDAs > 1:
             raise ValueError('Too many DAs in input text.')
@@ -121,9 +162,6 @@ class DialogueAct:
             # no slots to process
             slots = []
         else:
-            # Francois's hack:
-            slots = slots.replace('.!=', '!=').replace('zeroProb-','')
-            
             # split slots
             slots = splitByComma(slots)
             for slt in slots:
@@ -132,20 +170,12 @@ class DialogueAct:
                     s.parse()
                     slts.append(s)
                 except ValueError:
-                    # check for Francois invalid slot items
+                    # check for invalid slot items
                     pass
 
-        return speechAct, slts
+        self.speechAct = speechAct
+        self.slots = slts
 
-    def parse(self):
-        self.speechAct, self.slots = self.parseDA(self.cuedDA, self.text)
-    
-    def parseTbed(self, cuedDA, text):
-##        if text != self.text:
-##            raise ValueError('Loaded tbed text must equal to the training text.')
-            
-        self.tbedSpeechAct, self.tbedSlots = self.parseDA(cuedDA, text)
-    
     def replaceSV(self, text, sn, sv, i):
         return text[0:i]+sn+text[i+len(sv):]
         
@@ -190,10 +220,14 @@ class DialogueAct:
 
                     # find slot which match
                     for slt in self.slots:      
-##                        if slt.name.endswith(sn) and slt.value in self.db[sn][sv]:
                         # I do not check wheter there is the same name of the slot name
                         # for the substituted  slot value. If I chose a wrong slot
-                        # value label, I have to lear how to fix it
+                        # value label, I have to learn how to fix it
+                        
+##                        if slt.value == "new york":
+##                            print slt.value
+##                            print  sn, sv, self.db[sn][sv]
+
                         if slt.value in self.db[sn][sv]:
                             slt.origValue = slt.value
                             slt.value = newSV2
@@ -211,17 +245,6 @@ class DialogueAct:
             if w.startswith('sv_'):
                 self.valueDictPositions[i] = self.valueDict[w]
 
-##        print self.text
-##        r = re.compile('\w+-\d+')
-##        pos = 0
-##        while True:
-##            m = r.search(self.text, pos)
-##            if m == None:
-##                break
-##            pos = m.end()
-##            print m.start(), m.end(), self.text[m.start():m.end()]
-##        
-        
         self.words = split(self.text)
 
         sv_count = {}
@@ -254,21 +277,15 @@ class DialogueAct:
             if slt.value in sv_map:
                 slt.value = sv_map[slt.value]
         
-##        print self.text
-##        print self.renderCUED()
-        
-##        self.text = re.sub('-\d+','',self.text)
-##        self.words = split(self.text)
-        
-##        f = file('dbItemsReplacement.txt', 'a')
-##        f.write('#'*80+'\n')
-##        f.write('Text:         '+ self.text+'\n')
-##        for k, v in sorted(self.valueDictPositions.items()):
-##            f.write('Subst value:  %2d => %30s = %s\n' % (k, v, self.words[k]))
-##        f.write('DB Text:      '+ self.text+'\n')
-##        f.write('Slots:        '+ str([x.renderCUED(False) for x in self.slots]))
-##        f.write('\n')
-##        f.close()
+        f = file('dbItemsReplacement.txt', 'a')
+        f.write('#'*80+'\n')
+        f.write('Text:         '+ self.text+'\n')
+        for k, v in sorted(self.valueDictPositions.items()):
+            f.write('Subst value:  %2d => %30s = %s\n' % (k, v, self.words[k]))
+        f.write('DB Text:      '+ self.text+'\n')
+        f.write('Slots:        '+ str([x.renderCUED(False) for x in self.slots]))
+        f.write('\n')
+        f.close()
         
 
     def genGrams(self, gramIDF):
@@ -307,23 +324,33 @@ class DialogueAct:
                 self.grams[(self.words[i-4],'*3',self.words[i])].add((i-4, i))
                 
         # generate nearest POS tag lemma bigrams
-        for i, w in enumerate(self.words):
-            # generate long ranging dependencies only for slot values
-            if w.startswith('sv_'):
-                # generate LRD for all pos tags, the learning alg. will 
-                # chose all suitable POS resp. triggers
-                for pos in self.getAllPOSTags():
-                    # find nearest left POS tag
-                    for j in range(i, -1, -1):
-##                        if self.words[j] == 'leaving':
-##                            print pos, w, j, self.getPOSTag(j), self.words[j], self.getLemma(j), self.words
-                        if self.getPOSTag(j) == pos:
+        if self.settings['useDeps'] and self.settings['nearestLeftPOSWord']:
+            for i, w in enumerate(self.words):
+                # generate long ranging dependencies only for slot values
+                if w.startswith('sv_'):
+                    # generate LRD for all pos tags, the learning alg. will 
+                    # chose all suitable POS resp. triggers
+                    for pos in self.allPOSTags:
+                        # find nearest left POS tag
+                        for j in range(i, -1, -1):
+##                        if self.words[j] == 'leave+ing':
+##                            print pos
+##                            print w
+##                            print j
+##                            print self.posTags[j]
+##                            print self.origText
+##                            print self.words[j]
+##                            print self.lemmas[j]
+##                            print self.words
+##                            print self.lemmas
+##                            print self.posTags
+##                            print
                             
-                            # I got the nearest left POS tag
-                            self.grams[(self.getLemma(j),'*nl-'+pos,w)].add((i, i))
+                            if self.posTags[j] == pos:
+                                # I got the nearest left POS tag
+                                self.grams[(self.lemmas[j],'*nl-'+pos,w)].add((i, i))
+                                break
                             
-##                            print (self.getLemma(j),'*nl-'+pos,w), (i, i)
-    
         for g in self.grams:
             gramIDF[g] += 1.0
 
@@ -343,21 +370,6 @@ class DialogueAct:
                 
         return ret
             
-    def getAllPOSTags(self):
-        return ['VB', 'IN']
-        
-    def getPOSTag(self, j):
-        try:
-            return posDict[lemmaDict[self.words[j]]]
-        except:
-            return 'UNK'
-            
-    def getLemma(self, j):
-        try:
-            return lemmaDict[self.words[j]]
-        except:
-            return self.words[j]
-    
     def renderCUED(self, origSV=False):
         DA = self.speechAct
         rendered_slots = ','.join([each_slot.renderCUED(origSV) for each_slot in self.slots])
@@ -384,14 +396,17 @@ class DialogueAct:
         return DA
 
     def renderText(self):
-        ws=[]
-        for i, ew in enumerate(self.words):
-            if i in self.valueDictPositions:
-                ws.append(self.valueDictPositions[i][1])
-            else:
-                ws.append(ew)
-        return ' '.join(ws)
-        
+        if self.settings['useDeps'] == 0:
+            ws=[]
+            for i, ew in enumerate(self.words):
+                if i in self.valueDictPositions:
+                    ws.append(self.valueDictPositions[i][1])
+                else:
+                    ws.append(ew)
+            return ' '.join(ws)
+        else:
+            return self.origText
+            
     def getNumOfSlots(self):
         return len(self.slots)
         
