@@ -566,18 +566,7 @@ class DialogueAct:
             for slot in self.tbedSlots:
                 slotsCond.append([deepcopy(slot),])
                 
-            if self.settings['nSlots'] >= 2:
-                ts = list(self.tbedSlots)
-                for i in range(len(ts)):
-                    for j in range(i+1, len(ts)):
-                        slotsCond.append([deepcopy(ts[i]),deepcopy(ts[j])])
-
-        # sentece length trigger
-        lengthCond = [None,]
-        if self.settings['lngth'] >= 1:
-            lengthCond.append(len(self.words))
-        
-        # sentece length trigger, None mean I do not care
+        # sentece hasSlot trigger, None mean I do not care
         hasSlotsCond = [None,]
         if self.settings['hasSlots'] >= 1:
             if len(self.tbedSlots) == 0:
@@ -591,13 +580,11 @@ class DialogueAct:
         for sa in saCond:
             for gram in self.grams:
                 for slot in slotsCond:
-                    for lngth in lengthCond:
-                        for hasSlots in hasSlotsCond:
-                            triggers.add(
-                                Trigger(speechAct=sa, 
-                                        gram=gram, 
-                                        slots=slot,
-                                        lngth=lngth,
-                                        hasSlots=hasSlots))
+                    for hasSlots in hasSlotsCond:
+                        triggers.add(
+                            Trigger(speechAct=sa, 
+                                    gram=gram, 
+                                    slots=slot,
+                                    hasSlots=hasSlots))
         
         return triggers

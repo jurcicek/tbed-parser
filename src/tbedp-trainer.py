@@ -5,9 +5,9 @@ import getopt
 import sys
 
 trainData   = 'debug500.sem'
-db   = 'debug_db'
+db          = 'debug_db'
 
-trgCond = {'nGrams':2, 'nStarGrams':3, 'tplGrams':1, 'speechAct':1, 'nSlots':1, 'lngth':1, 'hasSlots':1}
+trgCond = {'nGrams':2, 'nStarGrams':3, 'speechAct':1, 'nSlots':1, 'hasSlots':1}
 
 tmpData = ''
 iniTrain = False
@@ -41,19 +41,11 @@ Options:
         nStarGrams=NUMBER : star grams type generated for triggers 
                             (3 - trigrams e.g. ('was', '*', 'hard'), 
                             4 - four grams ('x','*',*','y') 
-        tplGrams=NUMBER   : grams x grams used for triggers 
-                            (1 - just trgNGrams, 2 - 2xtrgNGrams)
         speechAct=NUMBER  : 0 - no dependence on speech act
                             1 - some triggers depend on speech acts
         nSlots=NUMBER     : 0 - no dependence on slots
                             1 - some triggers may depend on already 
                                 added slot
-                            2 - some triggers may depend on already added 
-                                one or two slots
-        lngth=NUMBER      : 0 - no dependence on length of the input word 
-                                sequence
-                            1 - some triggers depend on the length of the 
-                                input word sequence
         hasSlots=NUMBER   : 0 - no dependence on whether DA has slots or not
                             1 - a rule can depend on whether DA has slots 
                                 or not
@@ -152,3 +144,4 @@ if verbose:
     print "---------------------------------------------"
     print "TBED trainer: end"
     print "---------------------------------------------"
+
