@@ -10,7 +10,6 @@ db          = 'debug_db'
 trgCond = {'nGrams':2, 'nStarGrams':3, 'speechAct':1, 'nSlots':1, 'hasSlots':1}
 
 tmpData = ''
-iniTrain = False
 outBestRulesTXT='results.rules'
 outBestRulesPickle='results.pckl-bestrules'
 outDecoderPickle='results.pckl-decoder'
@@ -27,7 +26,6 @@ Options:
     -h                    : print this help message and exit
     -v                    : produce verbose output
     -p                    : profile
-    -i                    : initialize training with 'trainData'.ini file
     --trainData=FILE      : CUED format dialogue acts {%s}
     --tmpData=DIR         : directory for temporal data of the parser {%s}
     --outRules=FILE       : output rules file {%s}
@@ -62,7 +60,7 @@ Options:
 ##############################################################################
 
 try:
-    opts, args = getopt.gnu_getopt(sys.argv[1:], "hvpi", 
+    opts, args = getopt.gnu_getopt(sys.argv[1:], "hvp", 
         ["trainData=",
          "outRules=", 
          "outPickle=",
@@ -89,8 +87,6 @@ for o, a in opts:
         profile = True
     elif o == "-t":
         text = True
-    elif o == "-i":
-        iniTrain = True
     elif o == "--trainData":
         trainData = a
     elif o == "--tmpData":
@@ -118,9 +114,6 @@ print trn.trgCond
 
 trn.loadDB(db)
 trn.loadData(trainData)
-if iniTrain:
-    trn.loadTbedData(trainData+'.ini')
-
 
 if profile:
     # sometimes is needed to delete *.pyc files because psyco is used if you do 

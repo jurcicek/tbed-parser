@@ -67,23 +67,6 @@ class Decoder:
                 self.remGrams.remove(rg)
         
         return
-
-    def loadTbedData(self, inputFile):
-        # read the training data
-        # build all DAs
-        sem = file(inputFile, 'r')
-        semLines = sem.readlines()
-
-        for i in range(len(semLines)):
-            splt = split(semLines[i], '<=>')
-            sentence = strip(splt[0])
-            da = strip(splt[1])
-
-            if len(sentence) == 0 or len(da) == 0:
-                continue
-    
-            self.das[i].parseTbed(da, sentence)
-            self.das[i].replaceDBItemsTbed()
         
     def decode(self, nRules=-1):
         dcdRules = self.bestRules[:nRules]

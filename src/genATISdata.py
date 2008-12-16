@@ -11,23 +11,23 @@ iiStop = 10000
 atisDB = '/home/filip/cued/ATIS/db_filip'
 atisTrainSlotsFN = '/home/filip/cued/ATIS/atis_train.slots'
 atisTrainOutFN = '/home/filip/cued/ATIS/new.atis-train.sem'
-atisTrainCapsOutFN = '/home/filip/cued/ATIS/new.atis-train.cap'
-atisTrainRASPOutFN = '/home/filip/cued/ATIS/new.atis-train.rasp'
-atisTrainDepsOutFN = '/home/filip/cued/ATIS/new.atis-train.dep'
+atisTrainCapsOutFN = '/home/filip/cued/ATIS/new.atis-train.sem.cap'
+atisTrainRASPOutFN = '/home/filip/cued/ATIS/new.atis-train.sem.rasp'
+atisTrainDepsOutFN = '/home/filip/cued/ATIS/new.atis-train.sem.dep'
 
 atisTestNorFN = '/home/filip/cued/ATIS/atis3_test_nov93.nor'
 atisTestFrmFN = '/home/filip/cued/ATIS/atis3_test_nov93_can.frm'
 atisTestOutFN = '/home/filip/cued/ATIS/new.atis-test.sem'
-atisTestCapsOutFN = '/home/filip/cued/ATIS/new.atis-test.cap'
-atisTestRASPOutFN = '/home/filip/cued/ATIS/new.atis-test.rasp'
-atisTestDepsOutFN = '/home/filip/cued/ATIS/new.atis-test.dep'
+atisTestCapsOutFN = '/home/filip/cued/ATIS/new.atis-test.sem.cap'
+atisTestRASPOutFN = '/home/filip/cued/ATIS/new.atis-test.sem.rasp'
+atisTestDepsOutFN = '/home/filip/cued/ATIS/new.atis-test.sem.dep'
 
 atisDevNorFN = '/home/filip/cued/ATIS/atis3_test_dec94.nor'
 atisDevFrmFN = '/home/filip/cued/ATIS/atis3_test_dec94_can.frm'
 atisDevOutFN = '/home/filip/cued/ATIS/new.atis-dev.sem'
-atisDevCapsOutFN = '/home/filip/cued/ATIS/new.atis-dev.cap'
-atisDevRASPOutFN = '/home/filip/cued/ATIS/new.atis-dev.rasp'
-atisDevDepsOutFN = '/home/filip/cued/ATIS/new.atis-dev.dep'
+atisDevCapsOutFN = '/home/filip/cued/ATIS/new.atis-dev.sem.cap'
+atisDevRASPOutFN = '/home/filip/cued/ATIS/new.atis-dev.sem.rasp'
+atisDevDepsOutFN = '/home/filip/cued/ATIS/new.atis-dev.sem.dep'
 
 sdb = SlotDatabase()
 sdb.loadTAB(atisDB, False)

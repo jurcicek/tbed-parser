@@ -48,9 +48,6 @@ class Trainer(Decoder):
         r = Rule(Trigger(), Transformation(speechAct=dat[0][1]))
         r.netScore = minNetScore
         
-##        r = Rule(Trigger(), Transformation(speechAct='unknown'))
-##        r.netScore = minNetScore
-        
         return [r,]
     
     def findBestRules(self):

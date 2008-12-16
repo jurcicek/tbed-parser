@@ -271,51 +271,6 @@ class DialogueAct:
 ##        f.close()
         
 
-    def replaceDBItemsTbed(self):
-        ''' I guess that this metyhod is not neded anymmore.'''
-        
-        if self.settings == None:
-            return
-            
-        if self.settings['DBItems'] != 'replace':
-            return
-        
-##        f = file('log.txt', 'a')
-##        f.write('#'*80+'\n')
-        
-        for (sn, sv, svs, c, cc) in self.db.values:
-            while True:
-                i = self.tbedText.find(svs)
-                if i != -1:
-                    # test wheather there are spaces around the word. that it is not a 
-                    # substring of another word!
-                    if i > 0 and self.tbedText[i-1] != ' ':
-                        break
-                    if i < len(self.tbedText)-len(svs) and self.tbedText[i+len(svs)] != ' ':
-                        break
-                            
-                    # I found the slot value synonym from database in the 
-                    # sentence, I must replace it
-                    newSV = 'sv_'+sn
-                    self.tbedValueDictCounter[newSV] += 1
-##                    newSV = newSV+'-'+str(self.tbedValueDictCounter[newSV])
-                    self.tbedValueDict[newSV] = (sv, svs)
-                    
-                    self.tbedText = self.replaceSV(self.tbedText, newSV, svs, i)
-
-                    # find slot which match
-                    for slt in self.tbedSlots:      
-##                        if slt.name.endswith(sn) and slt.value in self.db[sn][sv]:
-                        # I do not check wheter there is the same name of the slot name
-                        # for the substituted  slot value. If I chose a wrong slot
-                        # value label, I have to lear how to fix it
-                        if slt.value in self.db[sn][sv]:
-                            slt.origValue = slt.value
-                            slt.value = newSV
-                            break
-                else:
-                    break
-        
     def genGrams(self, gramIDF):
         if not hasattr(self, 'settings'):
             return
