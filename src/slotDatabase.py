@@ -145,6 +145,10 @@ class SlotDatabase:
             
             self.values.sort(cmp=lambda x,y: cmp(x[3], y[3]) if x[3] != y[3] else cmp(x[4], y[4]), reverse=True)
 
+##        for (sn, sv, svs, c, cc) in self.values:
+##            if svs == 's':
+##                print sn, sv, svs, c, cc
+                
 ##        print self.values
 ##        print self.db['city_name']['tampa']
 ##        print self.db['city_name']['new york']

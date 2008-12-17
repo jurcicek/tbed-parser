@@ -42,56 +42,6 @@ sdb.loadTAB(atisDB, False)
 ##############################################################################
 ##############################################################################
 
-def replaceSV(text, sn, sv, i):
-    return text[0:i]+sn+text[i+len(sv):]
-    
-def prepareForRASP(text, db):
-    valueDictCounter = defaultdict(int)
-    valueDict = {}
-    p = False
-    
-    for (sn, sv, svs, c, cc) in db.values:
-        while True:
-            i = text.find(svs)
-            if i != -1:
-                # test wheather there are spaces around the word. that it is not a 
-                # substring of another word!
-                if i > 0 and text[i-1] != ' ':
-                    break
-                if i < len(text)-len(svs) and text[i+len(svs)] != ' ':
-                    break
-                        
-                # I found the slot value synonym from database in the 
-                # sentence, I must replace it
-                newSV1 = 'sv_'+sn
-                valueDictCounter[newSV1] += 1
-                newSV2 = newSV1+'-'+str(valueDictCounter[newSV1])
-                valueDict[newSV2] = (sv, svs)
-                
-                text = replaceSV(text, newSV2, svs, i)
-
-            else:
-                break
-
-    words = text.split()
-    
-    for i, w in enumerate(words):
-        if w.startswith('sv_'):
-            w = w.lower()
-            
-            if w.find('_name') != -1 or w.find('manufacturer') != -1:
-                words[i] = '-'.join(valueDict[w][1].title().split())
-            elif w.find('_code') != -1:
-                words[i] = '-'.join(valueDict[w][1].upper().split())
-            else:
-                words[i] = valueDict[w][1]
-                
-    words[0] = words[0][0].upper()+words[0][1:]
-    
-    text = ' '.join(words)+' .'
-    
-    return text
-
 def tagReduction(match):
     value = match.group()
 ##    print value

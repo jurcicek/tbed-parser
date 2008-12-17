@@ -4,6 +4,8 @@ import getopt
 import sys
 from decoder import *
 
+from random import seed
+
 inPickle = 'debug200.pckl-decoder'
 testData    = 'towninfo-test.sem'
 
@@ -72,6 +74,8 @@ if verbose:
     print "---------------------------------------------"
     print "TBED decoder"
     print "---------------------------------------------"
+
+seed(0)
 
 print inPickle
 dcd = Decoder.readDecoderPickle(inPickle)

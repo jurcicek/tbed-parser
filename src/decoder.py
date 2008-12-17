@@ -46,9 +46,9 @@ class Decoder:
                 continue
             
             if self.trgCond['useDeps'] == 0:
-                da = DialogueAct(da, sentence, self.db, self.trgCond, origSentence = sentence)
+                da = DialogueAct(da, sentence, Null, self.db, self.trgCond)
             else:
-                da = DialogueAct(da, depLines[i], self.db, self.trgCond, origSentence = sentence)
+                da = DialogueAct(da, sentence, depLines[i], self.db, self.trgCond)
                 
             da.parse()
             da.replaceDBItems()
@@ -96,7 +96,7 @@ class Decoder:
         
         for each in self.das:
             f.write('Text:          %s\n' % each.renderText())
-            f.write('DB Text:       %s\n' % each.text)
+            f.write('DB Text:       %s\n' % each.normText)
             for k, v in sorted(each.valueDictPositions.items()):
                 f.write('Subst value:   %s => %s\n' % (k, v))
                 
@@ -376,7 +376,7 @@ class Decoder:
 
     def writeAnalyzeDA(self, f, each):
         f.write('Text:          %s\n' % each.renderText())
-        f.write('DB Text:       %s\n' % each.text)
+        f.write('DB Text:       %s\n' % each.normText)
         for k, v in sorted(each.valueDictPositions.items()):
             f.write('Subst value:   %2d => %30s = %s\n' % (k, v, each.words[k]))
             

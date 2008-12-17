@@ -11,31 +11,37 @@ from transformation import *
 from trigger import *
       
 class DialogueAct:
-    def __init__(self, cuedDA, sentence, db, settings, origSentence):
+    def __init__(self, cuedDA, origSentence, raspData, db, settings):
         # train data values
         self.cuedDA = cuedDA
         self.db = db
         self.settings = settings
         self.origText = origSentence
         
+        self.normText = origSentence
+        self.normText = prepareForRASP(origSentence, self.db, False)
+        self.normText = separateApostrophes(self.normText)
+        
         if self.settings['useDeps'] == 0:
-            self.text = ' '.join(sentence.split())
+            self.lemmas = self.getLemmas(self.origText)
+            self.posTags = self.getPOSTags(self.origText)
         else:
             # separate deps and text
-            self.text = sentence.split('|||')
-            self.deps = self.text[1]
-            self.text = self.text[0]
+            raspSenetence, raspDeps = raspData.split('|||')
             
-        # separate text, lemmas, and POS tags
-        self.posTags = self.getPOSTags(self.text)
-        self.lemmas = self.getLemmas(self.text)
-        self.text = self.getText(self.text)
-        
-        if len(self.text.split(' ')) != len(self.origText.split(' '))+1:
-            print len(self.origText.split(' '))+1, self.origText
-            print len(self.text.split(' ')), self.text
+            # separate text, lemmas, and POS tags
+            self.raspText = self.getText(raspSenetence)
+            self.lemmas = self.getLemmas(raspSenetence)
+            self.posTags = self.getPOSTags(raspSenetence)
+
+        # print problematic input
+        # both normalized text and text from RASP should have the same number
+        # of terms
+        if len(self.normText.split(' ')) != len(self.raspText.split(' ')):
+            print 'Warning:'
+            print len(self.normText.split(' ')), self.normText
+            print len(self.raspText.split(' ')), self.raspText
             print
-            
         
         self.speechAct = ''
         self.slots = []
@@ -184,30 +190,37 @@ class DialogueAct:
         This method replace all lexical ralizations of database items
         by some tags in form 'sv_slotname-N', where N is counter of occurence in 
         the sentence. There is a problem if some slot value occures in different 
-        slots (names). Than only one association is made in greedy manner. 
+        slots (names). Than only one association is made correctly. 
         
         There is also another issue with db items. Some words are replaced 
         although they are not db items. For example a word 'one' is replaced by 
         'sv-stars-1' in sentence 'I would like this one', which is apparently 
         wrong.
         """
-                
+
         if self.settings == None:
             return
             
         if self.settings['DBItems'] != 'replace':
             return
-      
+        
+        f = file('dbItemsReplacement.txt', 'a')
+        f.write('#'*80+'\n')
+        f.write('Text:         '+ self.normText+'\n')
+        
         for (sn, sv, svs, c, cc) in self.db.values:
+            i = 0
             while True:
-                i = self.text.find(svs)
+                i = self.normText.find(svs,i)
                 if i != -1:
                     # test wheather there are spaces around the word. that it is not a 
                     # substring of another word!
-                    if i > 0 and self.text[i-1] != ' ':
-                        break
-                    if i < len(self.text)-len(svs) and self.text[i+len(svs)] != ' ':
-                        break
+                    if i > 0 and self.normText[i-1] != ' ':
+                        i += 1
+                        continue
+                    if i < len(self.normText)-len(svs) and self.normText[i+len(svs)] != ' ':
+                        i += 1
+                        continue
                             
                     # I found the slot value synonym from database in the 
                     # sentence, I must replace it
@@ -216,7 +229,7 @@ class DialogueAct:
                     newSV2 = newSV1+'-'+str(self.valueDictCounter[newSV1])
                     self.valueDict[newSV2] = (sv, svs)
                     
-                    self.text = self.replaceSV(self.text, newSV2, svs, i)
+                    self.normText = self.replaceSV(self.normText, newSV2, svs, i)
 
                     # find slot which match
                     for slt in self.slots:      
@@ -235,7 +248,7 @@ class DialogueAct:
                 else:
                     break
 
-        self.words = split(self.text)
+        self.words = split(self.normText)
         
         # now I have to get rid of indexes and create dictionary
         # with positions and correct slot values
@@ -245,7 +258,7 @@ class DialogueAct:
             if w.startswith('sv_'):
                 self.valueDictPositions[i] = self.valueDict[w]
 
-        self.words = split(self.text)
+        self.words = split(self.normText)
 
         sv_count = {}
         sv_map = {}
@@ -269,7 +282,7 @@ class DialogueAct:
             if w.startswith('sv_'):
                 self.words[i] = sv_map[w]
         # as a result, I have to update text        
-        self.text = ' '.join(self.words)
+        self.normText = ' '.join(self.words)
         
         # update slot values
 ##        print self.renderCUED()
@@ -277,12 +290,9 @@ class DialogueAct:
             if slt.value in sv_map:
                 slt.value = sv_map[slt.value]
         
-        f = file('dbItemsReplacement.txt', 'a')
-        f.write('#'*80+'\n')
-        f.write('Text:         '+ self.text+'\n')
         for k, v in sorted(self.valueDictPositions.items()):
             f.write('Subst value:  %2d => %30s = %s\n' % (k, v, self.words[k]))
-        f.write('DB Text:      '+ self.text+'\n')
+        f.write('DB Text:      '+ self.normText+'\n')
         f.write('Slots:        '+ str([x.renderCUED(False) for x in self.slots]))
         f.write('\n')
         f.close()
@@ -294,7 +304,7 @@ class DialogueAct:
         
         if not hasattr(self, 'word'):
             # I did not run replaceDBItems(); as a result, I have to split text
-            self.words = split(self.text)
+            self.words = split(self.normText)
         
         self.grams = defaultdict(set)
         # generate regular unigrams, bigrams, trigrams, ... from text

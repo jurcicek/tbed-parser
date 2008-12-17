@@ -5,70 +5,89 @@ import re, pickle
 from collections import *
 from string import *
 
-posDict = { 'arrive':   'VB', 
-            'reach':    'VB', 
-            'leave':    'VB', 
-            'depart':   'VB', 
-            'travel':   'VB', 
-            'show':     'VB', 
-            'connect':  'VB', 
-            'return':	'VB',
-            'from':     'IN', 
-            'to':       'IN', 
-            'at':       'IN', 
-            'on':       'IN',
-            'before':   'IN',
-            'after':    'IN',
-            'in':	'IN',
-            'into':	'IN'
-            }
-            
-lemmaDict= {'arrive':       'arrive',
-            'arriving':     'arrive', 
-            'arrives':      'arrive', 
-            'arrived':      'arrive', 
-            'reach':        'reach', 
-            'reaching':     'reach', 
-            'reaches':      'reach', 
-            'reached':      'reach', 
-            'leave':        'leave', 
-            'leaving':      'leave', 
-            'leaves':       'leave', 
-            'left':         'leave', 
-            'depart':       'depart', 
-            'departing':    'depart', 
-            'departs':      'depart', 
-            'departed':     'depart', 
-            'travel':       'travel', 
-            'traveling':    'travel', 
-            'travels':      'travel', 
-            'traveled':     'travel', 
-            'show':         'show',
-            'showing':      'show',
-            'shows':        'show',
-            'showed':       'show',
-            'connect':      'connect',
-            'connecting':   'connect',
-            'connects':     'connect',
-            'connected':    'connect',
-            'return':       'return',
-            'returning':    'return',
-            'returns':      'return',
-            'returned':     'return',
-            'stop':         'stop',
-            'stoping':      'stop',
-            'stops':        'stop',
-            'stoped':       'stop',
-            'from':         'from', 
-            'to':           'to', 
-            'at':           'at', 
-            'on':           'on',
-            'before':       'before',
-            'after':        'after',
-            'in':           'in',
-            'into':         'into'
-            }
+def separateApostrophes(text):
+    text = text.replace("'ll ", " 'll ")
+    text = text.replace("'re ", " 're ")
+    text = text.replace("'ve ", " 've ")
+    text = text.replace("'m ", " 'm ")
+    text = text.replace("'d ", " 'd ")
+    text = text.replace("'s ", " 's ")
+    text = text.replace("n't", " n't")
+    text = text.replace("/ ", " / ")
+    
+    return text
+    
+def replaceSV(text, sn, sv, i):
+    return text[0:i]+sn+text[i+len(sv):]
+    
+def prepareForRASP(text, db, capitalize = True):
+    valueDictCounter = defaultdict(int)
+    valueDict = {}
+    p = False
+        
+    for (sn, sv, svs, c, cc) in db.values:
+        i = 0
+        while True:
+            # we must search several times for the SVS value
+            i = text.find(svs,i)
+            if i != -1:
+                # test wheather there are spaces around the word. that it is not a 
+                # substring of another word!
+                if i > 0 and text[i-1] != ' ':
+                    i += 1
+                    continue
+                    
+                if i < len(text)-len(svs) and text[i+len(svs)] != ' ':
+                    i += 1
+                    continue
+                    
+                # I found the slot value synonym from database in the 
+                # sentence, I must replace it
+                newSV1 = 'sv_'+sn
+                valueDictCounter[newSV1] += 1
+                newSV2 = newSV1+'-'+str(valueDictCounter[newSV1])
+                valueDict[newSV2] = (sv, svs)
+                
+                text = replaceSV(text, newSV2, svs, i)
 
+            else:
+                break
+
+    words = text.split()
+    
+    if capitalize:
+        for i, w in enumerate(words):
+            if w.startswith('sv_'):
+                w = w.lower()
+                
+                if w.find('_name') != -1 or w.find('manufacturer') != -1:
+                    words[i] = '-'.join(valueDict[w][1].title().split())
+                elif w.find('_code') != -1:
+                    words[i] = '-'.join(valueDict[w][1].upper().split())
+                else:
+                    words[i] = '-'.join(valueDict[w][1].split())
+                    
+        words[0] = words[0][0].upper()+words[0][1:]
+    else:
+        # I do not want to capitalize slot values,
+        # I just want them to compact into one term by using '-'
+        for i, w in enumerate(words):
+            if w.startswith('sv_'):
+                if w.find('_name') != -1 or w.find('manufacturer') != -1:
+                    words[i] = '-'.join(valueDict[w][1].split())
+                elif w.find('_code') != -1:
+                    words[i] = '-'.join(valueDict[w][1].split())
+                else:
+                    words[i] = '-'.join(valueDict[w][1].split())
+    
+    text = ' '.join(words)+' .'
+    
+    # fix some capitalization
+    if capitalize:
+        text = text.replace(" i ", " I ")
+    
+    return text
+            
 def harmonicMean(x,y):
     try:
         return 2*x*y/(x+y)
