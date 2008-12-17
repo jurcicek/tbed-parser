@@ -319,16 +319,30 @@ class Decoder:
         f.write('                Substitution pairs: %3d Avg per SP type: %d\n' % ( numberOfSubstitutions, numberOfSubstitutionsA/numberOfSubstitutions))
         
         f.write('-'*80+'\n')
-        for k, v in sorted(missingSlots.iteritems()):
-            f.write('Missing slot item: %50s Occurence: %d\n' %(k.renderCUED(False), len(v)))
+        kv = missingSlots.items()
+        kv = [(k.renderCUED(False),len(v)) for k,v in kv]
+        kv.sort()
+        for k, v in kv:
+            f.write('Missing slot item: %50s Occurence: %d\n' %(k, v))
         f.write('-'*80+'\n')
-        for k, v in sorted(extraSlots.iteritems()):
-            f.write('Extra slot item:   %50s Occurence: %d\n' %(k.renderTBED(False, None, None), len(v)))
+        
+        kv = extraSlots.items()
+        kv = [(k.renderTBED(False, None, None),len(v)) for k,v in kv]
+        kv.sort()
+        for k, v in kv:
+            f.write('Extra slot item:   %50s Occurence: %d\n' %(k, v))
         f.write('-'*80+'\n')
+        
         f.write('SP: %50s    %50s \n' %('REF', 'HYP'))
-        for mi, eis in sorted(substitutedSlots.iteritems()):
-            for ei, v in sorted(eis.iteritems()):
-                f.write('SP: %50s => %50s Occurence: %d\n' %(mi.renderCUED(False), ei.renderTBED(False, None, None), len(v)))
+        me = substitutedSlots.items()
+        me = [(m.renderCUED(False),es) for m,es in me]
+        me.sort()
+        for mi, eis in me:
+            eis = eis.items()
+            eis = [(ei.renderTBED(False, None, None),len(v)) for ei,v in eis]
+            eis.sort()
+            for ei, v in eis:
+                f.write('SP: %50s => %50s Occurence: %d\n' %(mi, ei, v))
 
         f.write('\n')
         f.write('*'*80+'\n')

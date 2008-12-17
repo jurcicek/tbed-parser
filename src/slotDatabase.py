@@ -129,12 +129,8 @@ class SlotDatabase:
                         #       = ['primus hotel', 'primus']
                         pass
 
-                    # I do not want to delete the duplicates becasue
-                    # during DB raplecemnts I would not be able to find 
-                    # for 'new york city' slot value 'new york'
-##                    # delete origonal duplicit svs
-##                    for (sn, sv) in svsDict[svs]:
-##                        self.db[sn][sv].remove(svs) 
+                    for (sn, sv) in svsDict[svs]:
+                        self.db[sn][sv].remove(svs) 
             
             # regenerate the list of slot value synonyms
             self.values = []

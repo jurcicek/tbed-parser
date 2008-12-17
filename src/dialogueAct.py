@@ -204,9 +204,9 @@ class DialogueAct:
         if self.settings['DBItems'] != 'replace':
             return
         
-        f = file('dbItemsReplacement.txt', 'a')
-        f.write('#'*80+'\n')
-        f.write('Text:         '+ self.normText+'\n')
+##        f = file('dbItemsReplacement.txt', 'a')
+##        f.write('#'*80+'\n')
+##        f.write('Text:         '+ self.normText+'\n')
         
         for (sn, sv, svs, c, cc) in self.db.values:
             i = 0
@@ -285,18 +285,25 @@ class DialogueAct:
         self.normText = ' '.join(self.words)
         
         # update slot values
-##        print self.renderCUED()
         for slt in self.slots:      
             if slt.value in sv_map:
                 slt.value = sv_map[slt.value]
         
-        for k, v in sorted(self.valueDictPositions.items()):
-            f.write('Subst value:  %2d => %30s = %s\n' % (k, v, self.words[k]))
-        f.write('DB Text:      '+ self.normText+'\n')
-        f.write('Slots:        '+ str([x.renderCUED(False) for x in self.slots]))
-        f.write('\n')
-        f.close()
-        
+##        for k, v in sorted(self.valueDictPositions.items()):
+##            f.write('Subst value:  %2d => %30s = %s\n' % (k, v, self.words[k]))
+##        f.write('DB Text:      '+ self.normText+'\n')
+##        f.write('Slots:        '+ str([x.renderCUED(False) for x in self.slots]))
+##        f.write('\n')
+##        f.close()
+
+##        print '#', self.lemmas
+        # replace DB items in lemmas
+        for i in range(len(self.lemmas)):
+            if self.words[i].startswith('sv_'):
+                self.lemmas[i] = self.words[i]
+                
+##        print '-', self.words
+##        print '+', self.lemmas
 
     def genGrams(self, gramIDF):
         if not hasattr(self, 'settings'):
@@ -359,8 +366,15 @@ class DialogueAct:
                             if self.posTags[j] == pos:
                                 # I got the nearest left POS tag
                                 self.grams[(self.lemmas[j],'*nl-'+pos,w)].add((i, i))
+                                # do not search for any POS pos word any more
                                 break
-                            
+
+        # delete all 'dot' grams, they are useless
+        grms = self.grams.keys()
+        for g in grms:
+            if '.' in g:
+                del self.grams[g]
+                
         for g in self.grams:
             gramIDF[g] += 1.0
 
