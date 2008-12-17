@@ -2,20 +2,20 @@
 <!DOCTYPE Session SYSTEM "Session-3.8.dtd">
 <!-- eric3 session file for project tbedp -->
 <!-- This file was generated automatically, do not edit. -->
-<!-- Saved: 2008-12-17, 16:58:34 -->
+<!-- Saved: 2008-12-17, 21:21:38 -->
 <Session version="3.8">
   <Filenames>
-    <Filename cline="378" cindex="53">/home/filip/cued/tbed-parser/src/decoder.py</Filename>
-    <Filename cline="25" cindex="23">/home/filip/cued/tbed-parser/src/dialogueAct.py</Filename>
-    <Filename cline="79" cindex="0">/home/filip/cued/tbed-parser/src/slot.py</Filename>
-    <Filename cline="81" cindex="0">/home/filip/cued/tbed-parser/src/rule.py</Filename>
+    <Filename cline="26" cindex="0">/home/filip/cued/tbed-parser/src/decoder.py</Filename>
+    <Filename cline="370" cindex="43">/home/filip/cued/tbed-parser/src/dialogueAct.py</Filename>
+    <Filename cline="172" cindex="31">/home/filip/cued/tbed-parser/src/slot.py</Filename>
+    <Filename cline="115" cindex="0">/home/filip/cued/tbed-parser/src/rule.py</Filename>
     <Filename cline="159" cindex="12">/home/filip/cued/tbed-parser/src/transformation.py</Filename>
     <Filename cline="77" cindex="0">/home/filip/cued/tbed-parser/src/trigger.py</Filename>
-    <Filename cline="150" cindex="0">/home/filip/cued/tbed-parser/src/slotDatabase.py</Filename>
-    <Filename cline="95" cindex="20">/home/filip/cued/tbed-parser/src/genATISdata.py</Filename>
-    <Filename cline="86" cindex="38">/home/filip/cued/tbed-parser/src/utils.py</Filename>
+    <Filename cline="131" cindex="0">/home/filip/cued/tbed-parser/src/slotDatabase.py</Filename>
+    <Filename cline="80" cindex="64">/home/filip/cued/tbed-parser/src/utils.py</Filename>
+    <Filename cline="157" cindex="24">/home/filip/cued/tbed-parser/src/trainer.py</Filename>
   </Filenames>
-  <ActiveWindow cline="378" cindex="53">/home/filip/cued/tbed-parser/src/decoder.py</ActiveWindow>
+  <ActiveWindow cline="370" cindex="43">/home/filip/cued/tbed-parser/src/dialogueAct.py</ActiveWindow>
   <Breakpoints>
   </Breakpoints>
   <Watchpoints>

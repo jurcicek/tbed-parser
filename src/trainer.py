@@ -146,13 +146,15 @@ class Trainer(Decoder):
         br = []
         br.append(bestRules[0])
 
-        # I have to encourage increase perferomance in recall because
+        # I have to encourage increase in recall because
         # this learning is very defensive = 
         # it slowly increases the recall
         for i in range(1, len(bestRules)):
             if bestRules[i].transformation.addSlot == None:
                 continue
-            elif bestRules[i].netScore < minNetScore:
+            elif bestRules[i].netScore < bestRules[i].netScore*0.80:
+                # the score of additional rules shoud not be
+                # significantly worse than the score of the best one
                 continue
             elif bestRules[i].transformation.addSlot == bestRules[i-1].transformation.addSlot:
                 # remove duplicates

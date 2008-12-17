@@ -349,23 +349,28 @@ class DialogueAct:
                     # chose all suitable POS resp. triggers
                     for pos in self.allPOSTags:
                         # find nearest left POS tag
-                        for j in range(i, -1, -1):
-##                        if self.words[j] == 'leave+ing':
-##                            print pos
-##                            print w
-##                            print j
-##                            print self.posTags[j]
-##                            print self.origText
-##                            print self.words[j]
-##                            print self.lemmas[j]
-##                            print self.words
-##                            print self.lemmas
-##                            print self.posTags
-##                            print
-                            
+                        for j in range(i-1, -1, -1):
                             if self.posTags[j] == pos:
                                 # I got the nearest left POS tag
-                                self.grams[(self.lemmas[j],'*nl-'+pos,w)].add((i, i))
+##                                if j < i-1:
+##                                    print w
+##                                    print pos
+##                                    print j, i
+##                                    print self.origText
+##                                    print self.normText
+##                                    print self.words[j]
+##                                    print self.lemmas[j]
+##                                    print self.posTags[j]
+##                                    print (self.lemmas[j],'*nl-'+pos,w)
+##                                    print len(self.words), self.words
+##                                    print len(self.lemmas),self.lemmas
+##                                    print len(self.posTags),self.posTags
+##                                    print '='*80
+                                
+                                # I am interested only in non slot values
+                                if not self.lemmas[j].startswith('sv_'):
+                                    self.grams[(self.lemmas[j],'*nl-'+pos,w)].add((i, i))
+                                    
                                 # do not search for any POS pos word any more
                                 break
 
@@ -374,7 +379,7 @@ class DialogueAct:
         for g in grms:
             if '.' in g:
                 del self.grams[g]
-                
+        
         for g in self.grams:
             gramIDF[g] += 1.0
 

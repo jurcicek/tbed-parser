@@ -171,8 +171,8 @@ class Slot:
 ##                for i in range(self.leftMiddle, self.rightMiddle+1):
                     # find the positon of the slot value in the sentence
                     if self.value == words[i]:
-                        # I found the position of teh slot value, now I have to recover 
-                        # the original value
+                        # I found the position of the slot value, 
+                        # now I have to recover the original value
                         match.append(i)
 
                 slot_value_search += 1
@@ -187,6 +187,11 @@ class Slot:
                         
                     print 'Slot value search: %d Slot values extra: %d' % (slot_value_search,slot_value_extra)
                 
+                if not match:
+                    print name, equal, self.value, self.lexIndex
+                    print words
+                    print words[self.leftBorder:self.rightBorder+1]
+                    
                 value = valueDictPositions[match[-1]][0]
             else:
                 value = self.value
