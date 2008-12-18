@@ -11,9 +11,14 @@ def separateApostrophes(text):
     text = text.replace("'ve ", " 've ")
     text = text.replace("'m ", " 'm ")
     text = text.replace("'d ", " 'd ")
-    text = text.replace("'s ", " 's ")
+    text = text.replace("what's ", "what be+s ")
+    text = text.replace("that's ", "that be+s ")
+    text = text.replace("let's ", "let 's ")
+    text = text.replace("one's ", "one 's ")
+    text = text.replace("it's ", "be 's ")
+#    text = text.replace("'s ", " 's ")
     text = text.replace("n't", " n't")
-    text = text.replace("/ ", " / ")
+#    text = text.replace("/ ", " / ")
     
     return text
     
@@ -56,14 +61,17 @@ def prepareForRASP(text, db, capitalize = True):
     words = text.split()
     
     if capitalize:
+        # I have to append '-NP' to the slot values in order to they were POS 
+        # tagged as NP, leter I remove it during postprocesing of teh output 
+        # from RASP
         for i, w in enumerate(words):
             if w.startswith('sv_'):
                 w = w.lower()
                 
                 if w.find('_name') != -1 or w.find('manufacturer') != -1:
-                    words[i] = '-'.join(valueDict[w][1].title().split())
+                    words[i] = '-'.join(valueDict[w][1].title().split())+'-NP'
                 elif w.find('_code') != -1:
-                    words[i] = '-'.join(valueDict[w][1].upper().split())
+                    words[i] = '-'.join(valueDict[w][1].upper().split())+'-NP'
                 else:
                     words[i] = '-'.join(valueDict[w][1].split())
                     

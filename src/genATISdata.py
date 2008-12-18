@@ -188,11 +188,10 @@ def genTrainData():
     while i < len(rasp) :
         sentence = rasp[i].strip().split('|)')
         sentence = sentence[0][2:]
-##        sentence = wordNumber.sub(':', sentence)
         sentence = tagNumber.sub('|', sentence)
         sentence = tag.sub(tagReduction, sentence)
+        sentence = sentence.replace('-NP:',':')
         sentence = sentence.replace('| |',' ').lower()
-##        sentence = sentence.replace(':_',':')
         
         i += 2
 
@@ -210,6 +209,7 @@ def genTrainData():
         
         deps = ''.join(deps)
         deps = tagNumber.sub('|', deps)
+        deps = deps.replace('-NP:',':')
         deps = tag.sub(tagReduction, deps).lower()
 ##        print deps
         

@@ -27,13 +27,14 @@ class DialogueAct:
             self.posTags = self.getPOSTags(self.origText)
         else:
             # separate deps and text
-            raspSenetence, raspDeps = raspData.split('|||')
+            raspSenetence, raspDeps = raspData.strip().split('|||')
             
-            # separate text, lemmas, and POS tags
+            # separate text, lemmas, and POS tags, deps
             self.raspText = self.getText(raspSenetence)
             self.lemmas = self.getLemmas(raspSenetence)
             self.posTags = self.getPOSTags(raspSenetence)
-
+            self.deps = self.getDeps(raspDeps)
+          
         # print problematic input
         # both normalized text and text from RASP should have the same number
         # of terms
@@ -145,10 +146,82 @@ class DialogueAct:
     def getText(self, text):
         t = text.split()
         p = re.compile(r':\d+_\S+$')
-        pos = ' '.join([p.sub('', x) for x in t])
+        t = [p.sub('', x) for x in t]
+        
+        pos = ' '.join(t)
         
         return pos
         
+    def getDeps(self, deps):
+        """ This method process dependencies from RASP 2.0.
+        The method create and return a dictionary which contains for each 
+        position in the self.words (and also self.lemmas, self.POSTags) dependecy 
+        link to another position(s). Each link contains: type if link (obj, 
+        ncsubj, ...) a
+        """
+        
+        if not deps:
+            return dict()
+            
+##        print '='*80
+##        print self.normText
+##        print self.raspText
+##        print self.lemmas
+        deps = deps[1:-1].replace('|', '').split(')(')
+##        print deps
+        
+        # remove POS tags
+        p = re.compile(r'_[$&a-z]+')
+        deps = [p.sub('', x) for x in deps]
+##        print deps
+        
+        rd = {}
+        for d in deps:
+            d = d.split()
+            d = [x for i, x in enumerate(d) if i == 0 or x.find(':') != -1]
+            
+            if len(d) != 3:
+                # ignore all non direct (simple) dependecies
+                continue
+                
+            d[1] = d[1].split(':')
+            d[1][1] = int(d[1][1]) - 1
+            d[2] = d[2].split(':')
+            d[2][1] = int(d[2][1]) - 1
+
+            if len(d) != 3:
+                print '*'*3, d
+                
+            # build the links, from leaves to roots, index is position in the 
+            # sentence
+            
+            # build only tree, do not allow overwriting
+            # how ever control what is kept in the tree
+            if d[2][1] in rd:
+                # ignore ncsubj dependecy, e.g.:
+                # hi i need to get a flight from memphis to salt-lake-city 
+                #  depart+ing before 10am .
+                # --- ['dobj', ['to', 9], ['salt-lake-city', 10]]
+                # +++ ['ncsubj', ['depart+ing', 11], ['salt-lake-city', 10]]
+                # 
+                if d[0] == 'ncsubj':
+                    continue
+                    
+                # 'dobj' dependecy is more interesting
+                if rd[d[2][1]][0] == 'dobj' and d[0] == 'obj':
+                    continue
+                    
+##                print '#'*1000
+##                print '-'*3, rd[d[2][1]]
+##                print '+'*3, d
+
+                rd[d[2][1]] = d
+            else:
+                # no colision addit freely
+                rd[d[2][1]] = d
+            
+##        print rd
+
     def parse(self):
         cuedDA = self.cuedDA
         
