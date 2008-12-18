@@ -133,6 +133,7 @@ class DialogueAct:
         pos = [p.sub('', x) for x in t]
         
         self.allPOSTags = set(pos)
+        self.allPOSTags.remove('.')
         
         return pos
 
@@ -175,7 +176,7 @@ class DialogueAct:
         deps = [p.sub('', x) for x in deps]
 ##        print deps
         
-        rd = {}
+        depsDict = {}
         for d in deps:
             d = d.split()
             d = [x for i, x in enumerate(d) if i == 0 or x.find(':') != -1]
@@ -197,7 +198,7 @@ class DialogueAct:
             
             # build only tree, do not allow overwriting
             # how ever control what is kept in the tree
-            if d[2][1] in rd:
+            if d[2][1] in depsDict:
                 # ignore ncsubj dependecy, e.g.:
                 # hi i need to get a flight from memphis to salt-lake-city 
                 #  depart+ing before 10am .
@@ -208,19 +209,21 @@ class DialogueAct:
                     continue
                     
                 # 'dobj' dependecy is more interesting
-                if rd[d[2][1]][0] == 'dobj' and d[0] == 'obj':
+                if depsDict[d[2][1]][0] == 'dobj' and d[0] == 'obj':
                     continue
                     
 ##                print '#'*1000
 ##                print '-'*3, rd[d[2][1]]
 ##                print '+'*3, d
 
-                rd[d[2][1]] = d
+                depsDict[d[2][1]] = d
             else:
                 # no colision addit freely
-                rd[d[2][1]] = d
+                depsDict[d[2][1]] = d
             
 ##        print rd
+
+        return depsDict
 
     def parse(self):
         cuedDA = self.cuedDA
@@ -413,7 +416,7 @@ class DialogueAct:
             for i in range(4, len(self.words)):
                 self.grams[(self.words[i-4],'*3',self.words[i])].add((i-4, i))
                 
-        # generate nearest POS tag lemma bigrams
+        # generate nearest left POS tag lemma bigrams
         if self.settings['useDeps'] and self.settings['nearestLeftPOSWord']:
             for i, w in enumerate(self.words):
                 # generate long ranging dependencies only for slot values
@@ -447,6 +450,25 @@ class DialogueAct:
                                 # do not search for any POS pos word any more
                                 break
 
+        # generate nearest dep tree POS tag lemma bigrams
+        if self.settings['useDeps'] and self.settings['nearestDepTreePOSWord']:
+            for i, w in enumerate(self.words):
+                # generate long ranging dependencies only for slot values
+                if w.startswith('sv_'):
+                    # generate LRD for all pos tags, the learning alg. will 
+                    # chose all suitable POS resp. triggers
+                    for pos in self.allPOSTags:
+##                        print '='*80
+##                        print self.allPOSTags
+##                        print self.normText
+##                        print self.posTags
+##                        print self.lemmas[i]
+##                        print '-'*80
+                        j = self.nearestDepTreePosWord(i, pos)
+                        if j != -1:
+                            self.grams[(self.lemmas[j],'*nt-'+pos,w)].add((i, i))
+##                            print '+++',(self.lemmas[j],'*nt-'+pos,w)
+                            
         # delete all 'dot' grams, they are useless
         grms = self.grams.keys()
         for g in grms:
@@ -456,6 +478,28 @@ class DialogueAct:
         for g in self.grams:
             gramIDF[g] += 1.0
 
+    def nearestDepTreePosWord(self, i, pos, r = 0):
+        r += 1
+        if r > 10:
+            return -1
+            
+        try:
+            j = self.deps[i][1][1] 
+##            print pos, self.posTags[j], self.deps[i]
+        except KeyError:
+            # pos wos not found
+            return -1
+            
+        if self.posTags[j] == pos:
+##            print j, self.lemmas[j]
+            if self.lemmas[j].startswith('sv_'):
+                # I am interested only in non slot values
+                return -1
+            else:
+                return j
+        else:
+            return self.nearestDepTreePosWord(j, pos, r)
+        
     def removeGrams(self, remGrams):
         """ I prune all grams from the list remGrams. Only singleton grams across 
         all dialogue acts should be removed. The method returns all deleted grams.

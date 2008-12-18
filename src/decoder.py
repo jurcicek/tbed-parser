@@ -316,7 +316,11 @@ class Decoder:
             for ei, v in sorted(eis.iteritems()):
                 numberOfSubstitutions += 1
                 numberOfSubstitutionsA += len(v)
-        f.write('                Substitution pairs: %3d Avg per SP type: %d\n' % ( numberOfSubstitutions, numberOfSubstitutionsA/numberOfSubstitutions))
+        if numberOfSubstitutions != 0:
+            d = numberOfSubstitutionsA/numberOfSubstitutions
+        else:
+            d = 0.0
+        f.write('                Substitution pairs: %3d Avg per SP type: %d\n' % ( numberOfSubstitutions, d))
         
         f.write('-'*80+'\n')
         kv = missingSlots.items()
