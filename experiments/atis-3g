@@ -10,4 +10,4 @@ export TBEDP_DEV_SEM_DEP_FILE=atis-dev.sem.dep
 
 export TBEDP_DB_DIR=atis_db
 
-export TBEDP_TRG_COND="{'nGrams':3, 'nStarGrams':4, 'speechAct':1, 'nSlots':1, 'hasSlots':0, 'DBItems':'replace', 'useDeps':1, 'nearestLeftPOSWord':1, 'nearestDepTreePOSWord':1}"
+export TBEDP_TRG_COND="{'nGrams':3, 'nStarGrams':4, 'speechAct':1, 'nSlots':1, 'hasSlots':0, 'DBItems':'replace', 'useDeps':0, 'nearestLeftPOSWord':0, 'nearestDepTreePOSWord':0}"
