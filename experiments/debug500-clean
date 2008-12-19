@@ -1,11 +1,17 @@
 #!/bin/sh
 #$ -S /bin/bash
 
-export TBEDP_TRN_DATA_FILE=debug500.sem
+export TBEDP_TRN_FILE=towninfo-train-500.sem
+export TBEDP_TRN_DEP_FILE=towninfo-train.sem.dep
 export TBEDP_TST_SEM_FILE=towninfo-test.sem
+export TBEDP_TST_SEM_DEP_FILE=towninfo-test.sem.dep
 export TBEDP_TST_ASR_FILE=towninfo-test.asr
+export TBEDP_TST_ASR__DEP_FILE=towninfo-test.asr.dep
 export TBEDP_DEV_SEM_FILE=towninfo-dev.sem
+export TBEDP_DEV_SEM_DEP_FILE=towninfo-dev.sem.dep
 export TBEDP_DEV_ASR_FILE=towninfo-dev.asr
-export TBEDP_DB_DIR=towninfo_db
-export TBEDP_TRG_COND="{'nGrams':1, 'nStarGrams':1, 'tplGrams':1, 'speechAct':1, 'nSlots':1, 'lngth':0, 'hasSlots':0, 'DBItems':'replace'}"
+export TBEDP_DEV_ASR_DEP_FILE=towninfo-dev.asr.dep
 
+export TBEDP_DB_DIR=towninfo_db
+
+export TBEDP_TRG_COND="{'nGrams':2, 'nStarGrams':3, 'speechAct':1, 'nSlots':1, 'hasSlots':1, 'DBItems':'replace', 'useDeps':1, 'nearestLeftPOSWord':1, 'nearestDepTreePOSWord':1}"
