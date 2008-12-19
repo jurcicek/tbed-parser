@@ -12,7 +12,10 @@ def separateApostrophes(text):
     text = text.replace("'m ", " 'm ")
     text = text.replace("'d ", " 'd ")
     text = text.replace("what's ", "what be+s ")
+    text = text.replace("where's ", "where be+s ")
     text = text.replace("that's ", "that be+s ")
+    text = text.replace("there's ", "there be+s ")
+    text = text.replace("somebody's ", "somebody be+s ")
     text = text.replace("let's ", "let 's ")
     text = text.replace("one's ", "one 's ")
     text = text.replace("it's ", "be 's ")
@@ -175,44 +178,3 @@ def splitTAB(text):
         splitList.append(text[oldI:].strip())
 
     return splitList
-    
-##class adict(dict):
-##    def __init__(self, invisible=True):
-##        dict.__init__(self)
-##        self.iter = 0
-##        self.rev = {}
-##        self.invisible = invisible
-##        
-##    def __getitem__(self, key):
-##        try:
-##            return dict.__getitem__(self, key)
-##        except KeyError:
-##            self.iter += 1
-##            
-##            if self.invisible:
-##                dict.__setitem__(self, key, key)
-##                self.rev[key] = key
-##                return key
-##            else:
-##                dict.__setitem__(self, key, self.iter)
-##                self.rev[self.iter] = key
-##                return self.iter
-##                        
-##    def getKey(self, value):
-##        try:
-##            return self.rev[value]
-##        except KeyError:
-##            raise ValueError('Wrong dict value.')
-##            
-##    def write(self, fn):
-##        f = file(fn, 'wb')
-##        pickle.dump(self, f)
-##        f.close()
-##        return
-##    
-##    @classmethod
-##    def read(cls, fn):
-##        f = file(fn, 'rb')
-##        c = pickle.load(f)
-##        f.close()
-##        return c

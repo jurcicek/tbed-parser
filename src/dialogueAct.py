@@ -21,10 +21,11 @@ class DialogueAct:
         self.normText = origSentence
         self.normText = prepareForRASP(origSentence, self.db, False)
         self.normText = separateApostrophes(self.normText)
+        self.raspText = self.normText
         
         if self.settings['useDeps'] == 0:
-            self.lemmas = self.getLemmas(self.origText)
-            self.posTags = self.getPOSTags(self.origText)
+            self.lemmas = self.getLemmas(self.normText)
+            self.posTags = self.getPOSTags(self.normText)
         else:
             # separate deps and text
             raspSenetence, raspDeps = raspData.strip().split('|||')
@@ -133,7 +134,9 @@ class DialogueAct:
         pos = [p.sub('', x) for x in t]
         
         self.allPOSTags = set(pos)
-        self.allPOSTags.remove('.')
+        
+        if '.' in self.allPOSTags: 
+            self.allPOSTags.remove('.')
         
         return pos
 
@@ -141,7 +144,7 @@ class DialogueAct:
         t = text.split()
         p = re.compile(r'(\+\w+|):\d+_\S+$')
         pos = [p.sub('', x) for x in t]
-        
+
         return pos
         
     def getText(self, text):
@@ -172,7 +175,7 @@ class DialogueAct:
 ##        print deps
         
         # remove POS tags
-        p = re.compile(r'_[$&a-z]+')
+        p = re.compile(r'_[$2&a-z]+')
         deps = [p.sub('', x) for x in deps]
 ##        print deps
         
@@ -184,7 +187,7 @@ class DialogueAct:
             if len(d) != 3:
                 # ignore all non direct (simple) dependecies
                 continue
-                
+            
             d[1] = d[1].split(':')
             d[1][1] = int(d[1][1]) - 1
             d[2] = d[2].split(':')
@@ -374,10 +377,20 @@ class DialogueAct:
 
 ##        print '#', self.lemmas
         # replace DB items in lemmas
-        for i in range(len(self.lemmas)):
-            if self.words[i].startswith('sv_'):
-                self.lemmas[i] = self.words[i]
-                
+        
+        try:
+            for i in range(len(self.lemmas)):
+                if self.words[i].startswith('sv_'):
+                    self.lemmas[i] = self.words[i]
+        except IndexError, ei:
+            print self.origText
+            print self.normText
+            print self.raspText
+            print self.words
+            print self.lemmas
+            
+            raise ei
+            
 ##        print '-', self.words
 ##        print '+', self.lemmas
 

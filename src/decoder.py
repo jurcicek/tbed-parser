@@ -46,7 +46,7 @@ class Decoder:
                 continue
             
             if self.trgCond['useDeps'] == 0:
-                da = DialogueAct(da, sentence, Null, self.db, self.trgCond)
+                da = DialogueAct(da, sentence, '', self.db, self.trgCond)
             else:
                 da = DialogueAct(da, sentence, depLines[i], self.db, self.trgCond)
                 
