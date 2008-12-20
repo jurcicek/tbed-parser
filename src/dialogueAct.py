@@ -555,16 +555,7 @@ class DialogueAct:
         return DA
 
     def renderText(self):
-        if self.settings['useDeps'] == 0:
-            ws=[]
-            for i, ew in enumerate(self.words):
-                if i in self.valueDictPositions:
-                    ws.append(self.valueDictPositions[i][1])
-                else:
-                    ws.append(ew)
-            return ' '.join(ws)
-        else:
-            return self.origText
+        return self.origText
             
     def getNumOfSlots(self):
         return len(self.slots)
