@@ -17,7 +17,7 @@ QuickBuild=
 
 [item:naaclhlt2009.bst]
 archive=true
-column=3056238928
+column=0
 encoding=
 highlight=
 line=0
@@ -35,10 +35,10 @@ order=-1
 
 [item:naaclhlt2009.tex]
 archive=true
-column=53
+column=364
 encoding=ISO 8859-2
 highlight=LaTeX
-line=66
+line=180
 open=true
 order=0
 
