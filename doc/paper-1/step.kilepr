@@ -1,0 +1,52 @@
+[General]
+img_extIsRegExp=false
+img_extensions=.eps .jpg .jpeg .png .pdf .ps .fig .gif
+kileprversion=2
+kileversion=2.0
+lastDocument=naaclhlt2009.tex
+masterDocument=
+name=step
+pkg_extIsRegExp=false
+pkg_extensions=.cls .sty
+src_extIsRegExp=false
+src_extensions=.tex .ltx .latex .dtx .ins
+
+[Tools]
+MakeIndex=
+QuickBuild=
+
+[item:naaclhlt2009.bst]
+archive=true
+column=3056238928
+encoding=
+highlight=
+line=0
+open=false
+order=-1
+
+[item:naaclhlt2009.sty]
+archive=true
+column=10
+encoding=
+highlight=
+line=0
+open=false
+order=-1
+
+[item:naaclhlt2009.tex]
+archive=true
+column=53
+encoding=ISO 8859-2
+highlight=LaTeX
+line=66
+open=true
+order=0
+
+[item:step.kilepr]
+archive=true
+column=142153096
+encoding=
+highlight=
+line=0
+open=false
+order=-1
