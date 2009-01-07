@@ -397,7 +397,12 @@ class DialogueAct:
     def genGrams(self, gramIDF):
         if not hasattr(self, 'settings'):
             return
-        
+        try:
+            if self.settings['nearestDepTreePOSWord']:
+                pass
+        except KeyError:
+            self.settings['nearestDepTreePOSWord'] = 0
+            
         if not hasattr(self, 'word'):
             # I did not run replaceDBItems(); as a result, I have to split text
             self.words = split(self.normText)
@@ -538,7 +543,12 @@ class DialogueAct:
         
     def renderTBED(self, origSV = True):
         DA = self.tbedSpeechAct
-        rendered_slots = [each_slot.renderTBED(origSV, self.valueDictPositions,self.words) for each_slot in self.tbedSlots]
+        
+        if hasattr(self, 'valueDictPositions'):
+            rendered_slots = [each_slot.renderTBED(origSV, self.valueDictPositions,self.words) for each_slot in self.tbedSlots]
+        else:
+            rendered_slots = [each_slot.renderTBED(origSV, None, self.words) for each_slot in self.tbedSlots]
+        
         
         # I filter out sequencial duplicities among slot
         # in other words on the output of the parser cannot be two same slots behind each 

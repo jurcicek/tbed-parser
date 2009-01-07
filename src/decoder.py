@@ -24,7 +24,7 @@ class Decoder:
     def loadDB(self, dir):
         self.db.loadTAB(dir)
 
-    def loadData(self, inputFile):
+    def loadData(self, inputFile, pruneSingletons = False):
         self.das = []
         self.gramIDF = defaultdict(int)
         
@@ -57,22 +57,23 @@ class Decoder:
             self.das.append(da)
         
 
-##        self.remGrams = [g for g in self.gramIDF if self.gramIDF[g] == 1]
+        if pruneSingletons:
+            self.remGrams = [g for g in self.gramIDF if self.gramIDF[g] == 1]
                 
 ##        f = file('removedGrams.txt', 'w')
 ##        for i, g in enumerate(self.remGrams):
 ##            f.write('%d %s\n' % (i, g))
 ##        f.close()
         
-##        # delete all singleton grams from grams in DAs
-##        # search for rules will be faster 
-##        for da in self.das:
-##            ret = da.removeGrams(self.remGrams)
-##            
-##            for rg in ret:
-##                # I do not have to search for rg gram because it was already deleted
-##                # it was a singleton.
-##                self.remGrams.remove(rg)
+            # delete all singleton grams from grams in DAs
+            # search for rules will be faster 
+            for da in self.das:
+                ret = da.removeGrams(self.remGrams)
+                
+                for rg in ret:
+                    # I do not have to search for rg gram because it was already deleted
+                    # it was a singleton.
+                    self.remGrams.remove(rg)
         
         return
         

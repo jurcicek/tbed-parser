@@ -113,7 +113,7 @@ trn = Trainer(trgCond = trgCond, tmpData = tmpData)
 print trn.trgCond
 
 trn.loadDB(db)
-trn.loadData(trainData)
+trn.loadData(trainData, pruneSingletons = True)
 
 if profile:
     # sometimes is needed to delete *.pyc files because psyco is used if you do 

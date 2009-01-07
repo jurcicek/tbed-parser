@@ -35,7 +35,7 @@
   \end{figure}
 }
 
-\title{Semantic Transformation-based Error-driven Parser}
+\title{Semantic Error Corective Learning}
 
 \author{Filip Jurcicek, XXX \\
   Department of Engineering \\
@@ -52,6 +52,11 @@
 
 \section{Introduction}
 
+Semantic parsing is important part of a dialogue manager \cite{williams07,thomson08}. 
+
+On the other hand, the goal semantic parsing is to construct formal meaning represenation wich is directly executable by machines. Such formala semeaning representation is usually defined by some grammar, e.g. CFG for GeoQuery domain \cite{wong06}.
+
+Semantic parsing can be understood as machine translation from a natural language to a formal language. First, we do not not have formal grammar for natural english mostly because spoken speech is ungramatical, include hesitations, and very often only fragmens of complete senteces, e.g. ``Boston to Maimi tomorrow''. On the other hand, the semantic representation of a utterance is usualy modeled by a formal grammar e.g. CFG
 
 \section{Related work}
 
@@ -60,16 +65,25 @@ Inductive logic programming - Using Multiple Clause Constructors in Inductive Lo
 Transformation-based Error-driven Learning - Some Advances in Transformation-Based Part of Speech Tagging - Brill (1994)
 Learning to Transform Natural to Formal Languages - Kate, Wong and Mooney (2005)
 
+R. J. Kate, Y. W. Wong, and R. J. Mooney. 2005. Learning
+to transform natural to formal languages. In Proc.
+of AAAI-05, pages 1062?1068, Pittsburgh, PA, July.
+
+L. R. Tang and R. J. Mooney. 2001. Using multiple
+clause constructors in inductive logic programming for
+semantic parsing. In Proc. of ECML-01, pages 466?
+477, Freiburg, Germany.
+
 Subsection~\ref{ssec:first}).
 
 \section{Transformation-based parser}
 This section describes the transformation-based parser. First of all, we desribe rule templates used to generate rules for the rule inference process. Secondly, we describe the learning process. Finally, we describe parsing algorithm.
 
 \subsection{Rule templates}
-The learning argorithm uses rule templates to instantiate rules which are subsequently tested by the learning algrithm. Each rule tamplate is composed of a trigger and transformation. \textbf{A trigger controls whether a transformation of hypothesis can be perfomed}. Each trigger question either input sentence or output semantics. As a results each trigger contains one or several condition:
+The learning argorithm uses rule templates to instantiate rules which are subsequently tested by the learning algrithm. Each rule tamplate is composed of a trigger and transformation. \textbf{A trigger controls whether a transformation of hypothesis can be perfomed}. Each trigger question either input utterance or output semantics. As a results each trigger contains one or several condition:
 \begin{itemize}
-  \item The sentence contains n-gram N?
-  \item The sentence contains skiping\footnote{A skiping bigram is bigram which skips one or more words between words in the bigram} bigram B?
+  \item The utterance contains n-gram N?
+  \item The utterance contains skiping\footnote{A skiping bigram is bigram which skips one or more words between words in the bigram} bigram B?
   \item The semantics dialogue act equals to D?
   \item The semantics containss slot S?
 \end{itemize}
@@ -88,7 +102,7 @@ As substitution can either substitute a whole slot, an equal sign in the slot, o
 
 Rules are learned sequentially:
 \begin{enumerate}
-  \item initial semantics is assigned as hypothesis to each input sentence
+  \item initial semantics is assigned as hypothesis to each input utterance
   \item repeat as long as the number of errors\footnote{Number of errors include number of dialogue act substitutions, number of slot insertions, number of slot deletions, number of slot substitutions.} on training set decreases
   \begin{enumerate}
     \item generate all possible rules which correct at least one error in the training set
@@ -96,12 +110,12 @@ Rules are learned sequentially:
     \item select the best rule
     \item apply the selected rule
   \end{enumerate}
-  \time prune rules
+  \item prune rules
 \end{enumerate}
 
 The make the parser more robust, we increase robustnes of the parser by the following steps. 
 
-First, the number of plausible slot values for each slot is usually very high. As a result, we replace all lexical realizations from the database, available to \textbf{a dialogue manager}, by its slot name in the input sentence. For example, in sentence ``find all the flights from cincinnati to the new york city'' the lexical realization are replaced as follows: ``please find all the flights from city-0 to the city-1''. Similary, we replace slot values in the semantics.
+First, the number of plausible slot values for each slot is usually very high. As a result, we replace all lexical realizations from the database, available to \textbf{a dialogue manager}, by its slot name in the input utterance. For example, in utterance ``find all the flights from cincinnati to the new york city'' the lexical realization are replaced as follows: ``please find all the flights from city-0 to the city-1''. Similary, we replace slot values in the semantics.
 
 Secondly, to limit overfiting the training data, we prune the rules which are learnt at the end of the learning. We sequentily apply each rule on the development set. And we chose the number of rules for which the parser gets the highest score on the development data.
 
@@ -117,10 +131,10 @@ An equal sign of an incorrect slot
 \textbf{To speed up training, we select not only one best rule but also rules which correct at minimum 80\% errors of the best rule. }
 
 \subsection{Parsing}
-The semantic parser transforms initial naive semantic hypothesis into correct semantics by using a ordered set of rules and the parsing is composed of \textbf{three} steps: 
+The semantic parser transforms initial naive semantic hypothesis into correct semantics by using a ordered set of rules. The parsing is composed of \textbf{three} steps: 
 \begin{enumerate}
   \item initial semantics is assigned as hypothesis
-  \item sequentialy apply all rules\footnote{Input sentence is not modified by rules. As a result, words from the sentence can be trigger sevaral different transformations.}
+  \item sequentialy apply all rules\footnote{Input utterance is not modified by rules. As a result, words from the utterance can be trigger sevaral different transformations.}
   \item output hypothesis semantics
 \end{enumerate}
 
@@ -180,6 +194,11 @@ Also, the number of rules per semantic concept (dialogue act or slot name) is ve
 
 Lexical realizations of a slot can overlap with lexical realization of neighbouring slots. It is shows to be important paternt, for example in the trigram (city-0,and,city-1) is very comon for sentce including ''between city-0 and city-1``. The lexical realizations city-0, city-1 respectively would be classified as from.city, and city-1 just becasue we know the  
 
+
+We found that the dialogue act type recognition accuracy of the STEP parser is lower than STC's; as a result, we tried to use SVM as STC does to clasify dialogue act types. We believe that STC is better in dialogue act type recognition better because SMV clasifier use all features at one time. Makes decision in one step using all the featrues rather than making several decisions by several rules as STEP does it.
+
+We hoped for an increase of F-measure as result of increased dialogue act type accuracy. However, we did not get any increase in F-measure.
+ 
 \section*{Acknowledgments}
 
 Do not number the acknowledgment section.
@@ -233,6 +252,13 @@ Yulan He and Steve Young.
 \newblock 2006.
 \newblock {\em Spoken language understanding using the hidden vector state model}.
 \newblock Computer Speech \& Language, vol. 19, no. 1, pp. 85-106.
+
+
+\bibitem[\protect\citename{Wong and Mooney}2006]{wong06}
+YukWah Wong and Raymond J. Mooney.
+\newblock 2006.
+\newblock {\em Learning for Semantic Parsing with Statistical Machine Translation}.
+\newblock Proceedings of HLT/NAACL.
 
 \end{thebibliography}
 

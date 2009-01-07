@@ -152,7 +152,7 @@ class Trainer(Decoder):
         for i in range(1, len(bestRules)):
             if bestRules[i].transformation.addSlot == None:
                 continue
-            elif bestRules[i].netScore < bestRules[i].netScore*0.80:
+            elif bestRules[i].netScore < bestRules[0].netScore*0.80:
                 # the score of additional rules shoud not be
                 # significantly worse than the score of the best one
                 continue

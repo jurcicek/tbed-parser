@@ -56,7 +56,7 @@ def decode(data, db, inPickle, nRules = 0, iniTest = False):
         if iniTest:
             dcd.loadTbedData(data+'.ini')
     except IOError:
-        return 0, 0.0, 0.0
+        return 0, 0.0, 0.0, 0.0, 0.0
         
     dcd.decode(nRules)
     dcd.writeOutput(outSem)
@@ -64,7 +64,7 @@ def decode(data, db, inPickle, nRules = 0, iniTest = False):
     o = commands.getoutput('%s/cuedSemScore.pl -d %s %s' % (binDir, outSem, data))
     o = o.split()
     
-    return len(dcd.bestRules), o[0], o[3]
+    return len(dcd.bestRules), o[0], o[1], o[2], o[3]
 
     
 def decodeSet(data, dbDir, iniTest = False):
@@ -75,20 +75,26 @@ def decodeSet(data, dbDir, iniTest = False):
 
     nRules = []
     acc = []
+    prec = []
+    rec = []
     fm = []
     
     print data
     while i<iMax:
-        iMax, a, f = decode(data, dbDir, inPickle, i, iniTest)
+        iMax, a, p, r, f = decode(data, dbDir, inPickle, i, iniTest)
         try:
             acc.append(float(a))
+            prec.append(float(p))
+            rec.append(float(r))
             fm.append(float(f))
         except ValueError:
             acc.append(0.0)
+            prec.append(0.0)
+            rec.append(0.0)
             fm.append(0.0)
     
         nRules.append(i)
-        print i, iMax, a, f
+        print i, iMax, a, (p, r), f
         
         if i+1 == iMax:
             break
@@ -98,7 +104,7 @@ def decodeSet(data, dbDir, iniTest = False):
         if i > iMax:
             i = iMax-1
             
-    return acc, fm, nRules
+    return acc, prec, rec, fm, nRules
 
 def findMax(data):
     max = 0
@@ -123,9 +129,9 @@ for s in f.readlines():
 f.close()
 
 outGraph = output+'.eps'
-trainCleanAcc, trainCleanF, nRules1 = decodeSet(trainData, dbDir, iniTest)
-devCleanAcc, devCleanF, nRules2 = decodeSet(devData, dbDir, iniTest)
-testCleanAcc, testCleanF, nRules3 = decodeSet(testData, dbDir,iniTest)
+trainCleanAcc, trainCleanPrec, trainCleanRec, trainCleanF, nRules1 = decodeSet(trainData, dbDir, iniTest)
+devCleanAcc, devCleanPrec, devCleanRec, devCleanF, nRules2 = decodeSet(devData, dbDir, iniTest)
+testCleanAcc, testCleanPrec, testCleanRec, testCleanF, nRules3 = decodeSet(testData, dbDir,iniTest)
 
 fig = figure(figsize=(11.7, 8.3))
 
@@ -163,8 +169,8 @@ annotate('Best performance on the dev set.', (nRules2[i], devCleanF[i]),
 
 xlim(xmin=nRules2[0]-2)
 
-text(int(nRules2[-1]/2), devCleanF[i]-9, 'Dev data: nRules=%d Acc=%.2f F=%.2f' % (nRules2[i], devCleanAcc[i], devCleanF[i]), fontsize=12)
-text(int(nRules2[-1]/2), devCleanF[i]-11, 'Test data: nRules=%d Acc=%.2f F=%.2f' % (nRules2[i], testCleanAcc[i], testCleanF[i]), fontsize=12)
+text(int(nRules2[-1]/2.5), devCleanF[i]-9, 'Dev data: nRules=%d Acc=%.2f P=%.2f R=%.2f F=%.2f' % (nRules2[i], devCleanAcc[i], devCleanPrec[i], devCleanRec[i], devCleanF[i]), fontsize=12)
+text(int(nRules2[-1]/2.5), devCleanF[i]-11, 'Test data: nRules=%d Acc=%.2f P=%.2f R=%.2f F=%.2f' % (nRules2[i], testCleanAcc[i], testCleanPrec[i], testCleanRec[i], testCleanF[i]), fontsize=12)
 text(nRules2[0], devCleanF[i]-17, settings)
 
 savefig(outGraph)
