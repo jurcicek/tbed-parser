@@ -1,4 +1,4 @@
-This is pdfeTeX, Version 3.141592-1.30.5-2.2 (Web2C 7.5.5) (format=pdflatex 2008.4.16)  7 JAN 2009 17:45
+This is pdfeTeX, Version 3.141592-1.30.5-2.2 (Web2C 7.5.5) (format=pdflatex 2008.4.16)  7 JAN 2009 20:24
 entering extended mode
 **naaclhlt2009.tex
 (./naaclhlt2009.tex
@@ -75,89 +75,90 @@ LaTeX Font Info:    Try loading font information for OT1+pcr on input line 48.
 (/usr/share/texmf/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
-Underfull \hbox (badness 2495) in paragraph at lines 63--64
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 55.
+
+Underfull \hbox (badness 2495) in paragraph at lines 61--62
 \OT1/ptm/m/n/10.95 Inductive logic pro-gram-ming - Us-ing Mul-ti-ple
  []
 
 
-Underfull \hbox (badness 2772) in paragraph at lines 65--67
+Underfull \hbox (badness 2772) in paragraph at lines 63--65
 []\OT1/ptm/m/n/10.95 Transformation-based Error-driven Learn-ing -
  []
 
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 77.
 
-LaTeX Warning: Reference `ssec:first' on page 1 undefined on input line 77.
+LaTeX Warning: Reference `ssec:first' on page 1 undefined on input line 75.
 
 
-Underfull \hbox (badness 2426) in paragraph at lines 80--81
+Underfull \hbox (badness 2426) in paragraph at lines 78--79
 \OT1/ptm/m/n/10.95 This sec-tion de-scribes the transformation-based
  []
 
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 85.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 83.
 (/usr/share/texmf/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 85.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 83.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 86.
+(Font)              <10.95> on input line 84.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <9> on input line 86.
+(Font)              <9> on input line 84.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 86.
+(Font)              <5> on input line 84.
  [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
 
 
 ]
-Underfull \hbox (badness 1292) in paragraph at lines 161--162
+Underfull \hbox (badness 1292) in paragraph at lines 159--160
 \OT1/ptm/m/n/10.95 of-the-art tech-niques and hand-crafted rule-based
  []
 
 
-Underfull \hbox (badness 1320) in paragraph at lines 165--176
+Underfull \hbox (badness 1320) in paragraph at lines 163--174
 \OT1/ptm/m/n/10.95 users searched for in-for-ma-tion about a spe-cific
  []
 
 [2]
-Underfull \hbox (badness 1874) in paragraph at lines 177--180
+Underfull \hbox (badness 1874) in paragraph at lines 175--178
 []\OT1/ptm/m/n/10.95 In or-der to com-pare our re-sults with pre-vi-
  []
 
 
-Underfull \hbox (badness 2334) in paragraph at lines 177--180
+Underfull \hbox (badness 2334) in paragraph at lines 175--178
 \OT1/ptm/m/n/10.95 ous work (He and Young, 2006; Zettle-moyer
  []
 
 
-Underfull \hbox (badness 3229) in paragraph at lines 177--180
+Underfull \hbox (badness 3229) in paragraph at lines 175--178
 \OT1/ptm/m/n/10.95 Air Travel In-for-ma-tion Sys-tem dataset (ATIS)
  []
 
 
-Underfull \hbox (badness 2165) in paragraph at lines 177--180
+Underfull \hbox (badness 2165) in paragraph at lines 175--178
 \OT1/ptm/m/n/10.95 (Dahl et al, 1994). This dataset con-sists of
  []
 
 
-Underfull \hbox (badness 1776) in paragraph at lines 177--180
+Underfull \hbox (badness 1776) in paragraph at lines 175--178
 \OT1/ptm/m/n/10.95 user re-quests for flight in-for-ma-tion, for ex-am-
  []
 
 
-Overfull \hbox (7.43256pt too wide) in paragraph at lines 177--180
+Overfull \hbox (7.43256pt too wide) in paragraph at lines 175--178
 \OT1/ptm/m/n/10.95 Diego",to.city="Phoenix",departure.day="Monday").
  []
 
 
-Overfull \hbox (14.19781pt too wide) in paragraph at lines 189--189
+Overfull \hbox (14.19781pt too wide) in paragraph at lines 187--187
 [][] 
  []
 
 [3]
-Underfull \hbox (badness 1430) in paragraph at lines 244--249
+Underfull \hbox (badness 1430) in paragraph at lines 242--247
 \OT1/ptm/m/n/10 Smith, D. Pal-lett, C. Pao, A. Rud-nicky, and E.
  []
 
@@ -184,4 +185,4 @@ PDF statistics:
 /urw/times/utmri8a.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmsy10.pfb></us
 r/share/texmf/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texmf/fonts/type1/
 urw/times/utmr8a.pfb></usr/share/texmf/fonts/type1/urw/times/utmb8a.pfb>
-Output written on naaclhlt2009.pdf (4 pages, 76241 bytes).
+Output written on naaclhlt2009.pdf (4 pages, 76620 bytes).
