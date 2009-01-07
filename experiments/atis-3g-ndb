@@ -1,0 +1,13 @@
+#!/bin/sh
+#$ -S /bin/bash
+
+export TBEDP_TRN_FILE=atis-train.sem
+export TBEDP_TRN_DEP_FILE=atis-train.sem.dep
+export TBEDP_TST_SEM_FILE=atis-test.sem
+export TBEDP_TST_SEM_DEP_FILE=atis-test.sem.dep
+export TBEDP_DEV_SEM_FILE=atis-dev.sem
+export TBEDP_DEV_SEM_DEP_FILE=atis-dev.sem.dep
+
+export TBEDP_DB_DIR=atis_db
+
+export TBEDP_TRG_COND="{'nGrams':3, 'nStarGrams':4, 'speechAct':1, 'nSlots':1, 'hasSlots':0, 'DBItems':'none', 'useDeps':0, 'nearestLeftPOSWord':0, 'nearestDepTreePOSWord':0}"
