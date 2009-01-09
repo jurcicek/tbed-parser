@@ -38,10 +38,10 @@
 
 \title{Error Corrective Learning for Semantic parsing}
 
-\author{Filip Jurcicek, XXX \\
-  Department of Engineering \\
-  University of Cambridge \\
-  {\tt fj228@cam.ac.uk, XXX}}
+\author{F. Jur\v{c}\'{i}\v{c}ek, F. Mairesse, M. Ga\v{s}i\'{c}, S. Keizer, B. Thomson, K. Yu, and S. Young \\
+Cambridge University Engineering Department, Trumpington Street, Cambridge, CB2 1PZ, UK \\
+{\tt \{fj228, farm2, mg436, sk561, brmt2, ky219, sjy\}@eng.cam.ac.uk}
+}
 
 \date{}
 
@@ -53,11 +53,31 @@
 
 \section{Introduction}
 
-Semantic parsing is important part of a spoken dialogue system \cite{williams07,thomson08}. The goal of a semantic parsing is to construct formal meaning representation (semantics) which is directly executable by a dialogue manager. Such semantics is usually defined by a grammar, e.g. CFG for GeoQuery domain \cite{wong06} \textbf{better paper???}, which is designed by a domain expert and easy to interpret by a dialogue manager or question answering system.
+\textbf{Check how you cal STEP. ECL parser?}
+
+Semantic parsing is important part of a spoken dialogue system \cite{williams07,thomson08}. The goal of a semantic parsing is to construct formal meaning representation (semantics) which is directly executable by a dialogue manager. Such semantics is usually defined by a grammar, e.g. LR grammar for GeoQuery domain \cite{wong06} \textbf{better paper???}, which is designed by a domain expert and easy to interpret by a dialogue manager or question answering system.
 
 Semantic parsing can be understood as machine translation from a natural language to a formal language. First, we do not not have formal grammar for natural language is ungrammatical, include hesitations, and very often only fragments of complete sentences, e.g. ``Boston to Miami tomorrow''. 
 
 \section{Related work}
+
+There has been a large amount of work done on learning to map sentences 
+into their semantics. Many different techniques have been considered including machine translation \cite{wong06} 
+
+techniques using inductive logic programing \cite{lappoon01}
+
+support vector machines \cite{mairesse09} and tree kernels \cite{kate08}
+
+markov logic networks \cite{meza08a,meza08b}
+
+automatic induction of combinatory categorical grammar \cite{zettlemoyer07}. 
+Z \& C mention their problems with spoken speech => non-compositionality
+ After Zettlemoyer \& Collins implemented second-pass decoding which relaxed constraints on the input utterances, they achieved state-of-the-art results.
+
+\cite{he06} developed a parser for the ATIS domain also takes utterances paired with semantics as input. Their parser approximate a pushdown automaton with semantic concepts as non-terminal symbols.  
+
+transformation techniques used in the system SILT \cite{kate05}. SILT learns transformation rules which sequentially rewrites an input utterance into its formal representation. Our ECL parser differ in the way the semantics is constructed instead of transforming input utterance. Instead of rewriting an input utterance, we transform initial naive semantic hypothesis. As a result, we can use in input words several times to trigger transformations of the output. This extends the ability to handle non-compositionality phenomena in spoken language.
+
 
 Transformation-based Error-driven Learning - Some Advances in Transformation-Based Part of Speech Tagging - Brill (1994)
 
@@ -97,6 +117,14 @@ A transformation performs one of these operation:
 \end{itemize}
 As substitution can either substitute a whole slot, an equal sign in the slot, or a slot name.
 
+\subsection{Example of Parsing}
+The semantic parser transforms initial naive semantic hypothesis into correct semantics by using a ordered set of rules. The parsing is composed of \textbf{three} steps: 
+\begin{enumerate}
+  \item initial semantics is assigned as hypothesis
+  \item sequentially apply all rules\footnote{Input utterance is not modified by rules. As a result, words from the utterance can be trigger several different transformations.}
+  \item output hypothesis semantics
+\end{enumerate}
+
 
 \subsection{Learning}
 
@@ -130,31 +158,7 @@ An equal sign of an incorrect slot
 
 \textbf{To speed up training, we select not only one best rule but also rules which correct at minimum 80\% errors of the best rule. }
 
-\subsection{Parsing}
-The semantic parser transforms initial naive semantic hypothesis into correct semantics by using a ordered set of rules. The parsing is composed of \textbf{three} steps: 
-\begin{enumerate}
-  \item initial semantics is assigned as hypothesis
-  \item sequentially apply all rules\footnote{Input utterance is not modified by rules. As a result, words from the utterance can be trigger several different transformations.}
-  \item output hypothesis semantics
-\end{enumerate}
 
-
-
-
-
-
-Although we use the 
-
-% \begin{table}
-% \begin{center}
-% \begin{tabular}{|l|rl|}
-% \hline \bf Type of Text & \bf Font Size & \bf Style \\ \hline
-% paper title & 15 pt & bold \\
-% \hline
-% \end{tabular}
-% \end{center}
-% \caption{\label{font-table} Font guide. }
-% \end{table}
 
 \section{Evaluation}
 
@@ -180,45 +184,59 @@ we apply our method to the Air Travel Information System dataset
 
 For both corpora are available databases with lexical entries for slot values e.g. city names, airport names, etc. 
 
-\subsection{Experiments - dep trees}
+\subsection{Improving disambiguation of long-range dependencies}
 
 \fgrparam{width=5cm}{./fig/dep-tree.pdf}{fig:dep:tree}{Dependency tree of the sentence ''Show the cheapest flights from New York to San Jose arriving before 7pm on Monday`` generated by the RASP parser \cite{rasp06}.}
 
-Besides simple n-grams and skipping bigrams more complex lexical features can be used. \cite{kate08} used gold standard word dependencies to capture long-range relation between words. Kate showed that word dependencies significantly improve semantic parsing because long-range dependencies from an utterance tend to be local in a dependency tree. For example, the words ''arriving`` and ''Monday`` are neighbors in the dependency tree but they are four words apart in the sentence (see Figure \ref{fig:dep:tree}).
+Besides simple n-grams and skipping bigrams more complex lexical features can be used. \cite{kate08} used gold standard word dependencies to capture long-range relationship between words. At its simplest, dependencies tree is one of the most concise ways to describe language syntax. Essentially, each word is viewed as the dependent of one other word, with the exception of a single word which that is the root of the sentence. Kate showed that word dependencies significantly improve semantic parsing because long-range dependencies from an utterance tend to be local in a dependency tree. For example, the words ''arriving`` and ''Monday`` are neighbors in the dependency tree but they are four words apart in the sentence (see Figure \ref{fig:dep:tree}).
 
-Instead of using gold standard word dependencies, we used dependencies provided by RASP dependency parser \cite{rasp06}. First of all, we had to add capitalization and punctuation into the ATIS data to be able to use the RASP parser. The RASP parser without proper capitalization fails to tag ''new`` and ''york`` as NP and instead of this it tags ''new`` as ''JJ`` and 'york' as NP. As result, the dependencies generated by the parsers are unsatisfactory. Secondly, we generated new n-gram features from dependency trees. Even though the dependencies generated the RASP parser are no absolutely accurate, the new features increase performance in F-measure on ATIS data.
+Instead of using gold standard word dependencies, we used dependencies provided by RASP dependency parser \cite{rasp06}. First of all, we had to add capitalization and punctuation into the ATIS data to be able to use the RASP parser. The RASP parser without proper capitalization fails to tag ''new`` and ''york`` as NP and instead of this it tags ''new`` as ''JJ`` and 'york' as NP and the dependencies generated by the parser are unsatisfactory. Secondly, we generated new n-gram features from dependency trees. Even though the dependencies generated the RASP parser are no absolutely accurate, the new features increase performance in F-measure on ATIS data. 
 
-Second, we generated long-range features by using POS tags\footnote{We used POS tags provided by the RASP parser; however, any POS tagger can be used instead.} 
-Our motivation was work of \cite{meza08} who handcrafted features using words ''arrive``, ''arriving``, ''leave``, and ''leaving``. These handcrafted features effectively disambiguate largest number of semantic parsing errors in ATIS data because the most confusions in the output of the semantic parser are whether the time is time of arrival or departure, etc. To generalize this approach, we generate features (bigrams) for every word in utterance and every POS tag in data. Simply, for every word we search for the nearest left/right word with specific POS tag. Once we find such POS tag, we generate a bigram between those two words and search for nearest for another POS tag until all POS tag are processed. 
-
-
-Which effectively covers large portion of diam
-
-
-generate bigrams for each word in the utterance and for the nearest word 
-
-
-
-
-
-
-We generate new n-grams reflecting the adjecy in the semantic tree.
-
+Secondly, we generated long-range features by using POS tags\footnote{We used POS tags provided by the RASP parser; however, any POS tagger can be used instead.} 
+Our motivation was work of \cite{meza08a,meza08b} who handcrafted features using words ''arrive``, ''arriving``, ''leave``, and ''leaving``. These handcrafted features disambiguate large number of semantic parsing errors in ATIS data because large portion or errors is caused by confusions between concepts ''arrival.time`` and ''departure.time``, ''arrival.day`` and ''departure.day``, etc. To generalize this approach, we want to automatically find features which could disambiguate words like ''Monday``, ''7pm``, and ''Boston``. As a result, we generate a new type of bigrams for a word and the nearest verb, preposition, etc. We use all parts-of-speech provided by RASP and the learning algorithm chose the most discriminative features. Among those learned are not only the words used by Meza-Rui but also words like ''stop``, ''reach``, ''buy`` and prepositions like ''at``, ''from``, ''to``, etc.
 
 \textbf{Mention why I do not use tree similarity measure as Kate.}
-
-
-We extracted 
 
 \subsection{Results}
 
 We also compare our models with the handcrafted Phoenix grammar \cite{ward91} used in the trials \cite{williams07,thomson08}. The Phoenix parser implements a partial matching algorithm that was designed for robust spoken language understanding.
 
+
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|l|ccc|}
+\hline \makebox[2.99cm]{\bf Parser} & \makebox[1.1cm]{\bf Prec} & \makebox[1.1cm]{\bf Rec} & \bf F \\ \hline 
+\multicolumn{4}{l}{\textbf{TownInfo dataset with transcribed utterances:}} \\
+\hline
+ECL      & 96.05 & 94.66 & 95.35 \\
+STC      & 97.39 & 94.05 & \textbf{95.69} \\
+Phoenix  & 96.33 & 94.22 & 95.26 \\
+\hline
+\multicolumn{4}{l}{\textbf{TownInfo dataset with ASR output:}} \\
+\hline
+ECL      & 92.72 & 83.42 & 87.82 \\
+STC      & 94.03 & 83.73 & \textbf{88.58} \\
+Phoenix & 90.28 & 79.49 & 84.54 \\
+\hline
+\multicolumn{4}{l}{\textbf{ATIS dataset with transcribed utterances:}} \\
+\hline
+ECL   & 96.37 & 95.12 & 95.74 \\
+STC   & 96.73 & 92.37 & 94.50 \\
+HVS   & - & - & 90.3  \\
+MLN   & - & - & 92.99 \\
+PCCG  & 95.11 & 96.71 & \textbf{95.9} \\
+\hline
+\end{tabular}
+\end{center}
+  \caption{\label{font-table} Slot/value precision (Prec), recall (Rec) and F-measure (F) for the ATIS and TownInfo datasets. ECL parser is compared with Phoenix parser and STC classifier \cite{mairesse09} on the TownInfo dataset and compared with HVS parser \cite{he06}, MLN parser \cite{meza08b}, STC classifier, and PCCG parser \cite{zettlemoyer07} on the ATIS dataset}
+\end{table}
+
 \section{Discussion}
 
 \efgr{fig:learning:curve}{The learning curve shows the relation between number of learned rules and the F-measure for both TI and ATIS corpora.}
 
-The number of learned rules is very small. As is shown in the figure \ref{fig:learning:curve}, learning curves for both training data and development data are very steep. Although our current strategy for choosing the final number of rules for decoding is to keep only the rules for which we obtain highest F-measure on the development data, we could use much less rules without scarifying accuracy. For example, we accepted 0.1\% lower F-measure on the development data than we would need only YYY rules in comparison with XXX rules if select the number of rules based in the highest F-measure. In contrast, the initial lexicon the CCG parser \cite{zettlemoyer07} contains about 180 sometimes very complex entries for general English and yet additional lexical entries must be learned.
+The number of learned rules is very small. As is shown in the figure \ref{fig:learning:curve}, learning curves for both training data and development data are very steep. Although our current strategy for choosing the final number of rules for decoding is to keep only the rules for which we obtain highest F-measure on the development data, we could use much less rules without scarifying accuracy. For example, we accepted 0.1\% lower F-measure on the development data than we would need only YYY rules in comparison with XXX rules if select the number of rules based in the highest F-measure. In contrast, the initial lexicon the CCG parser \cite{zettlemoyer07} contains about 180 complex entries for general English words or phrases and yet additional lexical entries must be learned. \textbf{explain better}
 
 Also, the number of rules per semantic concept (dialogue act or slot name) is very low. In TI data, we have XXX different dialogue acts and XXX slot and the average number of rules per semantic concept is XXX. In case of ATIS data, we have XXX dialogue acts and XXX slots and the average number of rules per semantic concept is XXX.
 
@@ -237,7 +255,7 @@ Do not number the acknowledgment section.
 \begin{thebibliography}{}
 
 \bibitem[\protect\citename{Williams and Young}2007]{williams07}
-J. Williams and S. Young, 
+J. Williams and S. Young.
 \newblock 2007.
 \newblock {\em Partially observable markov decision
 processes for spoken dialog systems}.
@@ -251,47 +269,53 @@ K. Yu, and S. Young.
 \newblock Proceedings of Interspeech.
 
 \bibitem[\protect\citename{Ward}1991]{ward91}
-W. H. Ward.
+W.H. Ward.
 \newblock 1991.
 \newblock {\em The Phoenix system: Understanding spontaneous
 speech}.
 \newblock Proceedings of ICASSP.
 
-\bibitem[\protect\citename{He and Young}2005]{he05}
-Yulan He and Steve Young.
-\newblock 2005.
-\newblock {\em Semantic processing using the
-hidden vector state model}.
-\newblock Computer Speech \& Language,vol. 19, no. 1, pp. 85-106.
-
 \bibitem[\protect\citename{Zettlemoyer and Collins}2007]{zettlemoyer07}
-Luke S. Zettlemoyer and Michael Collins.
+L.S. Zettlemoyer and M. Collins.
 \newblock 2005.
 \newblock {\em Online learning of relaxed CCG grammars for parsing to logical form}.
 \newblock Proceedings of EMNLP-CoNLL.
 
 \bibitem[\protect\citename{Dahl et al}1994]{atis94}
-D. A. Dahl, M. Bates, M. Brown,W. Fisher, K. Hunicke-Smith,
+D.A. Dahl, M. Bates, M. Brown, W. Fisher, K. Hunicke-Smith,
 D. Pallett, C. Pao, A. Rudnicky, and E. Shriberg.
 \newblock 1994.
 \newblock {\em Expanding the scope of the ATIS task: The ATIS-3 corpus}.
 \newblock Proceedings of the ARPA HLT Workshop.
 
+\bibitem[\protect\citename{He and Young}2005]{he05}
+Y. He and S. Young.
+\newblock 2005.
+\newblock {\em Semantic processing using the
+hidden vector state model}.
+\newblock Computer Speech \& Language,vol. 19, no. 1, pp. 85-106.
+
 \bibitem[\protect\citename{He and Young}2006]{he06}
-Yulan He and Steve Young.
+Y. He and S. Young.
 \newblock 2006.
 \newblock {\em Spoken language understanding using the hidden vector state model}.
 \newblock Computer Speech \& Language, vol. 19, no. 1, pp. 85-106.
 
 
 \bibitem[\protect\citename{Wong and Mooney}2006]{wong06}
-YukWah Wong and Raymond J. Mooney.
+Y.W. Wong and R.J. Mooney.
 \newblock 2006.
 \newblock {\em Learning for Semantic Parsing with Statistical Machine Translation}.
 \newblock Proceedings of HLT/NAACL.
 
+\bibitem[\protect\citename{Kate}2005]{kate05}
+R.J. Kate, Y.W. Wong and R.J. Mooney.
+\newblock 2008.
+\newblock {\em Learning to Transform Natural to Formal Languages}.
+\newblock Proceedings of AAAI.
+
 \bibitem[\protect\citename{Kate}2008]{kate08}
-Rohit J. Kate.
+R.J. Kate.
 \newblock 2008.
 \newblock {\em A Dependency-based Word Subsequence Kernel}.
 \newblock Proceedings of EMNLP.
@@ -302,13 +326,29 @@ E. Briscoe, J. Carroll and R. Watson.
 \newblock {\em The Second Release of the RASP System}.
 \newblock Proceedings of COLING/ACL.
 
-
-\bibitem[\protect\citename{Meza et al}2008]{meza08}
-Ivan V. Meza-Ruiz, S. Riedel, O. Lemon.
+\bibitem[\protect\citename{Meza et al}2008a]{meza08a}
+I.V. Meza-Ruiz, S. Riedel and O. Lemon.
 \newblock 2008.
-\newblock {\em Accurate statistical spoken language understanding from limited development resources.}.
+\newblock {\em Accurate statistical spoken language understanding from limited development resources}.
 \newblock Proceedings of ICASSP.
 
+\bibitem[\protect\citename{Meza et al}2008b]{meza08b}
+I.V. Meza-Ruiz, S. Riedel and O. Lemon.
+\newblock 2008.
+\newblock {\em Spoken Language Understanding in dialogue systems, using a 2-layer Markov Logic Network: improving semantic accuracy}.
+\newblock Proceedings of Londial.
+
+\bibitem[\protect\citename{Mairesse et al}2009]{mairesse09}
+F. Mairesse, M. Gasic, F. Jurcicek, S. Keizer, B. Thomson, K. Yu, and S. Young.
+\newblock 2009.
+\newblock {\em Spoken Language Understanding from Unaligned Data using Discriminative Classification Models}.
+\newblock Proceedings of ICASSP.
+
+\bibitem[\protect\citename{Tang  et al}2001]{tang01}
+L.R. Tang and R. J. Mooney 
+\newblock 2001.
+\newblock {\em Using Multiple Clause Constructors in Inductive Logic Programming for Semantic Parsing}.
+\newblock Proceedings of ECML.
 
 \end{thebibliography}
 
