@@ -1,4 +1,4 @@
-This is pdfeTeX, Version 3.141592-1.30.5-2.2 (Web2C 7.5.5) (format=pdflatex 2008.4.16)  9 JAN 2009 20:01
+This is pdfeTeX, Version 3.141592-1.30.5-2.2 (Web2C 7.5.5) (format=pdflatex 2008.4.16)  15 JAN 2009 18:26
 entering extended mode
 **naaclhlt2009.tex
 (./naaclhlt2009.tex
@@ -69,19 +69,19 @@ File: pdftex.def 2002/06/19 v0.03k graphics/color for pdftex
 ) (./naaclhlt2009.aux)
 \openout1 = `naaclhlt2009.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 48.
-LaTeX Font Info:    ... okay on input line 48.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 48.
-LaTeX Font Info:    ... okay on input line 48.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 48.
-LaTeX Font Info:    ... okay on input line 48.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 48.
-LaTeX Font Info:    ... okay on input line 48.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 48.
-LaTeX Font Info:    ... okay on input line 48.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 48.
-LaTeX Font Info:    ... okay on input line 48.
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 48.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 52.
 
 (/usr/share/texmf/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
@@ -121,50 +121,40 @@ loading : Context Support Macros / PDF (2004.03.26)
 \everyMPtoPDFconversion=\toks18
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 49.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 53.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 49.
+(Font)              <12> on input line 53.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 49.
+(Font)              <8> on input line 53.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 49.
-LaTeX Font Info:    Try loading font information for U+lasy on input line 49.
+(Font)              <6> on input line 53.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 53.
  (/usr/share/texmf/tex/latex/base/ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 49.
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 49.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 53.
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 53.
 
 (/usr/share/texmf/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
-LaTeX Font Info:    Try loading font information for OMS+pcr on input line 49.
+LaTeX Font Info:    Try loading font information for OMS+pcr on input line 53.
 
 (/usr/share/texmf/tex/latex/psnfss/omspcr.fd
 File: omspcr.fd 
 )
 LaTeX Font Info:    Font shape `OMS/pcr/m/n' in size <12> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 49.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 53.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 56.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 60.
 
-Underfull \hbox (badness 1264) in paragraph at lines 64--66
+Underfull \hbox (badness 1264) in paragraph at lines 96--98
 \OT1/ptm/m/n/10.95 learn-ing to map sen-tences into their se-man-tics.
  []
 
 
-LaTeX Warning: Citation `lappoon01' on page 1 undefined on input line 67.
-
-
-Underfull \hbox (badness 1297) in paragraph at lines 79--80
-[]\OT1/ptm/m/n/10.95 transformation tech-niques used in the sys-tem
- []
-
-
-Underfull \hbox (badness 2772) in paragraph at lines 82--83
-[]\OT1/ptm/m/n/10.95 Transformation-based Error-driven Learn-ing -
- []
+LaTeX Warning: Citation `lappoon01' on page 1 undefined on input line 99.
 
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
@@ -172,117 +162,133 @@ Underfull \hbox (badness 2772) in paragraph at lines 82--83
 
 
 ]
+Underfull \hbox (badness 1297) in paragraph at lines 111--112
+[]\OT1/ptm/m/n/10.95 transformation tech-niques used in the sys-tem
+ []
 
-LaTeX Warning: Reference `ssec:first' on page 2 undefined on input line 96.
+
+Underfull \hbox (badness 2772) in paragraph at lines 114--115
+[]\OT1/ptm/m/n/10.95 Transformation-based Error-driven Learn-ing -
+ []
 
 
-Underfull \hbox (badness 2426) in paragraph at lines 99--100
+Underfull \hbox (badness 2426) in paragraph at lines 129--130
 \OT1/ptm/m/n/10.95 This sec-tion de-scribes the transformation-based
  []
 
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 104.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 146.
 
 (/usr/share/texmf/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 104.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 146.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 105.
+(Font)              <10.95> on input line 147.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <9> on input line 105.
+(Font)              <9> on input line 147.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 105.
+(Font)              <5> on input line 147.
  [2]
-Underfull \hbox (badness 1292) in paragraph at lines 165--166
+<./fig/words-slots-alignment.pdf, id=20, 600.2425pt x 347.2975pt>
+File: ./fig/words-slots-alignment.pdf Graphic file (type pdf)
+
+<use ./fig/words-slots-alignment.pdf> [3 <./fig/words-slots-alignment.pdf
+Warning: pdflatex (file ./fig/words-slots-alignment.pdf): pdf inclusion: Page G
+roup detected which pdfTeX can't handle. Ignoring it.
+>] [4]
+Underfull \hbox (badness 1292) in paragraph at lines 323--324
 \OT1/ptm/m/n/10.95 of-the-art tech-niques and hand-crafted rule-based
  []
 
 
-Underfull \hbox (badness 1320) in paragraph at lines 169--180
+Underfull \hbox (badness 1320) in paragraph at lines 327--338
 \OT1/ptm/m/n/10.95 users searched for in-for-ma-tion about a spe-cific
  []
 
 
-Underfull \hbox (badness 1874) in paragraph at lines 181--184
+Underfull \hbox (badness 1874) in paragraph at lines 339--342
 []\OT1/ptm/m/n/10.95 In or-der to com-pare our re-sults with pre-vi-
  []
 
 
-Underfull \hbox (badness 2334) in paragraph at lines 181--184
+Underfull \hbox (badness 2334) in paragraph at lines 339--342
 \OT1/ptm/m/n/10.95 ous work (He and Young, 2006; Zettle-moyer
  []
 
 
-Underfull \hbox (badness 3229) in paragraph at lines 181--184
+Underfull \hbox (badness 3229) in paragraph at lines 339--342
 \OT1/ptm/m/n/10.95 Air Travel In-for-ma-tion Sys-tem dataset (ATIS)
  []
 
 
-Underfull \hbox (badness 2165) in paragraph at lines 181--184
+Underfull \hbox (badness 2165) in paragraph at lines 339--342
 \OT1/ptm/m/n/10.95 (Dahl et al, 1994). This dataset con-sists of
  []
 
 
-Underfull \hbox (badness 1776) in paragraph at lines 181--184
+Underfull \hbox (badness 1776) in paragraph at lines 339--342
 \OT1/ptm/m/n/10.95 user re-quests for flight in-for-ma-tion, for ex-am-
  []
 
 
-Overfull \hbox (7.43256pt too wide) in paragraph at lines 181--184
+Overfull \hbox (7.43256pt too wide) in paragraph at lines 339--342
 \OT1/ptm/m/n/10.95 Diego",to.city="Phoenix",departure.day="Monday").
  []
 
 
-Underfull \hbox (badness 1881) in paragraph at lines 181--184
+Underfull \hbox (badness 1881) in paragraph at lines 339--342
 \OT1/ptm/m/n/10.95 pairs that ap-pear in the out-put se-man-tic (e.g.,
  []
 
-<./fig/dep-tree.pdf, id=20, 578.16pt x 578.16pt>
+<./fig/dep-tree.pdf, id=48, 447.6725pt x 498.86375pt>
 File: ./fig/dep-tree.pdf Graphic file (type pdf)
  <use ./fig/dep-tree.pdf>
-[3 <./fig/dep-tree.pdf
+[5 <./fig/dep-tree.pdf
 Warning: pdflatex (file ./fig/dep-tree.pdf): pdf inclusion: Page Group detected
  which pdfTeX can't handle. Ignoring it.
 >]
-Overfull \hbox (0.71872pt too wide) in paragraph at lines 208--231
+Overfull \hbox (0.71872pt too wide) in paragraph at lines 366--389
  [] 
  []
 
 
-Overfull \hbox (14.19781pt too wide) in paragraph at lines 237--237
+Overfull \hbox (14.19781pt too wide) in paragraph at lines 395--395
 [][] 
  []
 
+[6]
+Underfull \vbox (badness 1527) has occurred while \output is active []
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [4]
-Underfull \hbox (badness 1430) in paragraph at lines 285--290
+Underfull \hbox (badness 1430) in paragraph at lines 437--442
 \OT1/ptm/m/n/10 Smith, D. Pal-lett, C. Pao, A. Rud-nicky, and E.
  []
 
-[5] [6
 
-] (./naaclhlt2009.aux)
+Underfull \hbox (badness 1661) in paragraph at lines 481--485
+[]\OT1/ptm/m/n/10 I.V. Meza-Ruiz, S. Riedel and O. Lemon.  2008.
+ []
 
-LaTeX Warning: There were undefined references.
+[7] [8
 
- ) 
+] (./naaclhlt2009.aux) ) 
 Here is how much of TeX's memory you used:
- 1148 strings out of 94432
- 14191 string characters out of 1175566
- 65858 words of memory out of 1000000
- 4358 multiletter control sequences out of 10000+50000
- 25934 words of font info for 58 fonts, out of 500000 for 2000
+ 1159 strings out of 94432
+ 14447 string characters out of 1175566
+ 65915 words of memory out of 1000000
+ 4367 multiletter control sequences out of 10000+50000
+ 27618 words of font info for 60 fonts, out of 500000 for 2000
  580 hyphenation exceptions out of 1000
  32i,10n,23p,932b,269s stack positions out of 1500i,500n,5000p,200000b,5000s
 PDF statistics:
- 42 PDF objects out of 300000
+ 68 PDF objects out of 300000
  0 named destinations out of 131072
- 6 words of extra memory for PDF output out of 10000
-{/usr/share/texmf/fonts/enc/dvips/psnfss/8r.enc}</usr/share/texmf/fonts/type1
-/urw/times/utmri8a.pfb></usr/share/texmf/fonts/type1/urw/courier/ucrr8a.pfb></u
-sr/share/texmf/fonts/type1/bluesky/cm/cmsy10.pfb></usr/share/texmf/fonts/type1/
-urw/times/utmr8a.pfb></usr/share/texmf/fonts/type1/urw/times/utmb8a.pfb>
-Output written on naaclhlt2009.pdf (6 pages, 109087 bytes).
+ 11 words of extra memory for PDF output out of 10000
+</usr/share/texmf/fonts/type1/bluesky/cm/cmmi8.pfb></us
+r/share/texmf/fonts/type1/bluesky/cm/cmmi10.pfb>{/usr/share/texmf/fonts/enc/dvi
+ps/psnfss/8r.enc}</usr/share/texmf/fonts/type1/urw/times/utmri8a.pfb></usr/shar
+e/texmf/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texmf/fonts/type1/bluesk
+y/cm/cmsy10.pfb></usr/share/texmf/fonts/type1/urw/times/utmr8a.pfb></usr/share/
+texmf/fonts/type1/urw/times/utmb8a.pfb>
+Output written on naaclhlt2009.pdf (8 pages, 154890 bytes).
