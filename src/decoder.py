@@ -98,8 +98,10 @@ class Decoder:
         for each in self.das:
             f.write('Text:          %s\n' % each.renderText())
             f.write('DB Text:       %s\n' % each.normText)
-            for k, v in sorted(each.valueDictPositions.items()):
-                f.write('Subst value:   %s => %s\n' % (k, v))
+            
+            if hasattr(each, 'valueDictPositions'):
+                for k, v in sorted(each.valueDictPositions.items()):
+                    f.write('Subst value:   %s => %s\n' % (k, v))
                 
             each.writeAlignment(f)
             
@@ -396,9 +398,11 @@ class Decoder:
     def writeAnalyzeDA(self, f, each):
         f.write('Text:          %s\n' % each.renderText())
         f.write('DB Text:       %s\n' % each.normText)
-        for k, v in sorted(each.valueDictPositions.items()):
-            f.write('Subst value:   %2d => %30s = %s\n' % (k, v, each.words[k]))
-            
+        
+        if hasattr(each, 'valueDictPositions'):
+            for k, v in sorted(each.valueDictPositions.items()):
+                f.write('Subst value:   %2d => %30s = %s\n' % (k, v, each.words[k]))
+                
         each.writeAlignment(f)
         
         f.write('HYP Semantics: %s\n' % each.renderTBED(False))

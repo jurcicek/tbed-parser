@@ -125,7 +125,8 @@ class DialogueAct:
             f.write('-'*numberOfRightDashes)
             f.write(' '*numberOfRightDots+'\n')
             
-            f.write('%50s (%.2d,%.2d,%.2d,%.2d) <= %s\n' % (each.renderTBED(False, self.valueDictPositions, self.words), each.leftBorder, each.leftMiddle, each.rightMiddle, each.rightBorder, str(sorted(each.lexIndex))))
+            if hasattr(self, 'valueDictPositions'):
+                f.write('%50s (%.2d,%.2d,%.2d,%.2d) <= %s\n' % (each.renderTBED(False, self.valueDictPositions, self.words), each.leftBorder, each.leftMiddle, each.rightMiddle, each.rightBorder, str(sorted(each.lexIndex))))
         f.write('.'*80+'\n')
 
     def getPOSTags(self, text):
