@@ -230,9 +230,14 @@ The final semantic hypothesis is the following.
 
 Up to now, we considered the utterance as a bag of words and no notion of locality was considered. To implement this, we constrain what features are used by triggers based on the distance from the words which actually triggered the slots first of all.
 
-\fgrparam{width=8cm}{./fig/words-slots-alignment.pdf}{fig:alignment}{Alignment between words in the utterance and the slots.}
+\fgrparam{width=8cm}{./fig/words-slots-alignment.pdf}{fig:alignment}{Alignment between words and the slots in the utterance.}
 
-For every slot we track the words from the utterance, which were used in the triggers. In Figure \ref{fig:alignment}, you can see the alignment. If we perform the substitution of the slot ``departure.day'' to ``arrival.day'' we test whether word ``arrive'' is in the vicinity of the slot. The main reason is that we do not want to trigger the substitution of the slot ``from.city=Toronto'' to ``to.city=Toronto'' because the parser also learns rule.
+For every slot we track the words from the utterance, which were used in the triggers. In Figure \ref{fig:alignment} (a), we see the alignment between words and the slots in the utterance after applying the first set of rules. The full lines denote alignment created by add.  The dasehed lines denote derived alignment. Because no rules were trigered by words ``find all the flights'' and ``that arrive on'' those words could not be alligned directly to any of the slot, we have to derive such alignment. In our algotrithm, we align such words with slots is such way that the derived alignment does not cross the original alignment. In Figure\ref{fig:alignment} (a), the phrase ``find all the flights'' can be aligned to the slot ``from.city=Toronto'' only. The phrase ``that arrive on'' can be aligned to two slots ``to.city=San Dieago'' and ``departure.day=Saturday''.
+
+In Figure \ref{fig:alignment} (a), we see the alignment between words and the slots in the utterance after applying the substitution. We can see change in teh alignment of the ``that arrive on''. The word ``arrive'' is allignet to the slot ``arrive.day=Saturday'' now. Consequently, the word ``on'' has to be alignet to the same slot, otehrwise the derived alignmet would cross the original alignment.
+And there is no change in the alignment of the word ``that''. 
+
+Before we perform the substitution of the slot ``departure.day'' to ``arrival.day'', we test whether word ``arrive'' is in the vicinity of the slot. The main reason is that we do not want to trigger the substitution of the slot ``from.city=Toronto'' to ``to.city=Toronto'' because the parser also learns rule.
 
 \vspace{.25cm}
 \begin{tabular}{ll}

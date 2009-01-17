@@ -39,7 +39,11 @@
 \title{Error Corrective Learning for Semantic parsing}
 
 \author{F. Jur\v{c}\'{i}\v{c}ek, F. Mairesse, M. Ga\v{s}i\'{c}, S. Keizer, B. Thomson, K. Yu, and S. Young \\
-Cambridge University Engineering Department, Trumpington Street, Cambridge, CB2 1PZ, UK \\
+\\
+Engineering Department \\
+Cambridge University \\
+Trumpington Street, Cambridge, CB2 1PZ, UK \\
+\\
 {\tt \{fj228, farm2, mg436, sk561, brmt2, ky219, sjy\}@eng.cam.ac.uk}
 }
 
@@ -82,7 +86,7 @@ thereby enabling alignment refinements.
 
 The rest of the paper is organized as follows: In
 the next section we describe previous work on semantic parsing. Section \ref{sec:tbl:example} presents am example of TBL based semantic parsing. Section \ref{sec:tbl:learning} describes the learning process. Section
-\ref{sec:evaluatin} compares ECL to the previously developed semantic parser on ATIS \cite{atis94} and TownInfo \cite{williams07,thomson08} tasks.
+\ref{sec:evaluation} compares ECL to the previously developed semantic parser on ATIS \cite{atis94} and TownInfo \cite{williams07,thomson08} tasks.
 
 We show that ECL is competitive to the state-of-the-art semantic parser on the ATIS task without using any handcrafted linguistic knowledge.
 
@@ -114,14 +118,12 @@ Transformation-based Error-driven Learning - Some Advances in Transformation-Bas
 
 R. J. Kate, Y. W. Wong, and R. J. Mooney. 2005. Learning
 to transform natural to formal languages. In Proc.
-of AAAI-05, pages 1062?1068, Pittsburgh, PA, July.  
+of AAAI-05, pages 1062?1068, Pittsburgh, PA, July. 
 
 L. R. Tang and R. J. Mooney. 2001. Using multiple
 clause constructors in inductive logic programming for
-semantic parsing. In Proc. of ECML-01, pages 466?
-477, Freiburg, Germany.
+semantic parsing. In Proc. of ECML-01, pages 466-477, Freiburg, Germany.
 
-Subsection~\ref{ssec:first}).
 
 \section{Transformation-based parser}
 This section describes the transformation-based parser. First of all, we describe rule templates used to generate rules for the rule inference process. Secondly, we describe the learning process. Finally, we describe parsing algorithm.
@@ -157,7 +159,7 @@ A transformation performs one of these operation:
 \end{itemize}
 As substitution can either substitute a whole slot, an equal sign in the slot, or a slot name.
 
-\subsection{Example of Parsing}
+\subsection{Example of Parsing} \label{sec:tbl:example}
 The semantic parser transforms initial naive semantic hypothesis into correct semantics by applying rules from an ordered set of rules. 
 
 The parsing consists of \textbf{three} steps: 
@@ -228,9 +230,29 @@ The final semantic hypothesis is the following.
 
 Up to now, we considered the utterance as a bag of words and no notion of locality was considered. To implement this, we constrain what features are used by triggers based on the distance from the words which actually triggered the slots first of all.
 
-\fgrparam{width=8cm}{./fig/words-slots-alignment.pdf}{fig:alignment}{Alignment between words in the utterance and the slots.}
+\fgrparam{width=8cm}{./fig/words-slots-alignment.pdf}{fig:alignment}{Alignment between words and the slots in the utterance.}
 
-For every slot we track the words from the utterance, which were used in the triggers. In Figure \ref{fig:alignment}, you can see the alignment. If we perform the substitution of the slot ``departure.day'' to ``arrival.day'' we test whether word ``arrive'' is in the vicinity of the slot.
+For every slot we track the words from the utterance, which were used in the triggers. In Figure \ref{fig:alignment} (a), we see the alignment between words and the slots in the utterance after applying the first set of rules. The full lines denote alignment created by add.  The dasehed lines denote derived alignment. Because no rules were trigered by words ``find all the flights'' and ``that arrive on'' those words could not be alligned directly to any of the slot, we have to derive such alignment. In our algotrithm we align such words with its nearest slots. For the fr
+
+In Figure\ref{fig:alignment} (b), we see that words ``that arrive on'' are not allignet 
+
+Because the words between words alignet to slots are not aligment to any slot we can 
+
+
+
+If we perform the substitution of the slot ``departure.day'' to ``arrival.day'' we test whether word ``arrive'' is in the vicinity of the slot. The main reason is that we do not want to trigger the substitution of the slot ``from.city=Toronto'' to ``to.city=Toronto'' because the parser also learns rule.
+
+\vspace{.25cm}
+\begin{tabular}{ll}
+  trigger & transformation \\
+  \hline 
+  ``arrive''            & substitute slot from\\
+                        & ``from.city=*'' to \\
+                        & ``arrive.city=*'' \\
+\end{tabular} 
+\vspace{.25cm}
+
+And to protect the rule from triggering we use the vicinity constrain.
 
 The vicinity of the slot is computed as it follows:
 
@@ -239,8 +261,7 @@ The vicinity of the slot is computed as it follows:
 \end{enumerate}
 
 
-
-\subsection{Learning}
+\subsection{Learning} \label{sec:tbl:learning}
 \textbf{The central idea of transformation-based learning is to learn and ordered list of rules which progressively improve upon the current state of the training set.} 
 
 The in initial assignment is made based on simple statistics, and then the rules are greedily learned to correct the mistakes, until no improvement can be made.
@@ -305,7 +326,7 @@ An equal sign of an incorrect slot
 
 
 
-\section{Evaluation}
+\section{Evaluation} \label{sec:evaluation}
 
 In this section, we evaluate our parser on two distinct corpora, and compare our results with the state-of-the-art techniques and handcrafted rule-based parser. 
 
@@ -331,7 +352,7 @@ For both corpora are available databases with lexical entries for slot values e.
 
 \subsection{Improving disambiguation of long-range dependencies}
 
-\fgrparam{width=5cm}{./fig/dep-tree.pdf}{fig:dep:tree}{Dependency tree of the sentence ''Show the cheapest flights from New York to San Jose arriving before 7pm on Monday`` generated by the RASP parser \cite{rasp06}.}
+\fgrparam{width=8cm}{./fig/dep-tree.pdf}{fig:dep:tree}{Dependency tree of the sentence ''Show the cheapest flights from New York to San Jose arriving before 7pm on Monday`` generated by the RASP parser \cite{rasp06}.}
 
 Besides simple n-grams and skipping bigrams more complex lexical features can be used. \cite{kate08} used gold standard word dependencies to capture long-range relationship between words. At its simplest, dependencies tree is one of the most concise ways to describe language syntax. Essentially, each word is viewed as the dependent of one other word, with the exception of a single word which that is the root of the sentence. Kate showed that word dependencies significantly improve semantic parsing because long-range dependencies from an utterance tend to be local in a dependency tree. For example, the words ''arriving`` and ''Monday`` are neighbors in the dependency tree but they are four words apart in the sentence (see Figure \ref{fig:dep:tree}).
 
@@ -388,7 +409,7 @@ Also, the number of rules per semantic concept (dialogue act or slot name) is ve
 Lexical realizations of a slot can overlap with lexical realization of neighbouring slots. It is shows to be important pattern, for example in the trigram (city-0,and,city-1) is very common for sentence including ''between city-0 and city-1``. The lexical realizations city-0, city-1 respectively would be classified as from.city, and city-1 just because we know the  
 
 
-We found that the dialogue act type recognition accuracy of the STEP parser is lower than STC's; as a result, we tried to use SVM as STC does to classify dialogue act types. We believe that STC is better in dialogue act type recognition better because SVN classifier use all features at one time. Makes decision in one step using all the features rather than making several decisions by several rules as STEP does it.
+We found that the dialogue act type recognition accuracy of the STEP parser is lower than STC's; as a result, we tried to use SVM as STC does to classify dialogue act types. We believe that STC is better in dialogue act type recognition better because SVN classifier use all features at one time. STC makes decision in one step using all the features rather than making several decisions by several rules as STEP.
 
 We hoped for an increase of F-measure as result of increased dialogue act type accuracy. However, we did not get any increase in F-measure.
 
@@ -400,7 +421,7 @@ as well as neighboring links.
  
 \section*{Acknowledgments}
 
-% We would like to thank to Luke Zettlemoyer and I.V. Meza-Ruiz for their help with understanding with their methods.
+We would like to thank to Luke Zettlemoyer and I.V. Meza-Ruiz for their help with understanding their methods.
 
 
 
