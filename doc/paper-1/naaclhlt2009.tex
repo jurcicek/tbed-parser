@@ -57,7 +57,7 @@ Trumpington Street, Cambridge, CB2 1PZ, UK \\
 
 \section{Introduction}
 
-\textbf{Check how you cal STEP. ECL parser?}
+\textbf{Check how you call STEP/ECL parser!}
 
 Semantic parsing is important part of a spoken dialogue system \cite{williams07,thomson08}. The goal of a semantic parsing is to construct formal meaning representation (semantics) which is directly executable by a dialogue manager. Such semantics is usually defined by a grammar, e.g. LR grammar for GeoQuery domain \cite{wong06} \textbf{better paper???}, which is designed by a domain expert and easy to interpret by a dialogue manager or question answering system.
 
@@ -90,39 +90,22 @@ the next section we describe previous work on semantic parsing. Section \ref{sec
 
 We show that ECL is competitive to the state-of-the-art semantic parser on the ATIS task without using any handcrafted linguistic knowledge.
 
+\textbf{Define slot, slot name and slot value. Give an example of such slot} 
 
 \section{Related work}
 
-There has been a large amount of work done on learning to map sentences 
-into their semantics. Many different techniques have been considered including machine translation \cite{wong06} 
+In Section \ref{sec:evaluation}, we compare performance of our method the four existing systems that were evaluated on the same dataset we consider. 
+Support vector machines \cite{mairesse09} have been used to build a semantic trees by recursive calling classifiers to estimate probabilities of production rules using a linear kernel and word based features. 
 
-techniques using inductive logic programing \cite{lappoon01}
+Markov logic networks \cite{meza08a,meza08b} have been used to extract slot values by applying ideas of a Markov network to first-order logic. In this approach, weights are attached to first-order clauses which represent relationship between slot names and its values. Such weighted clauses are used as templates for features of Markov networks. 
+Automatic induction of combinatory categorical grammar \cite{zettlemoyer07} have been used to map sentences to lambda-calculus. The combinatory categorical grammar is generalized into probabilistic model by learning log-linear model. An online learning algorithm update weights of features representing a parse tree of an input sentence. They show that their technique produces the state-of-the-art performance on the Air Travel Information (ATIS) dataset \cite{atis94}.
+\textbf{However, }apart from using the the lexical categories (city names, airport names, etc) readily available from the ATIS corpus, they also need considerable number of handcrafted entries in their initial lexicon. 
+Hidden Vector State model \cite{he06} have been used to model an approximation of a pushdown automaton which has semantic concepts as non-terminal symbols. Consequently, a deterministic algorithm was used to recover slot values.
 
-support vector machines \cite{mairesse09} and tree kernels \cite{kate08}
-
-markov logic networks \cite{meza08a,meza08b}
-
-automatic induction of combinatory categorical grammar \cite{zettlemoyer07}. 
-Z \& C mention their problems with spoken speech => non-compositionality
- After Zettlemoyer \& Collins implemented second-pass decoding which relaxed constraints on the utterances, they achieved state-of-the-art results.
-
-\cite{he06} developed a parser for the ATIS domain also takes utterances paired with semantics as input. Their parser approximate a pushdown automaton with semantic concepts as non-terminal symbols.  
-
-transformation techniques used in the system SILT \cite{kate05}. SILT learns transformation rules which sequentially rewrites an utterance into its formal representation. Our ECL parser differ in the way the semantics is constructed instead of transforming utterance. Instead of rewriting an utterance, we transform initial naive semantic hypothesis. As a result, we can use in input words several times to trigger transformations of the output. This extends the ability to handle non-compositionality phenomena in spoken language.
-
-
-Transformation-based Error-driven Learning - Some Advances in Transformation-Based Part of Speech Tagging - Brill (1994)
-
-\cite{kate08} % dep-kernel
-
-
-R. J. Kate, Y. W. Wong, and R. J. Mooney. 2005. Learning
-to transform natural to formal languages. In Proc.
-of AAAI-05, pages 1062?1068, Pittsburgh, PA, July. 
-
-L. R. Tang and R. J. Mooney. 2001. Using multiple
-clause constructors in inductive logic programming for
-semantic parsing. In Proc. of ECML-01, pages 466-477, Freiburg, Germany.
+There has been done a large amount of research that is not directly comparable to our because they require different levels of supervision. Wong \cite{wong06} used machine translation techniques with a syntax-based translation model based on the synchronous context-free grammars. 
+Inductive logic programing \cite{tang01} have been used to incrementally develop a theory including a set of predicates. In each iteration, the predicates were generalized from predicates in the theory and predicates automatically constructed from examples. 
+Transformation techniques \cite{kate05} have been used to sequentially rewrite an utterance into semantics. Our approach differ in the way how the semantics is constructed. Instead of rewriting an utterance, we transform initial naive semantic hypothesis. As a result, we can use in input words several times to trigger transformations of the output. This extends our ability to handle non-compositionality phenomena in spoken language.
+Kate \cite{kate08} used support vector machines and tree kernels to integrate knowledge contained in the dependency tries to capture long-range long-range relationship between words. 
 
 
 \section{Transformation-based parser}
@@ -194,7 +177,7 @@ Secondly, the rules whose triggers match the sentence and the semantic hypothesi
 \end{tabular} 
 \vspace{.25cm}
 
-The trigger \textbf{``and Sand Diego'' is example of non-compositionality}, in which the the words in an utterance do not have a one-to-one correspondence with the slots in the semantics. The word ``and'' is used two times and in the second time it indicate that the city ``San Diego'' is slot value of the slot ``to.city''. After application of the transformations, we obtain the following semantic hypothesis. 
+The trigger \textbf{``and Sand Diego'' is example of non-compositionality}, in which the words in an utterance do not have a one-to-one correspondence with the slots in the semantics. The word ``and'' is used two times and in the second time it indicate that the city ``San Diego'' is slot value of the slot ``to.city''. After application of the transformations, we obtain the following semantic hypothesis. 
 
 \vspace{.25cm}
 \begin{tabular}{lll}
@@ -228,16 +211,7 @@ The final semantic hypothesis is the following.
 \end{tabular} 
 \vspace{.25cm}
 
-Up to now, we considered the utterance as a bag of words and no notion of locality was considered. To implement this, we constrain what features are used by triggers based on the distance from the words which actually triggered the slots first of all.
-
-\fgrparam{width=8cm}{./fig/words-slots-alignment.pdf}{fig:alignment}{Alignment between words and the slots in the utterance.}
-
-For every slot we track the words from the utterance, which were used in the triggers. In Figure \ref{fig:alignment} (a), we see the alignment between words and the slots in the utterance after applying the first set of rules. The full lines denote alignment created by add.  The dasehed lines denote derived alignment. Because no rules were trigered by words ``find all the flights'' and ``that arrive on'' those words could not be alligned directly to any of the slot, we have to derive such alignment. In our algotrithm, we align such words with slots is such way that the derived alignment does not cross the original alignment. In Figure\ref{fig:alignment} (a), the phrase ``find all the flights'' can be aligned to the slot ``from.city=Toronto'' only. The phrase ``that arrive on'' can be aligned to two slots ``to.city=San Dieago'' and ``departure.day=Saturday''.
-
-In Figure \ref{fig:alignment} (a), we see the alignment between words and the slots in the utterance after applying the substitution. We can see change in teh alignment of the ``that arrive on''. The word ``arrive'' is allignet to the slot ``arrive.day=Saturday'' now. Consequently, the word ``on'' has to be alignet to the same slot, otehrwise the derived alignmet would cross the original alignment.
-And there is no change in the alignment of the word ``that''. 
-
-Before we perform the substitution of the slot ``departure.day'' to ``arrival.day'', we test whether word ``arrive'' is in the vicinity of the slot. The main reason is that we do not want to trigger the substitution of the slot ``from.city=Toronto'' to ``to.city=Toronto'' because the parser also learns rule.
+Up to now, we considered the utterance as a bag of words and no notion of locality was considered. To implement this, we constrain triggers to be activated only if they are in vicinity of the slot lexical realization. Only the rule substituting slot is constrained. For example, before we perform the substitution of the slot ``departure.day'' to ``arrival.day'', we test whether word ``arrive'' is in the vicinity of the slot. The reason is that we do not want to trigger the substitution of the slot ``from.city=Toronto'' to ``to.city=Toronto'' because the parser also learns rule.
 
 \vspace{.25cm}
 \begin{tabular}{ll}
@@ -249,13 +223,13 @@ Before we perform the substitution of the slot ``departure.day'' to ``arrival.da
 \end{tabular} 
 \vspace{.25cm}
 
-And to protect the rule from triggering we use the vicinity constrain.
+\fgrparam{width=8cm}{./fig/words-slots-alignment.pdf}{fig:alignment}{Alignment between words and the slots in the utterance.}
 
-The vicinity of the slot is computed as it follows:
+To implement such constraints, we track the words from the utterance, which were used in triggers. Anytime we apply add or substitute transformation of a slot, we keep links to the words which triggered the transformation. Because a slot is removed when a delete transformation is applied, no tracking information is kept in this case. 
 
-\begin{enumerate}
-  \item Let $A_S$ a set of words aligned to the slot $S$.
-\end{enumerate}
+In Figure \ref{fig:alignment} (a), we see the alignment between the words and the slots in the utterance after applying the first set of rules. The full lines denote direct alignment created by transformations. The dashed lines denote derived alignment - alignment derived from the direct alignment. Because no rules were triggered by words ``find all the flights'' and ``that arrive on'' those words could not be aligned directly to any of the slot, we have to derive such alignment. To compute derived alignment, first we order the slots so that the slot aligned with the left-most words is the first and the ordering results in minimum instances of crossing of direct alignment. Than every unaligned word is aligned with the nearest left and the right slot. In Figure\ref{fig:alignment} (a), the phrase ``find all the flights'' can be aligned to the slot ``from.city=Toronto'' only. The phrase ``that arrive on'' can be aligned to two slots ``to.city=San Diego'' and ``departure.day=Saturday''.
+
+In Figure \ref{fig:alignment} (b), we see the alignment after applying the substitution. We can see change in the alignment of the ``that arrive on''. First, the word ``arrive'' is aligned to the slot ``arrive.day=Saturday''. Second, the word ``on'' is aligned to the same slot as the word ``arrive'' because  otherwise the derived alignment would cross the direct alignment. Finally, there is no change in the alignment of the word ``that''.
 
 
 \subsection{Learning} \label{sec:tbl:learning}
@@ -494,7 +468,7 @@ I.V. Meza-Ruiz, S. Riedel and O. Lemon.
 \newblock {\em Spoken Language Understanding in dialogue systems, using a 2-layer Markov Logic Network: improving semantic accuracy}.
 \newblock Proceedings of Londial.
 
-\bibitem[\protect\citename{Tang  et al}2001]{tang01}
+\bibitem[\protect\citename{Tang et al}2001]{tang01}
 L.R. Tang and R. J. Mooney 
 \newblock 2001.
 \newblock {\em Using Multiple Clause Constructors in Inductive Logic Programming for Semantic Parsing}.
