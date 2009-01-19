@@ -36,7 +36,7 @@
   \end{figure}
 }
 
-\title{Error Corrective Learning for Semantic parsing}
+\title{Transformation-based Learning for Semantic parsing}
 
 \author{F. Jur\v{c}\'{i}\v{c}ek, F. Mairesse, M. Ga\v{s}i\'{c}, S. Keizer, B. Thomson, K. Yu, and S. Young \\
 \\
@@ -51,62 +51,66 @@ Trumpington Street, Cambridge, CB2 1PZ, UK \\
 
 \begin{document}
 \maketitle
-\begin{abstract}a
-  In this paper, we present a semantic parser which transforms initial naive semantic hypothesis into correct semantics by using an ordered set of rules. These rules are learned automatically from the training corpus with no linguistic knowledge.
+\begin{abstract}
+In this paper, we present a semantic parser which transforms initial naive semantic hypothesis into correct semantics by using an ordered set of rules. These rules are learned automatically from the training corpus with no prior linguistic knowledge.
+
+We show that TBL parser is competitive to the state-of-the-art semantic parser on the ATIS task without using any handcrafted linguistic knowledge.
+
 \end{abstract}
 
+\textbf{Check how you call STEP/TBL parser!}
+
+\textbf{Should I define semantic parsing? Parsing at all??}
+
 \section{Introduction}
+Semantic parsing is important part of a spoken dialogue system \cite{williams07}. The goal of a SLU module is to map natural language to formal meaning representation (semantics). Such semantics can be either defined by a grammar, e.g. LR grammar for GeoQuery domain \cite{kate05} or frames with slots. The semantics, which is designed by a domain expert, is directly executable by a question answering system \cite{wong06} or by a dialogue manager in a spoken dialogue system. As dialogue managers, e.g. \cite{thomson08}, commonly use semantics in the form frames and slots (see Table \ref{tbl:sem:example}), our approach learns how to directly map from natural language into frame and slot semantics.
 
-\textbf{Check how you call STEP/ECL parser!}
+\begin{table}
+\begin{center}
+\begin{tabular}{|lll|} 
+  \hline
+  \multicolumn{3}{l}{``what are the lowest airfare from Washington DC} \\
+  \multicolumn{3}{l}{to Salt Lake City''} \\
+  \hline
+  GOAL          & = & airfare \\
+  from.city     & = & Washington \\
+  from.state    & = & DC \\
+  to.city       & = & Salt Lake City \\
+  \hline
+\end{tabular} 
+\end{center}
+\caption{Example of frame and slot semantics from ATIS \cite{atis94} dataset.}
+\label{tbl:sem:example}
+\end{table}
 
-Semantic parsing is important part of a spoken dialogue system \cite{williams07,thomson08}. The goal of a semantic parsing is to construct formal meaning representation (semantics) which is directly executable by a dialogue manager. Such semantics is usually defined by a grammar, e.g. LR grammar for GeoQuery domain \cite{wong06} \textbf{better paper???}, which is designed by a domain expert and easy to interpret by a dialogue manager or question answering system.
+A dialogue system needs a semantic parser which is acurate and robust, easy to build, and fast. First, a parser presented in this paper performs comparable to the state-of-the-art semantics parser and it can deal with ill formed utterances. Second, it does not need any handrafted linguistic knowledge and it can learn from data which is not semantically annotated at the word-level. Finaly, it learns a compact set of rules which results in limited number of operation per semantic concept.
 
-Semantic parsing can be understood as machine translation from a natural language to a formal language. First, we do not not have formal grammar for natural language is ungrammatical, include hesitations, and very often only fragments of complete sentences, e.g. ``Boston to Miami tomorrow''. 
+% can be understood as machine translation from a natural language to a formal language. First, we do not not have formal grammar for natural language is ungrammatical, include hesitations, and very often only fragments of complete sentences, e.g. ``Boston to Miami tomorrow''. 
 
-In our approach, we adapt transformation-based
-learning (TBL) \cite{brill95} to the problem
-of semantic parsing \textbf{slot classification, attribute/value pair extraction}. TBL attempts to find an
-ordered list of transformation rules to improve a baseline annotation.
+In our approach, we adapt transformation-based learning (TBL) \cite{brill95} to the problem of semantic parsing. We attempt to find an ordered list of transformation rules to improve a naive semantic annotation. 
 
-The rules decompose the search space into
-a set of consecutive words (windows) within which
-alignment links are added, to or deleted from, the
-initial alignment. 
-
-TBL is an appropriate choice for this problem for
-the following reasons:
-1. It can be optimized directly with respect to an
-evaluation metric.
-2. It learns rules that improve the initial prediction
-iteratively, so that it is capable of correcting
-previous errors in subsequent iterations.
-3. It provides a readable description (or classification)
-of errors made by the initial system,
-thereby enabling alignment refinements.
-
-The rest of the paper is organized as follows: In
-the next section we describe previous work on semantic parsing. Section \ref{sec:tbl:example} presents am example of TBL based semantic parsing. Section \ref{sec:tbl:learning} describes the learning process. Section
-\ref{sec:evaluation} compares ECL to the previously developed semantic parser on ATIS \cite{atis94} and TownInfo \cite{williams07,thomson08} tasks.
-
-We show that ECL is competitive to the state-of-the-art semantic parser on the ATIS task without using any handcrafted linguistic knowledge.
-
-\textbf{Define slot, slot name and slot value. Give an example of such slot} 
+In the next section, we describe previous work on maping natural language into fromal meaning representation. Section \ref{sec:tbl:example} presents an example of TBL based semantic parsing. Section \ref{sec:tbl:learning} describes the learning process. Section \ref{sec:evaluation} compares TBL parser to the previously developed semantic parsers on ATIS \cite{atis94} and TownInfo \cite{williams07,thomson08} datasets.
 
 \section{Related work}
 
-In Section \ref{sec:evaluation}, we compare performance of our method the four existing systems that were evaluated on the same dataset we consider. 
-Support vector machines \cite{mairesse09} have been used to build a semantic trees by recursive calling classifiers to estimate probabilities of production rules using a linear kernel and word based features. 
+In Section \ref{sec:evaluation}, we compare performance of our method with the four existing systems that were evaluated on the same dataset we consider. 
 
-Markov logic networks \cite{meza08a,meza08b} have been used to extract slot values by applying ideas of a Markov network to first-order logic. In this approach, weights are attached to first-order clauses which represent relationship between slot names and its values. Such weighted clauses are used as templates for features of Markov networks. 
-Automatic induction of combinatory categorical grammar \cite{zettlemoyer07} have been used to map sentences to lambda-calculus. The combinatory categorical grammar is generalized into probabilistic model by learning log-linear model. An online learning algorithm update weights of features representing a parse tree of an input sentence. They show that their technique produces the state-of-the-art performance on the Air Travel Information (ATIS) dataset \cite{atis94}.
-\textbf{However, }apart from using the the lexical categories (city names, airport names, etc) readily available from the ATIS corpus, they also need considerable number of handcrafted entries in their initial lexicon. 
-Hidden Vector State model \cite{he06} have been used to model an approximation of a pushdown automaton which has semantic concepts as non-terminal symbols. Consequently, a deterministic algorithm was used to recover slot values.
+First, hidden Vector State model \cite{he06} have been used to model an approximation of a pushdown automaton which has semantic concepts as non-terminal symbols. Consequently, a deterministic algorithm was used to recover slot values.
 
-There has been done a large amount of research that is not directly comparable to our because they require different levels of supervision. Wong \cite{wong06} used machine translation techniques with a syntax-based translation model based on the synchronous context-free grammars. 
+Second, automatic induction of combinatory categorical grammar \cite{zettlemoyer07} have been used to map sentences to lambda-calculus. The combinatory categorical grammar is generalized into probabilistic model by learning log-linear model. An online learning algorithm update weights of features representing a parse tree of an input sentence. They show that their technique produces the state-of-the-art performance on the Air Travel Information (ATIS) dataset \cite{atis94}. \textbf{However, }apart from using the the lexical categories (city names, airport names, etc) readily available from the ATIS corpus, they also need considerable number of handcrafted entries in their initial lexicon. 
+
+Third, Markov logic networks \cite{meza08a,meza08b} have been used to extract slot values by applying ideas of a Markov network to first-order logic. In this approach, weights are attached to first-order clauses which represent relationship between slot names and its values. Such weighted clauses are used as templates for features of Markov networks.
+
+Finally, support vector machines \cite{mairesse09} have been used to build a semantic trees by recursive calling classifiers to estimate probabilities of production rules using a linear kernel and word based features.
+
+There has been lso done a large amount of research into maping natural language to semantics that is not directly comparable because it uses eaither different corpora or different meaning representation. 
+
+Wong \cite{wong06} used machine translation techniques with a syntax-based translation model based on the synchronous context-free grammars. 
 Inductive logic programing \cite{tang01} have been used to incrementally develop a theory including a set of predicates. In each iteration, the predicates were generalized from predicates in the theory and predicates automatically constructed from examples. 
-Transformation techniques \cite{kate05} have been used to sequentially rewrite an utterance into semantics. Our approach differ in the way how the semantics is constructed. Instead of rewriting an utterance, we transform initial naive semantic hypothesis. As a result, we can use in input words several times to trigger transformations of the output. This extends our ability to handle non-compositionality phenomena in spoken language.
-Kate \cite{kate08} used support vector machines and tree kernels to integrate knowledge contained in the dependency tries to capture long-range long-range relationship between words. 
 
+Transformation techniques \cite{kate05} have been used to sequentially rewrite an utterance into semantics. Our approach differ in the way how the semantics is constructed. Instead of rewriting an utterance, we transform initial naive semantic hypothesis. As a result, we can use in input words several times to trigger transformations of the output. This extends our ability to handle non-compositionality phenomena in spoken language.
+
+Kate \cite{kate08} used support vector machines and tree kernels to integrate knowledge contained in the gold standatrd dependency trees to capture long-range relationship between words. 
 
 \section{Transformation-based parser}
 This section describes the transformation-based parser. First of all, we describe rule templates used to generate rules for the rule inference process. Secondly, we describe the learning process. Finally, we describe parsing algorithm.
@@ -346,19 +350,19 @@ We also compare our models with the handcrafted Phoenix grammar \cite{ward91} us
 \hline \makebox[2.99cm]{\bf Parser} & \makebox[1.1cm]{\bf Prec} & \makebox[1.1cm]{\bf Rec} & \bf F \\ \hline 
 \multicolumn{4}{l}{\textbf{TownInfo dataset with transcribed utterances:}} \\
 \hline
-ECL      & 96.05 & 94.66 & 95.35 \\
+TBL      & 96.05 & 94.66 & 95.35 \\
 STC      & 97.39 & 94.05 & \textbf{95.69} \\
 Phoenix  & 96.33 & 94.22 & 95.26 \\
 \hline
 \multicolumn{4}{l}{\textbf{TownInfo dataset with ASR output:}} \\
 \hline
-ECL      & 92.72 & 83.42 & 87.82 \\
+TBL      & 92.72 & 83.42 & 87.82 \\
 STC      & 94.03 & 83.73 & \textbf{88.58} \\
 Phoenix & 90.28 & 79.49 & 84.54 \\
 \hline
 \multicolumn{4}{l}{\textbf{ATIS dataset with transcribed utterances:}} \\
 \hline
-ECL   & 96.37 & 95.12 & 95.74 \\
+TBL   & 96.37 & 95.12 & 95.74 \\
 STC   & 96.73 & 92.37 & 94.50 \\
 HVS   & - & - & 90.3  \\
 MLN   & - & - & 92.99 \\
@@ -366,7 +370,8 @@ PCCG  & 95.11 & 96.71 & \textbf{95.9} \\
 \hline
 \end{tabular}
 \end{center}
-  \caption{\label{font-table} Slot/value precision (Prec), recall (Rec) and F-measure (F) for the ATIS and TownInfo datasets. ECL parser is compared with Phoenix parser and STC classifier \cite{mairesse09} on the TownInfo dataset and compared with HVS parser \cite{he06}, MLN parser \cite{meza08b}, STC classifier, and PCCG parser \cite{zettlemoyer07} on the ATIS dataset}
+\caption{Slot/value precision (Prec), recall (Rec) and F-measure (F) for the ATIS and TownInfo datasets. TBL parser is compared with Phoenix parser and STC classifier \cite{mairesse09} on the TownInfo dataset and compared with HVS parser \cite{he06}, MLN parser \cite{meza08b}, STC classifier, and PCCG parser \cite{zettlemoyer07} on the ATIS dataset}
+\label{tbl:results-final} 
 \end{table}
 
 \section{Discussion}
@@ -440,7 +445,7 @@ Y.W. Wong and R.J. Mooney.
 
 \bibitem[\protect\citename{Kate}2005]{kate05}
 R.J. Kate, Y.W. Wong and R.J. Mooney.
-\newblock 2008.
+\newblock 2005.
 \newblock {\em Learning to Transform Natural to Formal Languages}.
 \newblock Proceedings of AAAI.
 
