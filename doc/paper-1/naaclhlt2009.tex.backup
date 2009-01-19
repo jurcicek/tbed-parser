@@ -36,7 +36,7 @@
   \end{figure}
 }
 
-\title{Error Corrective Learning for Semantic parsing}
+\title{Transformation-based Learning for Semantic parsing}
 
 \author{F. Jur\v{c}\'{i}\v{c}ek, F. Mairesse, M. Ga\v{s}i\'{c}, S. Keizer, B. Thomson, K. Yu, and S. Young \\
 \\
@@ -51,97 +51,83 @@ Trumpington Street, Cambridge, CB2 1PZ, UK \\
 
 \begin{document}
 \maketitle
-\begin{abstract}a
-  In this paper, we present a semantic parser which transforms initial naive semantic hypothesis into correct semantics by using an ordered set of rules. These rules are learned automatically from the training corpus with no linguistic knowledge.
+\begin{abstract}
+In this paper, we present a semantic parser which transforms initial naive semantic hypothesis into correct semantics by using an ordered set of rules. These rules are learned automatically from the training corpus with no prior linguistic knowledge.
+
+We show that TBL parser is competitive to the state-of-the-art semantic parser on the ATIS task without using any handcrafted linguistic knowledge.
+
 \end{abstract}
 
-\section{Introduction}
+\textbf{Check how you call STEP/TBL parser!}
 
-\textbf{Check how you call STEP/ECL parser!}
 \textbf{Should I define semantic parsing? Parsing at all??}
-Semantic parsing is important part of a spoken dialogue system \cite{williams07}. The goal of a SLU module is to map natural language to formal meaning representation (semantics). Such semantics can be either defined by a grammar, e.g. LR grammar for GeoQuery domain \cite{kate05} or frames with slots. The semantics, which is designed by a domain expert, is directly executable by a question answering system \cite{wong06} or by a dialogue manager \cite{thomson08} in a spoken dialogue system. As dialogue managers mostly use semantics in the form frames and slots, our approach learns how to directly map from natural language into frame and slot semantics.
 
+\section{Introduction}
+Semantic parsing is important part of a spoken dialogue system \cite{williams07}. The goal of a SLU module is to map natural language to formal meaning representation (semantics). Such semantics can be either defined by a grammar, e.g. LR grammar for GeoQuery domain \cite{kate05} or frames with slots. The semantics, which is designed by a domain expert, is directly executable by a question answering system \cite{wong06} or by a dialogue manager in a spoken dialogue system. As dialogue managers, e.g. \cite{thomson08}, commonly use semantics in the form frames and slots (see Table \ref{tbl:sem:example}), our approach learns how to directly map from natural language into frame and slot semantics.
 
-Semantic parsing can be understood as machine translation from a natural language to a formal language. First, we do not not have formal grammar for natural language is ungrammatical, include hesitations, and very often only fragments of complete sentences, e.g. ``Boston to Miami tomorrow''. 
+\begin{table}
+\begin{center}
+\begin{tabular}{|lll|} 
+  \hline
+  \multicolumn{3}{l}{``what are the lowest airfare from Washington DC} \\
+  \multicolumn{3}{l}{to Salt Lake City''} \\
+  \hline
+  GOAL          & = & airfare \\
+  from.city     & = & Washington \\
+  from.state    & = & DC \\
+  to.city       & = & Salt Lake City \\
+  \hline
+\end{tabular} 
+\end{center}
+\caption{Example of frame and slot semantics from ATIS \cite{atis94} dataset.}
+\label{tbl:sem:example}
+\end{table}
 
-In our approach, we adapt transformation-based
-learning (TBL) \cite{brill95} to the problem
-of semantic parsing \textbf{slot classification, attribute/value pair extraction}. TBL attempts to find an
-ordered list of transformation rules to improve a baseline annotation.
+A dialogue system needs a semantic parser which is acurate and robust, easy to build, and fast. First, a parser presented in this paper performs comparable to the state-of-the-art semantics parser and it can deal with ill formed utterances. Second, it does not need any handrafted linguistic knowledge and it can learn from data which is not semantically annotated at the word-level. Finaly, it learns a compact set of rules which results in limited number of operation per semantic concept.
 
-The rules decompose the search space into
-a set of consecutive words (windows) within which
-alignment links are added, to or deleted from, the
-initial alignment. 
+% can be understood as machine translation from a natural language to a formal language. First, we do not not have formal grammar for natural language is ungrammatical, include hesitations, and very often only fragments of complete sentences, e.g. ``Boston to Miami tomorrow''. 
 
-TBL is an appropriate choice for this problem for
-the following reasons:
-1. It can be optimized directly with respect to an
-evaluation metric.
-2. It learns rules that improve the initial prediction
-iteratively, so that it is capable of correcting
-previous errors in subsequent iterations.
-3. It provides a readable description (or classification)
-of errors made by the initial system,
-thereby enabling alignment refinements.
+In our approach, we adapt transformation-based learning (TBL) \cite{brill95} to the problem of semantic parsing. We attempt to find an ordered list of transformation rules to improve a naive semantic annotation. 
 
-The rest of the paper is organized as follows: In
-the next section we describe previous work on maping natural language into meaning representation. Section \ref{sec:tbl:example} presents am example of TBL based semantic parsing. Section \ref{sec:tbl:learning} describes the learning process. Section \ref{sec:evaluation} compares TBL to the previously developed semantic parsers on ATIS \cite{atis94} and TownInfo \cite{williams07,thomson08} datasets.
-
-We show that ECL is competitive to the state-of-the-art semantic parser on the ATIS task without using any handcrafted linguistic knowledge.
-
-\textbf{Define slot, slot name and slot value. Give an example of such slot} 
+In the next section, we describe previous work on maping natural language into fromal meaning representation. Section \ref{sec:tbl:example} presents an example of TBL based semantic parsing. Section \ref{sec:tbl:learning} describes the learning process. Section \ref{sec:evaluation} compares TBL parser to the previously developed semantic parsers on ATIS \cite{atis94} and TownInfo \cite{williams07,thomson08} datasets.
 
 \section{Related work}
 
 In Section \ref{sec:evaluation}, we compare performance of our method with the four existing systems that were evaluated on the same dataset we consider. 
+
 First, hidden Vector State model \cite{he06} have been used to model an approximation of a pushdown automaton which has semantic concepts as non-terminal symbols. Consequently, a deterministic algorithm was used to recover slot values.
+
 Second, automatic induction of combinatory categorical grammar \cite{zettlemoyer07} have been used to map sentences to lambda-calculus. The combinatory categorical grammar is generalized into probabilistic model by learning log-linear model. An online learning algorithm update weights of features representing a parse tree of an input sentence. They show that their technique produces the state-of-the-art performance on the Air Travel Information (ATIS) dataset \cite{atis94}. \textbf{However, }apart from using the the lexical categories (city names, airport names, etc) readily available from the ATIS corpus, they also need considerable number of handcrafted entries in their initial lexicon. 
+
 Third, Markov logic networks \cite{meza08a,meza08b} have been used to extract slot values by applying ideas of a Markov network to first-order logic. In this approach, weights are attached to first-order clauses which represent relationship between slot names and its values. Such weighted clauses are used as templates for features of Markov networks.
+
 Finally, support vector machines \cite{mairesse09} have been used to build a semantic trees by recursive calling classifiers to estimate probabilities of production rules using a linear kernel and word based features.
 
 There has been lso done a large amount of research into maping natural language to semantics that is not directly comparable because it uses eaither different corpora or different meaning representation. 
+
 Wong \cite{wong06} used machine translation techniques with a syntax-based translation model based on the synchronous context-free grammars. 
 Inductive logic programing \cite{tang01} have been used to incrementally develop a theory including a set of predicates. In each iteration, the predicates were generalized from predicates in the theory and predicates automatically constructed from examples. 
+
 Transformation techniques \cite{kate05} have been used to sequentially rewrite an utterance into semantics. Our approach differ in the way how the semantics is constructed. Instead of rewriting an utterance, we transform initial naive semantic hypothesis. As a result, we can use in input words several times to trigger transformations of the output. This extends our ability to handle non-compositionality phenomena in spoken language.
-Kate \cite{kate08} used support vector machines and tree kernels to integrate knowledge contained in the dependency tries to capture long-range long-range relationship between words. 
 
-\section{Transformation-based parser}
-This section describes the transformation-based parser. First of all, we describe rule templates used to generate rules for the rule inference process. Secondly, we describe the learning process. Finally, we describe parsing algorithm.
+Kate \cite{kate08} used support vector machines and tree kernels to integrate knowledge contained in the gold standatrd dependency trees to capture long-range relationship between words. 
 
-\textbf{TBL chooses the transformation that reduces the errors the most.}
+\section{Transformation-based parsing}
+This section describes the transformation-based parser. 
 
-\textbf{
-Existence of initial annotator.
-Transformations are applied in sequence. 
-Results of previous transformations are visible to following transformations.
-Existence of current label.
-It can handle dynamic problems well.
-}
-
-\textbf{Most of the effective methods can be roughly divided into rule-based and probabilistic algorithms. In general, the rule-based methods have the advantage of capturing the necessary information in a small and concise set of rules. For example, in part-of-speech tagging rule-based and probabilistic methods achieve comparable accuracies, but rule-based methods capture the knowledge in a hundreds or so simple rules, while the probabilistic methods have very high-dimensional parameter space (millions of parameters)}
-
-\subsection{Rule templates}
-The learning algorithm uses rule templates to instantiate rules which are subsequently tested by the learning algorithm. Each rule template is composed of a trigger and transformation. \textbf{A trigger controls whether a transformation of hypothesis can be performed}. Each trigger question either input utterance or output semantics. As a results each trigger contains one or several condition:
+A transformation parsing assumes:
 \begin{itemize}
-  \item The utterance contains n-gram N?
-  \item The utterance contains skipping\footnote{A skipping bigram is bigram which skips one or more words between words in the bigram} bigram B?
-  \item The semantics dialogue act equals to D?
-  \item The semantics contains slot S?
+\item Existence of initial annotation.
+\item Transformations are applied in sequence. 
+\item Transforamtions progresively change from general to specific.
+\item Results of previous transformations are visible to following transformations.
+\item Transformations correct errors of the previous transformations.
 \end{itemize}
-If a trigger contains more than one condition, then all conditions must be satisfied. \textbf{Get rid of the questions.}
 
-A transformation performs one of these operation:
-\begin{itemize}
-  \item substitute a dialogue act type
-  \item add a slot
-  \item delete a slot
-  \item substitute a slot
-\end{itemize}
-As substitution can either substitute a whole slot, an equal sign in the slot, or a slot name.
+First of all, we give an example of the parsing algorithm. Secondly, we describe rule templates used to generate rules for the rule inference process. Finally, we detail the learning process. 
 
 \subsection{Example of Parsing} \label{sec:tbl:example}
-The semantic parser transforms initial naive semantic hypothesis into correct semantics by applying rules from an ordered set of rules. 
+The semantic parser transforms initial naive semantic hypothesis into correct semantics by applying rules from an ordered set of rules. Each rules is composed of a trigger and a transforamtion. A trigger initiate a transformation of the hypothesis.
 
 The parsing consists of \textbf{three} steps: 
 \begin{enumerate}
@@ -160,7 +146,7 @@ First, the goal ``flight'' is used as the initial goal because it is the most co
 \end{tabular} 
 \vspace{.25cm}
 
-Secondly, the rules whose triggers match the sentence and the semantic hypothesis are sequentially applied.
+Secondly, the rules whose triggers match the sentence and the hypothesis are sequentially applied.
 
 \vspace{.25cm}
 \begin{tabular}{ll}
@@ -175,7 +161,7 @@ Secondly, the rules whose triggers match the sentence and the semantic hypothesi
 \end{tabular} 
 \vspace{.25cm}
 
-The trigger \textbf{``and Sand Diego'' is example of non-compositionality}, in which the words in an utterance do not have a one-to-one correspondence with the slots in the semantics. The word ``and'' is used two times and in the second time it indicate that the city ``San Diego'' is slot value of the slot ``to.city''. After application of the transformations, we obtain the following semantic hypothesis. 
+Conesquently, we obtain the following semantic hypothesis. 
 
 \vspace{.25cm}
 \begin{tabular}{lll}
@@ -186,7 +172,11 @@ The trigger \textbf{``and Sand Diego'' is example of non-compositionality}, in w
 \end{tabular} 
 \vspace{.25cm}
 
-The word ``saturday'' is incorrectly classified because the date and time values are associated with slot ``departure*'' most of the time.  As TBL \textbf{classifier} learns to correct its errors, the parser also applies the error correcting rules. In our case it is:
+The trigger \textbf{``and Sand Diego'' is example of non-compositionality}, in which the words in an utterance do not have a one-to-one correspondence with the slots in the semantics. The word ``and'' indicates that the city ``San Diego'' is slot value of the slot ``to.city''. 
+
+As the TBL method tends to learn and apply general rules first, the parser learns to assicate the date and time values with the ``departure*'' slots becasue the date and time values are mostly associated with slots describing properties of departure in the ATIS dataset. The icorrent classification of the word ``saturday'' is a result of such generalization. 
+
+However, TBL method learns to correct its errors. Therefore, the parser also applies at laiter stage of parsing the error correcting rules. 
 
 \vspace{.25cm}
 \begin{tabular}{ll}
@@ -198,7 +188,7 @@ The word ``saturday'' is incorrectly classified because the date and time values
 \end{tabular} 
 \vspace{.25cm}
 
-The final semantic hypothesis is the following.
+In this case, we subtitute the slot name with the correct values. The final semantic hypothesis is as follows.
 
 \vspace{.25cm}
 \begin{tabular}{lll}
@@ -209,7 +199,7 @@ The final semantic hypothesis is the following.
 \end{tabular} 
 \vspace{.25cm}
 
-Up to now, we considered the utterance as a bag of words and no notion of locality was considered. To implement this, we constrain triggers to be activated only if they are in vicinity of the slot lexical realization. Only the rule substituting slot is constrained. For example, before we perform the substitution of the slot ``departure.day'' to ``arrival.day'', we test whether word ``arrive'' is in the vicinity of the slot. The reason is that we do not want to trigger the substitution of the slot ``from.city=Toronto'' to ``to.city=Toronto'' because the parser also learns rule.
+Up to now, we considered the utterance as a bag of words and no notion of locality was considered. For example, before we perform the substitution of the slot ``departure.day'' to ``arrival.day'', we shoud test whether word ``arrive'' is in the vicinity of the slot. The reason is that we do not want to trigger the substitution of the slot ``from.city=Toronto'' to ``to.city=Toronto'' because the parser can also learn the rule as follows. 
 
 \vspace{.25cm}
 \begin{tabular}{ll}
@@ -217,27 +207,64 @@ Up to now, we considered the utterance as a bag of words and no notion of locali
   \hline 
   ``arrive''            & substitute slot from\\
                         & ``from.city=*'' to \\
-                        & ``arrive.city=*'' \\
+                        & ``to.city=*'' \\
 \end{tabular} 
 \vspace{.25cm}
+\fgrparam{width=8cm}{./fig/words-slots-alignment.pdf}{fig:alignment}{Alignment between words and the slots in the example utterance.}
 
-\fgrparam{width=8cm}{./fig/words-slots-alignment.pdf}{fig:alignment}{Alignment between words and the slots in the utterance.}
+\textbf{XXX: I mentioned delete transformation but never defined.}
 
-To implement such constraints, we track the words from the utterance, which were used in triggers. Anytime we apply add or substitute transformation of a slot, we keep links to the words which triggered the transformation. Because a slot is removed when a delete transformation is applied, no tracking information is kept in this case. 
+To implement this, we constrain triggers performing substitution to be activated only if they are in the vicinity of the slot lexical realization.  We track the words from the utterance, which were used in triggers. Anytime we apply a transformation of a slot, we store links to the words which triggered the transformation. We call this links as direct alignment. For the delete transformation no tracking information is kept because a slot is removed from hypothesis and never used again.
 
-In Figure \ref{fig:alignment} (a), we see the alignment between the words and the slots in the utterance after applying the first set of rules. The full lines denote direct alignment created by transformations. The dashed lines denote derived alignment - alignment derived from the direct alignment. Because no rules were triggered by words ``find all the flights'' and ``that arrive on'' those words could not be aligned directly to any of the slot, we have to derive such alignment. To compute derived alignment, first we order the slots so that the slot aligned with the left-most words is the first and the ordering results in minimum instances of crossing of direct alignment. Than every unaligned word is aligned with the nearest left and the right slot. In Figure\ref{fig:alignment} (a), the phrase ``find all the flights'' can be aligned to the slot ``from.city=Toronto'' only. The phrase ``that arrive on'' can be aligned to two slots ``to.city=San Diego'' and ``departure.day=Saturday''.
+In Figure \ref{fig:alignment} (a), we see the alignment between the words and the slots in the example utterance after applying the first set of rules. The full lines denote direct alignment created by the add-transformations. The dashed lines denote derived alignment - alignment computed from the direct alignment. Because no rules were triggered by words ``find all the flights'' and ``that arrive on'' those words could not be aligned directly to any of the slots, we have to derive such alignment. To compute derived alignment, first we order the slots so that the slot aligned with the left-most word is the first and the ordering results in minimum instances of direct alignment crossing. Than, every unaligned word is aligned with the nearest left and the right slot. In Figure\ref{fig:alignment} (a), the phrase ``find all the flights'' can be aligned to the slot ``from.city=Toronto'' only. The phrase ``that arrive on'' can be aligned to two slots ``to.city=San Diego'' and ``departure.day=Saturday''.
 
-In Figure \ref{fig:alignment} (b), we see the alignment after applying the substitution. We can see change in the alignment of the ``that arrive on''. First, the word ``arrive'' is aligned to the slot ``arrive.day=Saturday''. Second, the word ``on'' is aligned to the same slot as the word ``arrive'' because  otherwise the derived alignment would cross the direct alignment. Finally, there is no change in the alignment of the word ``that''.
+In Figure \ref{fig:alignment} (b), we see the alignment after applying the substitution. We can see change in the alignment of the phrase ``that arrive on''. First, the word ``arrive'' is aligned to the slot ``arrive.day=Saturday''. Second, the word ``on'' is aligned to the same slot as the word ``arrive'',   otherwise the derived alignment would cross the direct alignment. There is no change in the alignment of the word ``that''.
 
+\subsection{Rule templates}
+The learning algorithm uses templates to instantiate rules which are subsequently tested by the learning algorithm. Each rule template is composed of a trigger and a transformation. 
+
+A trigger controls when a transformation of a hypothesis can be performed. A trigger can question an input utterance, an output semantics, or both. In our method, a trigger contains one or more conditions as follows.
+\begin{itemize}
+  \item The utterance contains n-gram N.
+  \item The utterance contains skipping\footnote{A skipping bigram is bigram which skips one or more words between words in the bigram. For example, ('arrive',*,'Boston') is a skiping bigram which skips one word.} bigram B.
+  \item The semantics dialogue act equals to D.
+  \item The semantics contains slot S.
+\end{itemize}
+If a trigger contains more than one condition, then all conditions must be satisfied. 
+
+A transformation performs one of these operation:
+\begin{itemize}
+  \item Substitute a dialogue act type.
+  \item Add a slot
+  \item Delete a slot
+  \item Substitute a slot
+\end{itemize}
+A substitution transformation can either substitute a whole slot, a slot name, or a slot value.
 
 \subsection{Learning} \label{sec:tbl:learning}
-\textbf{The central idea of transformation-based learning is to learn and ordered list of rules which progressively improve upon the current state of the training set.} 
+The main idea of transformation-based learning is to learn an ordered list of rules which incrementaly improve upon the current state of the training set (see Figure \ref{alg:tbl:learning}). The learning is conducted in a greedy fashion according the objective function. We define the objective function as a measure of the number of errors in our hypothesis. Number of errors includes number of dialogue act substitutions, number of slot insertions, number of slot deletions, number of slot substitutions. When no rule that improves the current state of the training set beyond the pre-set threshold can be found, the training ends.
 
-The in initial assignment is made based on simple statistics, and then the rules are greedily learned to correct the mistakes, until no improvement can be made.
+\begin{figure}
+\textsc{
+\begin{enumerate}
+  \item initial semantics is assigned as hypothesis to each utterance
+  \item repeat as long as the number of errors on the training set decreases
+  \begin{enumerate}
+    \item generate all possible rules which correct at least one error in the training set
+    \item measure number of corrected errors by each rule
+    \item select the rule with the most corrected errors
+    \item apply the selected rule
+  \end{enumerate}
+  \item prune rules
+\end{enumerate}}
+\caption{Rule transformations learning algorithm.}
+\label{alg:tbl:learning}
+\end{figure} 
+
+The in initial assignment is made based on simple statistics
+\textbf{TBL chooses the transformation that reduces the errors the most.}
 
 Using TBL approach to solve a classification problem assumes the existence of:
-
-
 \begin{itemize}
   \item An initial call assignment. This can be done by assigning the most common simple semantics, e.g. inform().
   \item A set of templates for rules. These templates determine the predicates the rules will test, and they have the largest impact on the performance of the classifier.
@@ -259,27 +286,11 @@ At the beginning of the learning phase, the training set is first given an initi
   \item Repeat from the step 1.
 \end{enumerate}
 
-\textbf{Th system learns a list of rules in a greedy fashion, according the objective function. When no rule that improves the current state of the training set beyond the pre-set can be found, the training phase ends.}
-
 During the decoding phase, the test set is initialized with the same initial class's assignment. Each rule is than applied, in the order it was learned, to the test set. The final classification is the one attained when all rules have been applied.
-
-
-Rules are learned sequentially:
-\begin{enumerate}
-  \item initial semantics is assigned as hypothesis to each utterance
-  \item repeat as long as the number of errors\footnote{Number of errors include number of dialogue act substitutions, number of slot insertions, number of slot deletions, number of slot substitutions.} on training set decreases
-  \begin{enumerate}
-    \item generate all possible rules which correct at least one error in the training set
-    \item measure number of corrected errors for each rule
-    \item select the best rule
-    \item apply the selected rule
-  \end{enumerate}
-  \item prune rules
-\end{enumerate}
 
 The make the parser more robust, we increase robustness of the parser by the following steps. 
 
-First, the number of plausible slot values for each slot is usually very high. As a result, we replace all lexical realizations from the database, available to \textbf{a dialogue manager}, by its slot name in the utterance. For example, in utterance ``find all the flights from cincinnati to the new york city'' the lexical realization are replaced as follows: ``please find all the flights from city-0 to the city-1''. Similarly, we replace slot values in the semantics.
+First, the number of possible slot values for each slot is usually very high. As a result, we replace all lexical realizations from the database, available to \textbf{a dialogue manager}, by its slot name in the utterance. For example, in utterance ``find all the flights from cincinnati to the new york city'' the lexical realization are replaced as follows: ``please find all the flights from city-0 to the city-1''. Similarly, we replace slot values in the semantics.
 
 Secondly, to limit overfitting the training data, we prune the rules which are learned at the end of the learning. We sequentially apply each rule on the development set. And we chose the number of rules for which the parser gets the highest score on the development data.
 
@@ -344,19 +355,19 @@ We also compare our models with the handcrafted Phoenix grammar \cite{ward91} us
 \hline \makebox[2.99cm]{\bf Parser} & \makebox[1.1cm]{\bf Prec} & \makebox[1.1cm]{\bf Rec} & \bf F \\ \hline 
 \multicolumn{4}{l}{\textbf{TownInfo dataset with transcribed utterances:}} \\
 \hline
-ECL      & 96.05 & 94.66 & 95.35 \\
+TBL      & 96.05 & 94.66 & 95.35 \\
 STC      & 97.39 & 94.05 & \textbf{95.69} \\
 Phoenix  & 96.33 & 94.22 & 95.26 \\
 \hline
 \multicolumn{4}{l}{\textbf{TownInfo dataset with ASR output:}} \\
 \hline
-ECL      & 92.72 & 83.42 & 87.82 \\
+TBL      & 92.72 & 83.42 & 87.82 \\
 STC      & 94.03 & 83.73 & \textbf{88.58} \\
 Phoenix & 90.28 & 79.49 & 84.54 \\
 \hline
 \multicolumn{4}{l}{\textbf{ATIS dataset with transcribed utterances:}} \\
 \hline
-ECL   & 96.37 & 95.12 & 95.74 \\
+TBL   & 96.37 & 95.12 & 95.74 \\
 STC   & 96.73 & 92.37 & 94.50 \\
 HVS   & - & - & 90.3  \\
 MLN   & - & - & 92.99 \\
@@ -364,7 +375,8 @@ PCCG  & 95.11 & 96.71 & \textbf{95.9} \\
 \hline
 \end{tabular}
 \end{center}
-  \caption{\label{font-table} Slot/value precision (Prec), recall (Rec) and F-measure (F) for the ATIS and TownInfo datasets. ECL parser is compared with Phoenix parser and STC classifier \cite{mairesse09} on the TownInfo dataset and compared with HVS parser \cite{he06}, MLN parser \cite{meza08b}, STC classifier, and PCCG parser \cite{zettlemoyer07} on the ATIS dataset}
+\caption{Slot/value precision (Prec), recall (Rec) and F-measure (F) for the ATIS and TownInfo datasets. TBL parser is compared with Phoenix parser and STC classifier \cite{mairesse09} on the TownInfo dataset and compared with HVS parser \cite{he06}, MLN parser \cite{meza08b}, STC classifier, and PCCG parser \cite{zettlemoyer07} on the ATIS dataset}
+\label{tbl:results-final} 
 \end{table}
 
 \section{Discussion}
