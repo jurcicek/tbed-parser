@@ -63,7 +63,9 @@ We show that TBL parser is competitive to the state-of-the-art semantic parser o
 \textbf{Should I define semantic parsing? Parsing at all??}
 
 \section{Introduction}
-Semantic parsing is important part of a spoken dialogue system \cite{williams07}. The goal of a SLU module is to map natural language to formal meaning representation (semantics). Such semantics can be either defined by a grammar, e.g. LR grammar for GeoQuery domain \cite{kate05} or frames with slots. The semantics, which is designed by a domain expert, is directly executable by a question answering system \cite{wong06} or by a dialogue manager in a spoken dialogue system. As dialogue managers, e.g. \cite{thomson08}, commonly use semantics in the form frames and slots (see Table \ref{tbl:sem:example}), our approach learns how to directly map from natural language into frame and slot semantics.
+Semantic parsing is important part of a spoken dialogue system \cite{williams07}. The goal of a semantic parsing is to map natural language to formal meaning representation - semantics. Such semantics can be either defined by a grammar, e.g. LR grammar for GeoQuery domain \cite{kate05} or by frames with slots. The semantics is ususally directly executable by a question answering system \cite{wong06} or by a dialogue manager in a spoken dialogue system \cite{thomson08}. As dialogue managers, e.g. , commonly use semantics in the form frames and slots (see Table \ref{tbl:sem:example}), our approach learns how to directly map from natural language into frame and slot semantics.
+
+% The semantics, which is designed by a domain expert, is directly executable by a question answering system \cite{wong06} or by a dialogue manager in a spoken
 
 \begin{table}
 \begin{center}
@@ -119,12 +121,12 @@ A transformation parsing assumes:
 \begin{itemize}
 \item Existence of initial annotation.
 \item Transformations are applied in sequence. 
-\item Transforamtions progresively change from general to specific.
+\item Transformations progresively change from general to specific.
 \item Results of previous transformations are visible to following transformations.
 \item Transformations correct errors of the previous transformations.
 \end{itemize}
 
-First of all, we give an example of the parsing algorithm. Secondly, we describe rule templates used to generate rules for the rule inference process. Finally, we detail the learning process. 
+First of all, we give an example of the parsing algorithm. Secondly, we describe  templates used to generate rules for the inference process. Finally, we detail the learning process. 
 
 \subsection{Example of Parsing} \label{sec:tbl:example}
 The semantic parser transforms initial naive semantic hypothesis into correct semantics by applying rules from an ordered set of rules. Each rules is composed of a trigger and a transforamtion. A trigger initiate a transformation of the hypothesis.
@@ -242,7 +244,7 @@ A transformation performs one of these operation:
 A substitution transformation can either substitute a whole slot, a slot name, or a slot value.
 
 \subsection{Learning} \label{sec:tbl:learning}
-The main idea of transformation-based learning is to learn an ordered list of rules which incrementaly improve upon the current state of the training set (see Figure \ref{alg:tbl:learning}). The learning is conducted in a greedy fashion according the objective function. We define the objective function as a measure of the number of errors in our hypothesis. Number of errors includes number of dialogue act substitutions, number of slot insertions, number of slot deletions, number of slot substitutions. When no rule that improves the current state of the training set beyond the pre-set threshold can be found, the training ends.
+The main idea of transformation-based learning is to learn an ordered list of rules which incrementaly improve upon the current state of the training set (see Figure \ref{alg:tbl:learning}). The learning is conducted in a greedy fashion according the objective function. We define the objective function as a measure of the number of errors in our hypothesis. Number of errors includes number of dialogue act substitutions, number of slot insertions, number of slot deletions, number of slot substitutions. As a result, TBL chooses the transformation rule that reduces the errors the most. When no rule that improves the current state of the training set beyond the pre-set threshold can be found, the training ends.
 
 \begin{figure}
 \textsc{
@@ -253,7 +255,8 @@ The main idea of transformation-based learning is to learn an ordered list of ru
     \item generate all possible rules which correct at least one error in the training set
     \item measure number of corrected errors by each rule
     \item select the rule with the most corrected errors
-    \item apply the selected rule
+    \item apply the selected rule to the current state if the training set.
+    \item Stop if the number of corrected errors is smaller then 3.
   \end{enumerate}
   \item prune rules
 \end{enumerate}}
@@ -261,8 +264,7 @@ The main idea of transformation-based learning is to learn an ordered list of ru
 \label{alg:tbl:learning}
 \end{figure} 
 
-The in initial assignment is made based on simple statistics
-\textbf{TBL chooses the transformation that reduces the errors the most.}
+The in initial assignment is made based on simple statistics. \textbf{The most common goal is assigned and no slots are added}.
 
 Using TBL approach to solve a classification problem assumes the existence of:
 \begin{itemize}
