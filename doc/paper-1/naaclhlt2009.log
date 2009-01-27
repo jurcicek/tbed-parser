@@ -1,4 +1,4 @@
-This is pdfeTeX, Version 3.141592-1.30.5-2.2 (Web2C 7.5.5) (format=pdflatex 2008.4.16)  27 JAN 2009 14:30
+This is pdfeTeX, Version 3.141592-1.30.5-2.2 (Web2C 7.5.5) (format=pdflatex 2009.1.27)  27 JAN 2009 19:33
 entering extended mode
 **naaclhlt2009.tex
 (./naaclhlt2009.tex
@@ -149,61 +149,50 @@ LaTeX Font Info:    Font shape `OMS/pcr/m/n' in size <12> not available
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 61.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 70.
-
-Overfull \hbox (1.72626pt too wide) in paragraph at lines 70--81
- [] 
- []
-
-
-Underfull \hbox (badness 1412) in paragraph at lines 96--97
-\OT1/ptm/m/n/10.95 In Sec-tion 4[], we com-pare per-for-mance of our
- []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
-
-
-
-
-]
-Underfull \hbox (badness 2512) in paragraph at lines 100--101
-\OT1/ptm/m/n/10.95 have been used to map sen-tences to lambda-
- []
-
-
-Underfull \hbox (badness 1237) in paragraph at lines 106--107
-\OT1/ptm/m/n/10.95 that is not di-rectly com-pa-ra-ble be-cause it uses
- []
-
-
-Underfull \hbox (badness 1796) in paragraph at lines 111--112
-[]\OT1/ptm/m/n/10.95 Transformation tech-niques (Kate, 2005) have
- []
-
-
-Underfull \hbox (badness 2426) in paragraph at lines 116--117
-\OT1/ptm/m/n/10.95 This sec-tion de-scribes the transformation-based
- []
-
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 120.
+(Font)              <7> on input line 75.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 75.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 98.
 
 (/usr/share/texmf/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 120.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 98.
 
-Underfull \hbox (badness 5667) in paragraph at lines 122--123
-[]\OT1/ptm/m/n/10.95 Transforamtions pro-gre-sively change from
+Underfull \hbox (badness 2644) in paragraph at lines 100--101
+[]\OT1/ptm/m/n/10.95 Transformations pro-gres-sively change from
+ []
+
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+
+
+
+
+]
+Underfull \hbox (badness 1412) in paragraph at lines 109--110
+\OT1/ptm/m/n/10.95 In Sec-tion 4[], we com-pare per-for-mance of our
+ []
+
+
+Underfull \hbox (badness 2512) in paragraph at lines 113--114
+\OT1/ptm/m/n/10.95 have been used to map sen-tences to lambda-
+ []
+
+
+Underfull \hbox (badness 1796) in paragraph at lines 124--125
+[]\OT1/ptm/m/n/10.95 Transformation tech-niques (Kate, 2005) have
+ []
+
+
+Underfull \hbox (badness 2426) in paragraph at lines 129--130
+\OT1/ptm/m/n/10.95 This sec-tion de-scribes the transformation-based
  []
 
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <9> on input line 135.
+(Font)              <10.95> on input line 137.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 135.
+(Font)              <9> on input line 137.
 [2] <./fig/words-slots-alignment.pdf, id=20, 600.2425pt x 347.2975pt>
 File: ./fig/words-slots-alignment.pdf Graphic file (type pdf)
 
@@ -211,102 +200,107 @@ File: ./fig/words-slots-alignment.pdf Graphic file (type pdf)
 Warning: pdflatex (file ./fig/words-slots-alignment.pdf): pdf inclusion: Page G
 roup detected which pdfTeX can't handle. Ignoring it.
 >]
-Underfull \hbox (badness 1742) in paragraph at lines 260--260
-[]\OT1/ptm/m/sc/10.95 select the rule with the most
+Underfull \hbox (badness 1173) in paragraph at lines 265--265
+[]\OT1/ptm/m/sc/10 generate all pos-si-ble rules which
  []
 
 
-Underfull \hbox (badness 1033) in paragraph at lines 260--260
-[]\OT1/ptm/m/sc/10.95 apply the se-lected rule to the
+Underfull \hbox (badness 1939) in paragraph at lines 265--265
+[]\OT1/ptm/m/sc/10 select the rule with the largest
  []
 
 [4]
-Underfull \hbox (badness 1292) in paragraph at lines 311--312
+Underfull \hbox (badness 1292) in paragraph at lines 279--280
 \OT1/ptm/m/n/10.95 of-the-art tech-niques and hand-crafted rule-based
  []
 
 
-Underfull \hbox (badness 1320) in paragraph at lines 315--326
+Underfull \hbox (badness 1320) in paragraph at lines 283--294
 \OT1/ptm/m/n/10.95 users searched for in-for-ma-tion about a spe-cific
  []
 
-[5]
-Underfull \hbox (badness 1874) in paragraph at lines 327--330
+
+Underfull \hbox (badness 1874) in paragraph at lines 295--298
 []\OT1/ptm/m/n/10.95 In or-der to com-pare our re-sults with pre-vi-
  []
 
 
-Underfull \hbox (badness 2334) in paragraph at lines 327--330
+Underfull \hbox (badness 2334) in paragraph at lines 295--298
 \OT1/ptm/m/n/10.95 ous work (He and Young, 2006; Zettle-moyer
  []
 
 
-Underfull \hbox (badness 3229) in paragraph at lines 327--330
+Underfull \hbox (badness 3229) in paragraph at lines 295--298
 \OT1/ptm/m/n/10.95 Air Travel In-for-ma-tion Sys-tem dataset (ATIS)
  []
 
 
-Underfull \hbox (badness 2165) in paragraph at lines 327--330
+Underfull \hbox (badness 2165) in paragraph at lines 295--298
 \OT1/ptm/m/n/10.95 (Dahl et al, 1994). This dataset con-sists of
  []
 
 
-Underfull \hbox (badness 1776) in paragraph at lines 327--330
+Underfull \hbox (badness 1776) in paragraph at lines 295--298
 \OT1/ptm/m/n/10.95 user re-quests for flight in-for-ma-tion, for ex-am-
  []
 
 
-Overfull \hbox (7.43256pt too wide) in paragraph at lines 327--330
+Overfull \hbox (7.43256pt too wide) in paragraph at lines 295--298
 \OT1/ptm/m/n/10.95 Diego",to.city="Phoenix",departure.day="Monday").
  []
 
 
-Underfull \hbox (badness 1881) in paragraph at lines 327--330
+Underfull \hbox (badness 1881) in paragraph at lines 295--298
 \OT1/ptm/m/n/10.95 pairs that ap-pear in the out-put se-man-tic (e.g.,
  []
 
-<./fig/dep-tree.pdf, id=45, 447.6725pt x 498.86375pt>
+<./fig/dep-tree.pdf, id=42, 447.6725pt x 498.86375pt>
 File: ./fig/dep-tree.pdf Graphic file (type pdf)
  <use ./fig/dep-tree.pdf>
-[6 <./fig/dep-tree.pdf
-Warning: pdflatex (file ./fig/dep-tree.pdf): pdf inclusion: Page Group detected
- which pdfTeX can't handle. Ignoring it.
->]
-Overfull \hbox (0.71872pt too wide) in paragraph at lines 354--377
+[5]
+Underfull \vbox (badness 5696) has occurred while \output is active []
+
+
+Overfull \hbox (0.71872pt too wide) in paragraph at lines 322--345
  [] 
  []
 
 
-Overfull \hbox (14.19781pt too wide) in paragraph at lines 384--384
+Overfull \hbox (14.19781pt too wide) in paragraph at lines 352--352
 [][] 
  []
 
-[7]
-Underfull \hbox (badness 1430) in paragraph at lines 426--431
+[6 <./fig/dep-tree.pdf
+Warning: pdflatex (file ./fig/dep-tree.pdf): pdf inclusion: Page Group detected
+ which pdfTeX can't handle. Ignoring it.
+>]
+Underfull \hbox (badness 1430) in paragraph at lines 397--402
 \OT1/ptm/m/n/10 Smith, D. Pal-lett, C. Pao, A. Rud-nicky, and E.
  []
 
-
-Underfull \hbox (badness 1661) in paragraph at lines 470--474
+[7]
+Underfull \hbox (badness 1661) in paragraph at lines 441--445
 []\OT1/ptm/m/n/10 I.V. Meza-Ruiz, S. Riedel and O. Lemon.  2008.
  []
 
-[8] (./naaclhlt2009.aux) ) 
+[8
+
+] (./naaclhlt2009.aux) ) 
 Here is how much of TeX's memory you used:
- 1163 strings out of 94432
- 14509 string characters out of 1175566
- 64935 words of memory out of 1000000
- 4369 multiletter control sequences out of 10000+50000
- 29342 words of font info for 62 fonts, out of 500000 for 2000
+ 1168 strings out of 94432
+ 14561 string characters out of 1175566
+ 66943 words of memory out of 1000000
+ 4374 multiletter control sequences out of 10000+50000
+ 28476 words of font info for 63 fonts, out of 500000 for 2000
  580 hyphenation exceptions out of 1000
- 32i,10n,23p,1047b,269s stack positions out of 1500i,500n,5000p,200000b,5000s
+ 32i,10n,23p,1047b,286s stack positions out of 1500i,500n,5000p,200000b,5000s
 PDF statistics:
  62 PDF objects out of 300000
  0 named destinations out of 131072
  11 words of extra memory for PDF output out of 10000
-{/usr/share/texmf/fonts/enc/dvips/psnfss/8r.enc}</usr
-/share/texmf/fonts/type1/urw/times/utmri8a.pfb></usr/share/texmf/fonts/type1/ur
-w/courier/ucrr8a.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmsy10.pfb></usr/
-share/texmf/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf/fonts/type1/urw/
-times/utmb8a.pfb>
-Output written on naaclhlt2009.pdf (8 pages, 152945 bytes).
+{/usr/share/texmf/fonts/enc/dvips/psnfss/8r.enc}</usr/s
+hare/texmf/fonts/type1/urw/times/utmri8a.pfb></usr/share/texmf/fonts/type1/urw/
+courier/ucrr8a.pfb></usr/share/texmf/fonts/type1/bluesky/cm/cmsy10.pfb></usr/sh
+are/texmf/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf/fonts/type1/urw/ti
+mes/utmb8a.pfb>
+Output written on naaclhlt2009.pdf (8 pages, 150567 bytes).
