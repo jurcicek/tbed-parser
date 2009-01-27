@@ -35,10 +35,10 @@ order=-1
 
 [item:naaclhlt2009.tex]
 archive=true
-column=158
+column=318
 encoding=ISO 8859-2
 highlight=LaTeX
-line=273
+line=272
 open=true
 order=0
 
