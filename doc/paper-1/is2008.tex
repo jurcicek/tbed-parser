@@ -1,14 +1,14 @@
-%
-% File naaclhlt2009.tex
-%
-% Contact: nasmith@cs.cmu.edu
-
-\documentclass[11pt]{article}
-\usepackage{naaclhlt2009}
-\usepackage{times}
-\usepackage{latexsym}
+\documentclass{article}
+\usepackage{interspeech2008,amssymb,amsmath,epsfig}
 \usepackage{epsfig}
-\setlength\titlebox{6.5cm}    % Expanding the titlebox
+\setcounter{page}{1}
+\sloppy		% better line breaks
+\ninept
+%SM below a registered trademark definition
+\def\reg{{\rm\ooalign{\hfil
+     \raise.07ex\hbox{\scriptsize R}\hfil\crcr\mathhexbox20D}}}
+
+%% \newcommand{\reg}{\textsuperscript{\textcircled{\textsc r}}}
 
 \newcommand{\abs}[1]{\left\vert#1\right\vert}
 \newcommand{\set}[1]{\left\{#1\right\}}
@@ -36,39 +36,79 @@
   \end{figure}
 }
 
+
 \title{Transformation-based Learning for Semantic parsing}
 
-\author{F. Jur\v{c}\'{i}\v{c}ek, F. Mairesse, M. Ga\v{s}i\'{c}, S. Keizer, B. Thomson, K. Yu, and S. Young \\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% If multiple authors, uncomment and edit the lines shown below.       %%
+%% Note that each line must be emphasized {\em } by itself.             %%
+%% (by Stephen Martucci, author of spconf.sty).                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\makeatletter
+%\def\name#1{\gdef\@name{#1\\}}
+%\makeatother
+%\name{{\em Firstname1 Lastname1, Firstname2 Lastname2, Firstname3 Lastname3,}\\
+%      {\em Firstname4 Lastname4, Firstname5 Lastname5, Firstname6 Lastname6,
+%      Firstname7 Lastname7}}
+%%%%%%%%%%%%%%% End of required multiple authors changes %%%%%%%%%%%%%%%%%
+
+\makeatletter
+\def\name#1{\gdef\@name{#1\\}}
+\makeatother
+\name{{\em F. Jur\v{c}\'{i}\v{c}ek, F. Mairesse, M. Ga\v{s}i\'{c}, S. Keizer, B. Thomson, K. Yu, and S. Young }}
+
+% \address{$^1$Department of Speech and Hearing, University of Marsupials,
+%   Voiceland, KoalaCountry \\
+%   $^2$Department of Linguistics, University of Speechcity, Speechland\\
+% {\small \tt jeg@sci.voice.edu, DBark@ling.speech.edu}}
+
+\address{Engineering Department, Cambridge University, Trumpington Street, Cambridge, CB2 1PZ, UK \\
 \\
-Engineering Department \\
-Cambridge University \\
-Trumpington Street, Cambridge, CB2 1PZ, UK \\
-\\
-{\tt \{fj228, farm2, mg436, sk561, brmt2, ky219, sjy\}@eng.cam.ac.uk}
+{\small \tt \{fj228, farm2, mg436, sk561, brmt2, ky219, sjy\}@eng.cam.ac.uk}
 }
 
-\date{}
+%\twoauthors{John E. Grunt Jr.}{Department of Speech and Hearing \\
+%  University of Marsupials, Voiceland, KoalaCountry \\
+%  {\small \tt jeg@sci.voice.edu} }
+%  {Donald Bark}{Department of Linguistics \\
+%  University of Speechcity, Speechland \\
+%  {\small \tt DBark@ling.speech.edu} }
 
+%
 \begin{document}
 \maketitle
+%
 \begin{abstract}
-In this paper, we present a semantic parser which transforms initial naive semantic hypothesis into correct semantics by using an ordered set of rules. These rules are learned automatically from the training corpus with no prior linguistic knowledge.
-
-We show that TBL parser is competitive to the state-of-the-art semantic parser on the ATIS task without using any handcrafted linguistic knowledge.
-
+In this paper, we present a semantic parser which transforms initial naive semantic hypothesis into correct semantics by using an ordered set of rules. These rules are learned automatically from the training corpus with no prior linguistic knowledge. We show that TBL parser is competitive to the state-of-the-art semantic parser on the ATIS task without using any handcrafted linguistic knowledge.
 \end{abstract}
 
-\textbf{Check how you call STEP/TBL parser!}
+\noindent{\bf Index Terms}: spoken language understanding, semantics, nature language processing
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Check how you call STEP/TBL parser!} 
 \textbf{Should I define semantic parsing? Parsing at all??}
-
 \textbf{Check how you use input, output, hypothesis semantics!}
-
 
 \section{Introduction}
 Semantic parsing is important part of a spoken dialogue system \cite{williams07}. The goal of a semantic parsing is to map natural language to formal meaning representation - semantics. Such semantics can be either defined by a grammar, e.g. LR grammar for GeoQuery domain \cite{kate05} or by frames and slots e.g. TownInfo domain \cite{thomson08}. In Table \ref{tbl:sem:example}, it is shown an example of the frame and slot semantics from ATIS dataset. Each frame has a goal and set of slots. Each slot is composed of a slot name, e.g. ``from.city'', a slot equal sign, e.g. ``='' or ``!='', and slot value, e.g. ``Washington''. As dialogue managers commonly use semantics in the form frames and slots, our approach learns how to directly map from natural language into frame and slot semantics.
 
 % The semantics, which is designed by a domain expert, is directly executable by a question answering system \cite{wong06} or by a dialogue manager in a spoken dialogue system.
+
+
+A dialogue system needs a semantic parser which is accurate and robust, easy to build, and fast. First, a parser presented in this paper performs comparable to the state-of-the-art semantics parser and it can deal with ill formed utterances. Second, it does not need any handcrafted linguistic knowledge and it can learn from data which is not semantically annotated at the word-level. Finally, it learns a compact set of rules which results in limited number of operation per semantic concept.
+
+% can be understood as machine translation from a natural language to a formal language. First, we do not not have formal grammar for natural language is ungrammatical, include hesitations, and very often only fragments of complete sentences, e.g. ``Boston to Miami tomorrow''. 
+
+In our approach, we adapt transformation-based learning (TBL) \cite{brill95} to the problem of semantic parsing. We attempt to find an ordered list of transformation rules to improve a naive semantic annotation. A transformation parsing assumes:
+\begin{itemize}
+\item Initial annotation is obtained by a naive annotator.
+\item Transformations are applied in sequence. 
+\item Transformations progressively change from general to specific.
+\item Results of previous transformations are visible to following transformations.
+\item Transformations correct errors of the previous transformations.
+\end{itemize} 
+
+In the next section, we describe previous work on mapping natural language into formal meaning representation. Section \ref{sec:tbl} presents an example of TBL based semantic parsing, discuss templates for transformation rules, and describes the learning process. Section \ref{sec:evaluation} compares TBL parser to the previously developed semantic parsers on ATIS \cite{atis94} and TownInfo \cite{mairesse09} datasets.
 
 \begin{table}
 \begin{center}
@@ -88,21 +128,6 @@ Semantic parsing is important part of a spoken dialogue system \cite{williams07}
 \caption{Example of frame and slot semantics from ATIS \cite{atis94} dataset.}
 \label{tbl:sem:example}
 \end{table}
-
-A dialogue system needs a semantic parser which is accurate and robust, easy to build, and fast. First, a parser presented in this paper performs comparable to the state-of-the-art semantics parser and it can deal with ill formed utterances. Second, it does not need any handcrafted linguistic knowledge and it can learn from data which is not semantically annotated at the word-level. Finally, it learns a compact set of rules which results in limited number of operation per semantic concept.
-
-% can be understood as machine translation from a natural language to a formal language. First, we do not not have formal grammar for natural language is ungrammatical, include hesitations, and very often only fragments of complete sentences, e.g. ``Boston to Miami tomorrow''. 
-
-In our approach, we adapt transformation-based learning (TBL) \cite{brill95} to the problem of semantic parsing. We attempt to find an ordered list of transformation rules to improve a naive semantic annotation. A transformation parsing assumes:
-\begin{itemize}
-\item Initial annotation is obtained by a naive annotator.
-\item Transformations are applied in sequence. 
-\item Transformations progressively change from general to specific.
-\item Results of previous transformations are visible to following transformations.
-\item Transformations correct errors of the previous transformations.
-\end{itemize} 
-
-In the next section, we describe previous work on mapping natural language into formal meaning representation. Section \ref{sec:tbl} presents an example of TBL based semantic parsing, discuss templates for transformation rules, and describes the learning process. Section \ref{sec:evaluation} compares TBL parser to the previously developed semantic parsers on ATIS \cite{atis94} and TownInfo \cite{mairesse09} datasets.
 
 \section{Related work}
 
@@ -321,7 +346,7 @@ For both corpora are available databases with lexical entries for slot values e.
 
 \subsection{Improving disambiguation of long-range dependencies}
 
-\fgrparam{width=7cm}{./fig/dep-tree.pdf}{fig:dep:tree}{Dependency tree of the sentence ''Show the cheapest flights from New York to San Jose arriving before 7pm on Monday`` generated by the RASP parser \cite{rasp06}.}
+\fgrparam{width=6cm}{./fig/dep-tree.pdf}{fig:dep:tree}{Dependency tree of the sentence ''Show the cheapest flights from New York to San Jose arriving before 7pm on Monday`` generated by the RASP parser \cite{rasp06}.}
 
 Besides simple n-grams and skipping bigrams more complex lexical features can be used. Kate \citep{kate08} used gold standard word dependencies to capture long-range relationship between words. At its simplest, dependency trees are one of the most concise way to describe language syntax. Essentially, each word is viewed as the dependent of one other word, with the exception of a single word which that is the root of the sentence. Kate showed that word dependencies significantly improve semantic parsing because long-range dependencies from an utterance tend to be local in a dependency tree. For example, the words ''arriving`` and ''Monday`` are neighbors in the dependency tree but they are four words apart in the sentence (see Figure \ref{fig:dep:tree}).
 
@@ -393,116 +418,12 @@ This paper presents novel application of TBL for semantic parsing. Our method le
 Our method was applied to two very different domains and it was shown that it performs competitive on both datasets with respect to the state-of-the-art semantic parsers. Results show that our method is comeptitive with respect to Zettlemoyer \& Collins' PCCG model \cite{zettlemoyer07} on ATIS dataset. In addition, our method outperforms STC, MLN and HVS by 1.27\%, 2.75\%, and 5.44\% respectively. We also show that our method outperforms the handcrafted Phoenix parser on ASR output and it is competitive with respect to STC on TownInfo dataset - TBL's performance is only 0.76\% lower compared with STC model.
 
 
-
-\section*{Acknowledgments}
+\section{Acknowledgments}
 
 We would like to thank to Luke Zettlemoyer and I.V. Meza-Ruiz for valuable discussions about their methods.
 
-\begin{thebibliography}{}
-
-\bibitem[\protect\citename{Brill}1995]{brill95}
-E. Brill.
-\newblock 1995.
-\newblock {\em Transformation-based error-driven learning
-and natural language processing: A case study in part-of-speech
-tagging}.
-\newblock Computational Linguistics, 21(4):543?565.
-
-\bibitem[\protect\citename{Briscoe et al}2006]{rasp06}
-E. Briscoe, J. Carroll and R. Watson.
-\newblock 2006.
-\newblock {\em The Second Release of the RASP System}.
-\newblock Proceedings of COLING/ACL.
-
-\bibitem[\protect\citename{Dahl et al}1994]{atis94}
-D.A. Dahl, M. Bates, M. Brown, W. Fisher, K. Hunicke-Smith,
-D. Pallett, C. Pao, A. Rudnicky, and E. Shriberg.
-\newblock 1994.
-\newblock {\em Expanding the scope of the ATIS task: The ATIS-3 corpus}.
-\newblock Proceedings of the ARPA HLT Workshop.
-
-\bibitem[\protect\citename{He and Young}2005]{he05}
-Y. He and S. Young.
-\newblock 2005.
-\newblock {\em Semantic processing using the
-hidden vector state model}.
-\newblock Computer Speech \& Language,vol. 19, no. 1, pp. 85-106.
-
-\bibitem[\protect\citename{He and Young}2006]{he06}
-Y. He and S. Young.
-\newblock 2006.
-\newblock {\em Spoken language understanding using the hidden vector state model}.
-\newblock Computer Speech \& Language, vol. 19, no. 1, pp. 85-106.
-
-\bibitem[\protect\citename{Kate}2005]{kate05}
-R.J. Kate, Y.W. Wong and R.J. Mooney.
-\newblock 2005.
-\newblock {\em Learning to Transform Natural to Formal Languages}.
-\newblock Proceedings of AAAI.
-
-\bibitem[\protect\citename{Kate}2008]{kate08}
-R.J. Kate.
-\newblock 2008.
-\newblock {\em A Dependency-based Word Subsequence Kernel}.
-\newblock Proceedings of EMNLP.
-
-\bibitem[\protect\citename{Mairesse et al}2009]{mairesse09}
-F. Mairesse, M. Gasic, F. Jurcicek, S. Keizer, B. Thomson, K. Yu, and S. Young.
-\newblock 2009.
-\newblock {\em Spoken Language Understanding from Unaligned Data using Discriminative Classification Models}.
-\newblock Proceedings of ICASSP.
-
-\bibitem[\protect\citename{Meza et al}2008a]{meza08a}
-I.V. Meza-Ruiz, S. Riedel and O. Lemon.
-\newblock 2008.
-\newblock {\em Accurate statistical spoken language understanding from limited development resources}.
-\newblock Proceedings of ICASSP.
-
-\bibitem[\protect\citename{Meza et al}2008b]{meza08b}
-I.V. Meza-Ruiz, S. Riedel and O. Lemon.
-\newblock 2008.
-\newblock {\em Spoken Language Understanding in dialogue systems, using a 2-layer Markov Logic Network: improving semantic accuracy}.
-\newblock Proceedings of Londial.
-
-\bibitem[\protect\citename{Tang et al}2001]{tang01}
-L.R. Tang and R. J. Mooney 
-\newblock 2001.
-\newblock {\em Using Multiple Clause Constructors in Inductive Logic Programming for Semantic Parsing}.
-\newblock Proceedings of ECML.
-
-\bibitem[\protect\citename{Thomson et al}2008]{thomson08}
-B. Thomson, M. Gasic, S. Keizer, F. Mairesse, J. Schatzmann,
-K. Yu, and S. Young.
-\newblock 2008.
-\newblock {\em User study of the Bayesian update of dialogue state approach to dialogue management}.
-\newblock Proceedings of Interspeech.
-
-\bibitem[\protect\citename{Ward}1991]{ward91}
-W.H. Ward.
-\newblock 1991.
-\newblock {\em The Phoenix system: Understanding spontaneous
-speech}.
-\newblock Proceedings of ICASSP.
-
-\bibitem[\protect\citename{Williams and Young}2007]{williams07}
-J. Williams and S. Young.
-\newblock 2007.
-\newblock {\em Partially observable markov decision
-processes for spoken dialog systems}.
-\newblock Computer Speech and Language, vol. 21, no. 2, pp. 231-422.
-
-\bibitem[\protect\citename{Wong and Mooney}2006]{wong06}
-Y.W. Wong and R.J. Mooney.
-\newblock 2006.
-\newblock {\em Learning for Semantic Parsing with Statistical Machine Translation}.
-\newblock Proceedings of HLT/NAACL.
-
-\bibitem[\protect\citename{Zettlemoyer and Collins}2007]{zettlemoyer07}
-L.S. Zettlemoyer and M. Collins.
-\newblock 2005.
-\newblock {\em Online learning of relaxed CCG grammars for parsing to logical form}.
-\newblock Proceedings of EMNLP-CoNLL.
-
-\end{thebibliography}
+\eightpt
+\bibliographystyle{IEEEtran}
+\bibliography{my}
 
 \end{document}

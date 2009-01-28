@@ -3,7 +3,7 @@ img_extIsRegExp=false
 img_extensions=.eps .jpg .jpeg .png .pdf .ps .fig .gif
 kileprversion=2
 kileversion=2.0
-lastDocument=naaclhlt2009.tex
+lastDocument=is2008.tex
 masterDocument=
 name=step
 pkg_extIsRegExp=false
@@ -14,6 +14,33 @@ src_extensions=.tex .ltx .latex .dtx .ins
 [Tools]
 MakeIndex=
 QuickBuild=
+
+[item:interspeech2008.sty]
+archive=true
+column=0
+encoding=
+highlight=
+line=0
+open=false
+order=-1
+
+[item:is2008.tex]
+archive=true
+column=0
+encoding=ISO 8859-2
+highlight=LaTeX
+line=418
+open=true
+order=0
+
+[item:my.bib]
+archive=true
+column=0
+encoding=ISO 8859-2
+highlight=BibTeX
+line=110
+open=true
+order=1
 
 [item:naaclhlt2009.bst]
 archive=true
@@ -35,12 +62,12 @@ order=-1
 
 [item:naaclhlt2009.tex]
 archive=true
-column=318
+column=0
 encoding=ISO 8859-2
 highlight=LaTeX
-line=272
+line=447
 open=true
-order=0
+order=2
 
 [item:step.kilepr]
 archive=true

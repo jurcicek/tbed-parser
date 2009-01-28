@@ -1,0 +1,94 @@
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{#1}
+\csname url@rmstyle\endcsname
+\providecommand{\newblock}{\relax}
+\providecommand{\bibinfo}[2]{#2}
+\providecommand\BIBentrySTDinterwordspacing{\spaceskip=0pt\relax}
+\providecommand\BIBentryALTinterwordstretchfactor{4}
+\providecommand\BIBentryALTinterwordspacing{\spaceskip=\fontdimen2\font plus
+\BIBentryALTinterwordstretchfactor\fontdimen3\font minus
+  \fontdimen4\font\relax}
+\providecommand\BIBforeignlanguage[2]{{%
+\expandafter\ifx\csname l@#1\endcsname\relax
+\typeout{** WARNING: IEEEtran.bst: No hyphenation pattern has been}%
+\typeout{** loaded for the language `#1'. Using the pattern for}%
+\typeout{** the default language instead.}%
+\else
+\language=\csname l@#1\endcsname
+\fi
+#2}}
+
+\bibitem{williams07}
+J.~Williams and S.~Young., ``{Partially observable markov decision % processes
+  for spoken dialog systems},'' \emph{Computer Speech and Language}, vol.~21,
+  no.~2, pp. 231--422, 2007.
+
+\bibitem{kate05}
+R.~Kate, Y.~Wong, and R.~Mooney, ``Learning to transform natural to formal
+  languages,'' in \emph{Proceedings of AAAI}, 2005.
+
+\bibitem{thomson08}
+B.~Thomson, M.~Gasic, S.~Keizer, F.~Mairesse, J.~Schatzmann, K.~Yu, and
+  S.~Young, ``User study of the bayesian update of dialogue state approach to
+  dialogue management,'' in \emph{Proceedings of Interspeech}, 2008.
+
+\bibitem{brill95}
+E.~Brill, ``Transformation-based error-driven learning and natural language
+  processing: A case study in part-of-speech tagging,'' \emph{Computational
+  Linguistics}, vol.~21, no.~4, pp. 543--565, 1995.
+
+\bibitem{atis94}
+D.~Dahl, M.~Bates, M.~Brown, W.~Fisher, K.~Hunicke-Smith, D.~Pallett, C.~Pao,
+  A.~Rudnicky, , and E.~Shriberg, ``Expanding the scope of the atis task: The
+  atis-3 corpus,'' in \emph{Proceedings of the ARPA HLT Workshop}, 1994.
+
+\bibitem{mairesse09}
+F.~Mairesse, M.~Gasic, F.~Jurcicek, S.~Keizer, B.~Thomson, K.~Yu, and S.~Young,
+  ``Spoken language understanding from unaligned data using discriminative
+  classification models,'' in \emph{Proceedings of ICASSP}, 2009.
+
+\bibitem{he06}
+Y.~He and S.~Young, ``Spoken language understanding using the hidden vector
+  state model,'' \emph{Computer Speech \& Language}, vol.~19, no.~1, pp.
+  85--106, 2008.
+
+\bibitem{zettlemoyer07}
+L.~Zettlemoyer and M.~Collins, ``Online learning of relaxed ccg grammars for
+  parsing to logical form,'' in \emph{Proceedings of EMNLP-CoNLL}, 2005.
+
+\bibitem{meza08a}
+I.~Meza-Ruiz, S.~Riedel, and O.~Lemon, ``Accurate statistical spoken language
+  understanding from limited development resources,'' in \emph{Proceedings of
+  ICASSP}, 2008.
+
+\bibitem{meza08b}
+------, ``Spoken language understanding in dialogue systems, using a 2-layer
+  markov logic network: improving semantic accuracy,'' in \emph{Proceedings of
+  Londial}, 2008.
+
+\bibitem{wong06}
+Y.~Wong and R.~Mooney, ``Learning for semantic parsing with statistical machine
+  translation,'' in \emph{Proceedings of HLT/NAACL}, 2006.
+
+\bibitem{tang01}
+L.~Tang and R.~Mooney, ``Using multiple clause constructors in inductive logic
+  programming for semantic parsing,'' in \emph{Proceedings of ECML}, 2001.
+
+\bibitem{kate08}
+R.~Kate, ``A dependency-based word subsequence kernel,'' in \emph{Proceedings
+  of EMNLP}, 2008.
+
+\bibitem{he05}
+Y.~He and S.~Young, ``Semantic processing using the hidden vector state
+  model,'' \emph{Computer Speech \& Language}, vol.~19, no.~1, pp. 85--106,
+  2005.
+
+\bibitem{ward91}
+W.~Ward, ``The phoenix system: Understanding spontaneous % speech,'' in
+  \emph{Proceedings of ICASSP}, 1991.
+
+\bibitem{rasp06}
+E.~Briscoe, J.~Carroll, and R.~Watson, ``The second release of the rasp
+  system,'' in \emph{Proceedings of COLING/ACL}, 2006.
+
+\end{thebibliography}

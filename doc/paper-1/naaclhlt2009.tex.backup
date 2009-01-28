@@ -201,6 +201,8 @@ In this case, we substitute the slot name with the correct values. The final sem
 \end{tabular} 
 \vspace{.25cm}
 
+\subsection{Slot alignment}
+
 So far we considered an utterance as a bag of words and no notion of locality was considered. For example, before we perform the substitution of the slot ``departure.day'' to ``arrival.day'', we should test whether word ``arrive'' is in the vicinity of the slot. The reason is that we do not want to trigger the substitution of the slot ``from.city=Toronto'' to ``to.city=Toronto'' because the parser can also learn the rule as follows. 
 
 \vspace{.25cm}
@@ -268,18 +270,11 @@ To limit overfitting the training data, we prune some rules which are learned at
 \label{alg:tbl:learning}
 \end{figure} 
 
-During the decoding phase, the test set is initialized with the same initial class's assignment. Each rule is than applied, in the order it was learned, to the test set. The final classification is the one attained when all rules have been applied.
+As in the previous work \cite{zettlemoyer07,mairesse09,meza08b}, we make use of database with lexical realizations of some slots, for example city and airport names. The use of such database results in more robust parser because the number of possible slot values for each slot is usually very high. In the input utterance, we replace lexical realizations of slot values with category labels, e.g. ``i want to fly from CITY''. Similarly, we replace slot values in the semantics.
 
-The make the parser more robust, we increase robustness of the parser by the following steps. 
+To speed up the training process, we select multiple best performing rules and the performance of worst selected rule has to be at least at least 80\% of the best rule. We found that selection of multiple rules during learning does not affect the performance of the parser and at the same time it decrease the learning time.
 
-The number of possible slot values for each slot is usually very high. As a result, we replace all lexical realizations from the database, available to \textbf{a dialogue manager}, by its slot name in the utterance. For example, in utterance ``find all the flights from cincinnati to the new york city'' the lexical realization are replaced as follows: ``please find all the flights from city-0 to the city-1''. Similarly, we replace slot values in the semantics.
-
-
-
-
-\textbf{To speed up the training process, we select multiple best performing rules and the performance of worst selected rule has to be at least at least 80\% of the best rule.}
-
-
+% During the decoding phase, the test set is initialized with the same initial class's assignment. Each rule is than applied, in the order it was learned, to the test set. The final classification is the one attained when all rules have been applied.
 
 \section{Evaluation} \label{sec:evaluation}
 
@@ -287,45 +282,71 @@ In this section, we evaluate our parser on two distinct corpora, and compare our
 
 \subsection{Datasets}
 
-Our first dataset consists of tourist information dialogues in a fictitious
+In order to compare our results with previous work \cite{he06,zettlemoyer07,meza08b,mairesse09},
+we apply our method to the Air Travel Information System dataset
+(ATIS) \cite{atis94}. This dataset consists of user requests for flight information, for example ``find flight from San Diego to Phoenix on Monday''. We use 5012 utterances for training, and the DEC94 dataset as development data. As in previous work, we test our method on the 448 utterances of the NOV93 dataset, and the evaluation criteria is the F-measure of the number of reference slot/value pairs that appear in the output semantic (e.g., from.city = New York). He \& Young detail the test data extraction process in \cite{he05}.
+
+Our second dataset consists of tourist information dialogues in a fictitious
 town (TownInfo). The dialogues were collected through user
 trials in which users searched for information about a specific venue
 by interacting with a dialogue system in a noisy background. These
 dialogues were previously used for training dialogue management
-strategies \cite{williams07,thomson08}. The semantic representation of the user utterance consists of a root dialogue act type and a set of slots which are either
-unbound or associated with a child value. For example, ``What is
-the address of Char Sue'' is represented as request(address='Char Sue'), and ``I would like a Chinese restaurant?'' as inform(food='Chinese',type='restaurant'). The TownInfo training, development, and test sets respectively contain
-8396, 986 and 1023 transcribed utterances.  The data includes the transcription of the top hypothesis of the ATK speech recogniser,
-which allows us to evaluate the robustness of our models to recognition
-errors (word error rate = 34.4\%). 
+strategies \cite{williams07,thomson08}. 
 
-In order to compare our results with previous work \cite{he06,zettlemoyer07},
-we apply our method to the Air Travel Information System dataset
-(ATIS) \cite{atis94}. This dataset consists of user requests for flight information, for example ``Find flight from San Diego to Phoenix on Monday is rerepresented as flight(from.city="San Diego",to.city="Phoenix",departure.day="Monday"). We use 5012 utterances for training, and the DEC94 dataset as development data. As in previous work, we test our method on the 448 utterances of the NOV93 dataset, and the evaluation criteria is the F-measure of the number of reference slot/value pairs that appear in the output semantic (e.g., from.city = New York). He \& Young detail the test data extraction process in \cite{he05}.
+For example, ``what is the address of Char Sue'' is represented as 
+
+\vspace{.25cm}
+\begin{tabular}{lll}
+  GOAL          & = & request \\
+  address       & = & Char Sue \\
+\end{tabular} 
+\vspace{.25cm}
+
+and ``I would like a Chinese restaurant?'' as
+
+\vspace{.25cm}
+\begin{tabular}{lll}
+  GOAL       & = & inform \\
+  food       & = & Chinese \\
+  type       & = & restaurant \\
+\end{tabular} 
+\vspace{.25cm}
+
+The TownInfo training, development, and test sets respectively contain
+8396, 986 and 1023 transcribed utterances.  The data includes the transcription of the top hypothesis of the ATK speech recogniser, which allows us to evaluate the robustness of our models to recognition
+errors (word error rate = 34.4\%). 
+We compare our model with STC praser \cite{mairesse09} and the handcrafted Phoenix grammar \cite{ward91} used in the trials \cite{williams07,thomson08}. The Phoenix parser implements a partial matching algorithm that was designed for robust spoken language understanding.
 
 For both corpora are available databases with lexical entries for slot values e.g. city names, airport names, etc. 
 
 \subsection{Improving disambiguation of long-range dependencies}
 
-\fgrparam{width=8cm}{./fig/dep-tree.pdf}{fig:dep:tree}{Dependency tree of the sentence ''Show the cheapest flights from New York to San Jose arriving before 7pm on Monday`` generated by the RASP parser \cite{rasp06}.}
+\fgrparam{width=7cm}{./fig/dep-tree.pdf}{fig:dep:tree}{Dependency tree of the sentence ''Show the cheapest flights from New York to San Jose arriving before 7pm on Monday`` generated by the RASP parser \cite{rasp06}.}
 
-Besides simple n-grams and skipping bigrams more complex lexical features can be used. \cite{kate08} used gold standard word dependencies to capture long-range relationship between words. At its simplest, dependencies tree is one of the most concise ways to describe language syntax. Essentially, each word is viewed as the dependent of one other word, with the exception of a single word which that is the root of the sentence. Kate showed that word dependencies significantly improve semantic parsing because long-range dependencies from an utterance tend to be local in a dependency tree. For example, the words ''arriving`` and ''Monday`` are neighbors in the dependency tree but they are four words apart in the sentence (see Figure \ref{fig:dep:tree}).
+Besides simple n-grams and skipping bigrams more complex lexical features can be used. Kate \citep{kate08} used gold standard word dependencies to capture long-range relationship between words. At its simplest, dependency trees are one of the most concise way to describe language syntax. Essentially, each word is viewed as the dependent of one other word, with the exception of a single word which that is the root of the sentence. Kate showed that word dependencies significantly improve semantic parsing because long-range dependencies from an utterance tend to be local in a dependency tree. For example, the words ''arriving`` and ''Monday`` are neighbors in the dependency tree but they are four words apart in the sentence (see Figure \ref{fig:dep:tree}).
 
 Instead of using gold standard word dependencies, we used dependencies provided by RASP dependency parser \cite{rasp06}. First of all, we had to add capitalization and punctuation into the ATIS data to be able to use the RASP parser. The RASP parser without proper capitalization fails to tag ''new`` and ''york`` as NP and instead of this it tags ''new`` as ''JJ`` and 'york' as NP and the dependencies generated by the parser are unsatisfactory. Secondly, we generated new n-gram features from dependency trees. Even though the dependencies generated the RASP parser are no absolutely accurate, the new features increase performance in F-measure on ATIS data. 
 
-Secondly, we generated long-range features by using POS tags\footnote{We used POS tags provided by the RASP parser; however, any POS tagger can be used instead.} 
-Our motivation was work of \cite{meza08a,meza08b} who handcrafted features using words ''arrive``, ''arriving``, ''leave``, and ''leaving``. These handcrafted features disambiguate large number of semantic parsing errors in ATIS data because large portion or errors is caused by confusions between concepts ''arrival.time`` and ''departure.time``, ''arrival.day`` and ''departure.day``, etc. To generalize this approach, we want to automatically find features which could disambiguate words like ''Monday``, ''7pm``, and ''Boston``. As a result, we generate a new type of bigrams for a word and the nearest verb, preposition, etc. We use all parts-of-speech provided by RASP and the learning algorithm chose the most discriminative features. Among those learned are not only the words used by Meza-Rui but also words like ''stop``, ''reach``, ''buy`` and prepositions like ''at``, ''from``, ''to``, etc.
-
-\textbf{Mention why I do not use tree similarity measure as Kate.}
+Secondly, we generated long-range features by using POS tags\footnote{We used POS tags provided by the RASP parser; however, any POS tagger can be used instead.}. 
+Our motivation was work of \cite{meza08a,meza08b} who handcrafted features using words ''arrive``, ''arriving``, ''leave``, and ''leaving``. These handcrafted features disambiguate large number of semantic parsing errors in ATIS data because large portion or errors is caused by confusions between concepts ''arrival.time`` and ''departure.time``, ''arrival.day`` and ''departure.day``, etc. We generalized this approach and we automatically find features which  disambiguate semantics of words like ''Monday``, ''7pm``, and ''Boston``. As a result, we generate a new type of bigrams for a word and the nearest verb, preposition, etc. \textbf{We use all parts-of-speech provided by RASP and the learning algorithm chooses the most discriminative features. Among those learned are not only the words used by Meza-Rui but also words like ''stop``, ''reach``, ''buy`` and prepositions like ''at``, ''from``, ''to``, etc.} For example, for the nearest verb for the word ''Morning`` in the sentence from Figure \ref{fig:dep:tree} is ''arrive`` and such bigram would look be written as ('arrive',VV,'Monday') where VV stands for verb. This features assumes that the left-to-right tendency is dominant and the words in vicinity of lexical realization of a slot value affect the meaning the most.
 
 \subsection{Results}
 
-We also compare our models with the handcrafted Phoenix grammar \cite{ward91} used in the trials \cite{williams07,thomson08}. The Phoenix parser implements a partial matching algorithm that was designed for robust spoken language understanding.
+The results for both detasets are shown in Table \ref{tbl:results-final}.
+The model accuracy is measured in terms of F-measure of the slot/value pairs. Both slot and the value must be correct to count as correct classification. 
 
+Results on the AITS dataset show that our method with F-measure 95.74\% is competitive with rerspect to Zettlemoyer & Collins' PCCG model \cite{zettlemoyer07} (F-mesure=95.9\%). Note that PCCG model makes use of considerable large number of handracfted entries in their initial lexicon. In addition, our method ouperforms STC, MLN and HVS parsers. 
+
+Concerning the TownInfo dataset, Table \ref{tbl:results-final} shows that TBL produces 87.87\% F-mesure, wich represents a 3.28\%improvemnt over achieved by the handcrafted Phoenix parser, but 0.76\% lower compared with STC model.
+
+% We believe that STC is performs better becasue it consider the STC classifier use all features at one time. STC makes decision in one step using all the features rather than making several decisions by several rules as STEP.
+% We found that the dialogue act type recognition accuracy of the STEP parser is lower than STC's; as a result, we tried to use SVM as STC does to classify dialogue act types. 
+% We hoped for an increase of F-measure as result of increased dialogue act type accuracy. However, we did not get any increase in F-measure.
 
 
 \begin{table}
 \begin{center}
+\begin{small}
 \begin{tabular}{|l|ccc|}
 \hline \makebox[2.99cm]{\bf Parser} & \makebox[1.1cm]{\bf Prec} & \makebox[1.1cm]{\bf Rec} & \bf F \\ \hline 
 \multicolumn{4}{l}{\textbf{TownInfo dataset with transcribed utterances:}} \\
@@ -343,12 +364,13 @@ Phoenix & 90.28 & 79.49 & 84.54 \\
 \multicolumn{4}{l}{\textbf{ATIS dataset with transcribed utterances:}} \\
 \hline
 TBL   & 96.37 & 95.12 & 95.74 \\
+PCCG  & 95.11 & 96.71 & \textbf{95.9} \\
 STC   & 96.73 & 92.37 & 94.50 \\
 HVS   & - & - & 90.3  \\
 MLN   & - & - & 92.99 \\
-PCCG  & 95.11 & 96.71 & \textbf{95.9} \\
 \hline
 \end{tabular}
+\end{small}
 \end{center}
 \caption{Slot/value precision (Prec), recall (Rec) and F-measure (F) for the ATIS and TownInfo datasets. TBL parser is compared with Phoenix parser and STC classifier \cite{mairesse09} on the TownInfo dataset and compared with HVS parser \cite{he06}, MLN parser \cite{meza08b}, STC classifier, and PCCG parser \cite{zettlemoyer07} on the ATIS dataset}
 \label{tbl:results-final} 
@@ -365,21 +387,19 @@ Also, the number of rules per semantic concept (dialogue act or slot name) is ve
 Lexical realizations of a slot can overlap with lexical realization of neighbouring slots. It is shows to be important pattern, for example in the trigram (city-0,and,city-1) is very common for sentence including ''between city-0 and city-1``. The lexical realizations city-0, city-1 respectively would be classified as from.city, and city-1 just because we know the  
 
 
-We found that the dialogue act type recognition accuracy of the STEP parser is lower than STC's; as a result, we tried to use SVM as STC does to classify dialogue act types. We believe that STC is better in dialogue act type recognition better because SVN classifier use all features at one time. STC makes decision in one step using all the features rather than making several decisions by several rules as STEP.
-
-We hoped for an increase of F-measure as result of increased dialogue act type accuracy. However, we did not get any increase in F-measure.
+\textbf{Speed}
 
 \section{Conclusion}
 
-Our approach adapts TBL to the problem of
-word-level alignment by examining word features
-as well as neighboring links.
- 
+This paper presents novel application of TBL for semantic parsing. Our method learns sequence of rules which transforms initial naive semantics into correct semantics. It significantly differ from the method presented by Kate et al \cite{kate05} where they were rewriting utterance and replacing its words with semantic concepts. Results show that our method is comeptitive with respect to Zettlemoyer & Collins' PCCG model \cite{zettlemoyer07}. In addition, our method outperforms STC, MLN and HVS by 1.27\%, 2.75\%, and 5.44\% respectively.
+
+We also show that our method outperforms the handcrafted Phoenix parser on ASR output and it is competitive with respect to STC - TBL's performance is only 0.76\% lower compared with STC model.
+
+Our method was applied to two very different domains and it was shown that it performs comeptitive with respect to the state-of-the-art semantic parsers.
+
 \section*{Acknowledgments}
 
-We would like to thank to Luke Zettlemoyer and I.V. Meza-Ruiz for their help with understanding their methods.
-
-
+We would like to thank to Luke Zettlemoyer and I.V. Meza-Ruiz for valuable discussions about their methods.
 
 \begin{thebibliography}{}
 
@@ -416,12 +436,6 @@ Y. He and S. Young.
 \newblock 2006.
 \newblock {\em Spoken language understanding using the hidden vector state model}.
 \newblock Computer Speech \& Language, vol. 19, no. 1, pp. 85-106.
-
-\bibitem[\protect\citename{Wong and Mooney}2006]{wong06}
-Y.W. Wong and R.J. Mooney.
-\newblock 2006.
-\newblock {\em Learning for Semantic Parsing with Statistical Machine Translation}.
-\newblock Proceedings of HLT/NAACL.
 
 \bibitem[\protect\citename{Kate}2005]{kate05}
 R.J. Kate, Y.W. Wong and R.J. Mooney.
@@ -479,6 +493,12 @@ J. Williams and S. Young.
 \newblock {\em Partially observable markov decision
 processes for spoken dialog systems}.
 \newblock Computer Speech and Language, vol. 21, no. 2, pp. 231-422.
+
+\bibitem[\protect\citename{Wong and Mooney}2006]{wong06}
+Y.W. Wong and R.J. Mooney.
+\newblock 2006.
+\newblock {\em Learning for Semantic Parsing with Statistical Machine Translation}.
+\newblock Proceedings of HLT/NAACL.
 
 \bibitem[\protect\citename{Zettlemoyer and Collins}2007]{zettlemoyer07}
 L.S. Zettlemoyer and M. Collins.
