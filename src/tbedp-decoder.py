@@ -88,6 +88,7 @@ dcd.decode()
 dcd.writeOutput(outSem)
 dcd.writeAlignment(outSem+'.algn')
 dcd.writeAnalyze(outSem+'.anlz')
+dcd.writeStat(outSem+'.stat')
     
 if verbose:
     print "---------------------------------------------"

@@ -78,6 +78,10 @@ L.~Tang and R.~Mooney, ``Using multiple clause constructors in inductive logic
 R.~Kate, ``A dependency-based word subsequence kernel,'' in \emph{Proceedings
   of EMNLP}, 2008.
 
+\bibitem{rasp06}
+E.~Briscoe, J.~Carroll, and R.~Watson, ``The second release of the rasp
+  system,'' in \emph{Proceedings of COLING/ACL}, 2006.
+
 \bibitem{he05}
 Y.~He and S.~Young, ``Semantic processing using the hidden vector state
   model,'' \emph{Computer Speech \& Language}, vol.~19, no.~1, pp. 85--106,
@@ -86,9 +90,5 @@ Y.~He and S.~Young, ``Semantic processing using the hidden vector state
 \bibitem{ward91}
 W.~Ward, ``The phoenix system: Understanding spontaneous % speech,'' in
   \emph{Proceedings of ICASSP}, 1991.
-
-\bibitem{rasp06}
-E.~Briscoe, J.~Carroll, and R.~Watson, ``The second release of the rasp
-  system,'' in \emph{Proceedings of COLING/ACL}, 2006.
 
 \end{thebibliography}

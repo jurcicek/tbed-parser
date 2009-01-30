@@ -3,7 +3,7 @@ img_extIsRegExp=false
 img_extensions=.eps .jpg .jpeg .png .pdf .ps .fig .gif
 kileprversion=2
 kileversion=2.0
-lastDocument=is2008.tex
+lastDocument=my.bib
 masterDocument=
 name=step
 pkg_extIsRegExp=false
@@ -26,10 +26,10 @@ order=-1
 
 [item:is2008.tex]
 archive=true
-column=0
+column=14
 encoding=ISO 8859-2
 highlight=LaTeX
-line=418
+line=438
 open=true
 order=0
 
@@ -38,7 +38,7 @@ archive=true
 column=0
 encoding=ISO 8859-2
 highlight=BibTeX
-line=110
+line=61
 open=true
 order=1
 
@@ -66,7 +66,7 @@ column=0
 encoding=ISO 8859-2
 highlight=LaTeX
 line=447
-open=true
+open=false
 order=2
 
 [item:step.kilepr]

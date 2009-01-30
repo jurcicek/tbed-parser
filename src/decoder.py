@@ -417,3 +417,25 @@ class Decoder:
         f.write('-'*80+'\n')
         
         
+    def writeStat(self, fn):
+        f = file(fn, 'w')
+        
+        speechActs = set()
+        slotNames = set()
+                
+        for each in self.das:
+            speechActs.add(each.speechAct)
+            
+            for each_slot in each.slots:
+                slotNames.add(each_slot.name)
+            
+        f.write('- different dialogue act types \n')
+        for i, each in enumerate(sorted(speechActs)):
+            f.write("%3d %s \n" % (i,  each))
+
+        f.write('- different slot names \n')
+        for i, each in enumerate(sorted(slotNames)):
+            f.write("%3d %s \n" % (i,  each))
+            
+        f.write('-'*80+'\n')
+        
