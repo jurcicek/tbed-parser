@@ -1,4 +1,4 @@
-This is pdfeTeX, Version 3.141592-1.30.5-2.2 (Web2C 7.5.5) (format=pdflatex 2009.1.29)  30 JAN 2009 19:56
+This is pdfeTeX, Version 3.141592-1.30.5-2.2 (Web2C 7.5.5) (format=pdflatex 2009.1.29)  31 JAN 2009 17:01
 entering extended mode
 **is2008.tex
 (./is2008.tex
@@ -133,19 +133,19 @@ File: pdftex.def 2002/06/19 v0.03k graphics/color for pdftex
 ) (./is2008.aux)
 \openout1 = `is2008.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 78.
-LaTeX Font Info:    ... okay on input line 78.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 78.
-LaTeX Font Info:    ... okay on input line 78.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 78.
-LaTeX Font Info:    ... okay on input line 78.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 78.
-LaTeX Font Info:    ... okay on input line 78.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 78.
-LaTeX Font Info:    ... okay on input line 78.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 78.
-LaTeX Font Info:    ... okay on input line 78.
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 78.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 79.
 
 (/usr/share/texmf/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
@@ -185,96 +185,77 @@ loading : Context Support Macros / PDF (2004.03.26)
 \everyMPtoPDFconversion=\toks24
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 79.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 80.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 79.
-LaTeX Font Info:    Try loading font information for U+msa on input line 79.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 80.
+LaTeX Font Info:    Try loading font information for U+msa on input line 80.
  (/usr/share/texmf/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2002/01/19 v2.2g AMS font definitions
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 79.
+LaTeX Font Info:    Try loading font information for U+msb on input line 80.
 
 (/usr/share/texmf/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2002/01/19 v2.2g AMS font definitions
 )
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 79.
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 80.
 
 (/usr/share/texmf/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
-LaTeX Font Info:    Try loading font information for OMS+pcr on input line 79.
+LaTeX Font Info:    Try loading font information for OMS+pcr on input line 80.
 
 (/usr/share/texmf/tex/latex/psnfss/omspcr.fd
 File: omspcr.fd 
 )
 LaTeX Font Info:    Font shape `OMS/pcr/m/n' in size <9> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 79.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 80.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 81.
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 104.
-
-
-(/usr/share/texmf/tex/latex/psnfss/omsptm.fd
-File: omsptm.fd 
-)
-LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <9> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 104.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 82.
  [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
 
 ]
-Underfull \hbox (badness 1655) in paragraph at lines 146--148
-\OT1/ptm/m/n/9 syntax-based trans-la-tion model based on the syn-chronous
- []
-
-
-Underfull \vbox (badness 1810) has occurred while \output is active []
-
-
-Underfull \hbox (badness 3525) in paragraph at lines 202--203
+Underfull \hbox (badness 3525) in paragraph at lines 200--201
 []\OT1/ptm/m/n/9 The trig-ger ``and Sand Diego'' is ex-am-ple of non-
  []
 
 <./fig/words-slots-alignment.pdf, id=20, 600.2425pt x 347.2975pt>
 File: ./fig/words-slots-alignment.pdf Graphic file (type pdf)
 
-<use ./fig/words-slots-alignment.pdf> [2]
-<./fig/dep-tree.pdf, id=24, 447.6725pt x 498.86375pt>
-File: ./fig/dep-tree.pdf Graphic file (type pdf)
- <use ./fig/dep-tree.pdf>
-[3 <./fig/words-slots-alignment.pdf
+<use ./fig/words-slots-alignment.pdf> [2 <./fig/words-slots-alignment.pdf
 Warning: pdflatex (file ./fig/words-slots-alignment.pdf): pdf inclusion: Page G
 roup detected which pdfTeX can't handle. Ignoring it.
-> <./fig/dep-tree.pdf
+>] <./fig/dep-tree.pdf, id=36, 447.6725pt x 498.86375pt>
+File: ./fig/dep-tree.pdf Graphic file (type pdf)
+
+<use ./fig/dep-tree.pdf> [3 <./fig/dep-tree.pdf
 Warning: pdflatex (file ./fig/dep-tree.pdf): pdf inclusion: Page Group detected
  which pdfTeX can't handle. Ignoring it.
->] [4]
-Overfull \hbox (4.86923pt too wide) in paragraph at lines 393--402
+>]
+Overfull \hbox (4.86923pt too wide) in paragraph at lines 396--405
  [] 
  []
 
 (./is2008.bbl
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1.
- [5]) [6
-
-] (./is2008.aux) ) 
+) [4] (./is2008.aux) ) 
 Here is how much of TeX's memory you used:
- 2096 strings out of 94432
- 24176 string characters out of 1175566
- 80523 words of memory out of 1000000
- 5270 multiletter control sequences out of 10000+50000
+ 2077 strings out of 94432
+ 23919 string characters out of 1175566
+ 79517 words of memory out of 1000000
+ 5254 multiletter control sequences out of 10000+50000
  29521 words of font info for 66 fonts, out of 500000 for 2000
  580 hyphenation exceptions out of 1000
- 32i,8n,24p,1316b,326s stack positions out of 1500i,500n,5000p,200000b,5000s
+ 32i,8n,24p,1295b,326s stack positions out of 1500i,500n,5000p,200000b,5000s
 PDF statistics:
- 55 PDF objects out of 300000
+ 49 PDF objects out of 300000
  0 named destinations out of 131072
  11 words of extra memory for PDF output out of 10000
-{/usr/share/texmf/fonts/enc/dvips/psnfss/8r.enc}</usr/share/t
-exmf/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texmf/fonts/type1/bluesky/c
-m/cmsy9.pfb></usr/share/texmf/fonts/type1/urw/times/utmr8a.pfb></usr/share/texm
-f/fonts/type1/urw/times/utmri8a.pfb></usr/share/texmf/fonts/type1/urw/times/utm
-b8a.pfb>
-Output written on is2008.pdf (6 pages, 148871 bytes).
+{/usr/share/texmf/fonts/enc/dvips/psnfss/8r.enc}</usr/sha
+re/texmf/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texmf/fonts/type1/blues
+ky/cm/cmsy9.pfb></usr/share/texmf/fonts/type1/urw/times/utmr8a.pfb></usr/share/
+texmf/fonts/type1/urw/times/utmri8a.pfb></usr/share/texmf/fonts/type1/urw/times
+/utmb8a.pfb>
+Output written on is2008.pdf (4 pages, 140703 bytes).
