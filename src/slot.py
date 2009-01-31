@@ -10,8 +10,9 @@ slot_value_search = 0
 slot_value_extra = 0
 
 class Slot:
-    def __init__(self, cuedSlot):
+    def __init__(self, cuedSlot,  settings):
         self.cuedSlot = cuedSlot
+        self.settings = settings
         
         # train data values
         self.name = None
@@ -48,6 +49,7 @@ class Slot:
         This method returns True if the targed 'other' slot has 
         equal attributes for attributes defined by this slot.
         '''
+        
         if self.name != None:
             if self.name != other.name:
                 return False
@@ -78,6 +80,16 @@ class Slot:
             other.value = self.value
     
     def proximity(self, lexIndex, type):
+        try:
+            if self.settings['testLocality']:
+                pass
+            else:
+                # locality constrain should not be applied
+                return True
+        except KeyError:
+            # if the setting is not provided set it to True
+            self.settings['testLocality'] = True
+        
         prx = 'none'
         if self.leftBorder <= lexIndex[0] and lexIndex[1] <= self.rightBorder:
             prx = 'both'

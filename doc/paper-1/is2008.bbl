@@ -52,6 +52,10 @@ Y.~He and S.~Young, ``Semantic processing using the hidden vector state
   model,'' \emph{Computer Speech \& Language}, vol.~19, no.~1, pp. 85--106,
   2005.
 
+\bibitem{jurcicek08}
+F.~Jurcicek, J.~Svec, and L.~Muller, ``{Extension of HVS semantic parser by
+  allowing left-right branching},'' in \emph{Proceedings of ICASSP}, 2008.
+
 \bibitem{zettlemoyer07}
 L.~Zettlemoyer and M.~Collins, ``Online learning of relaxed ccg grammars for
   parsing to logical form,'' in \emph{Proceedings of EMNLP-CoNLL}, 2005.

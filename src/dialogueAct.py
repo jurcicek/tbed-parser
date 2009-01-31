@@ -252,7 +252,7 @@ class DialogueAct:
             slots = splitByComma(slots)
             for slt in slots:
                 try:
-                    s = Slot(slt)
+                    s = Slot(slt,  self.settings)
                     s.parse()
                     slts.append(s)
                 except ValueError:
