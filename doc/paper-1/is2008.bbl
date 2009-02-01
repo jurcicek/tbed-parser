@@ -37,6 +37,10 @@ E.~Brill, ``Transformation-based error-driven learning and natural language
   processing: A case study in part-of-speech tagging,'' \emph{Computational
   Linguistics}, vol.~21, no.~4, pp. 543--565, 1995.
 
+\bibitem{rasp06}
+E.~Briscoe, J.~Carroll, and R.~Watson, ``The second release of the rasp
+  system,'' in \emph{Proceedings of COLING/ACL}, 2006.
+
 \bibitem{atis94}
 D.~Dahl, M.~Bates, M.~Brown, W.~Fisher, K.~Hunicke-Smith, D.~Pallett, C.~Pao,
   A.~Rudnicky, , and E.~Shriberg, ``Expanding the scope of the atis task: The
@@ -68,10 +72,6 @@ I.~Meza-Ruiz, S.~Riedel, and O.~Lemon, ``Spoken language understanding in
 \bibitem{kate08}
 R.~Kate, ``A dependency-based word subsequence kernel,'' in \emph{Proceedings
   of EMNLP}, 2008.
-
-\bibitem{rasp06}
-E.~Briscoe, J.~Carroll, and R.~Watson, ``The second release of the rasp
-  system,'' in \emph{Proceedings of COLING/ACL}, 2006.
 
 \bibitem{ward91}
 W.~Ward, ``The phoenix system: Understanding spontaneous % speech,'' in
