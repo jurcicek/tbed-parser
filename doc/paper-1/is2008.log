@@ -1,4 +1,4 @@
-This is pdfeTeX, Version 3.141592-1.30.5-2.2 (Web2C 7.5.5) (format=pdflatex 2009.1.29)  1 FEB 2009 15:33
+This is pdfeTeX, Version 3.141592-1.30.5-2.2 (Web2C 7.5.5) (format=pdflatex 2009.1.29)  2 FEB 2009 11:16
 entering extended mode
 **is2008.tex
 (./is2008.tex
@@ -229,18 +229,10 @@ roup detected which pdfTeX can't handle. Ignoring it.
 >] <./fig/dep-tree.pdf, id=36, 447.6725pt x 498.86375pt>
 File: ./fig/dep-tree.pdf Graphic file (type pdf)
 
-<use ./fig/dep-tree.pdf>
-Underfull \vbox (badness 4899) has occurred while \output is active []
-
- [3 <./fig/dep-tree.pdf
+<use ./fig/dep-tree.pdf> [3 <./fig/dep-tree.pdf
 Warning: pdflatex (file ./fig/dep-tree.pdf): pdf inclusion: Page Group detected
  which pdfTeX can't handle. Ignoring it.
->]
-Overfull \hbox (4.86923pt too wide) in paragraph at lines 395--404
- [] 
- []
-
-(./is2008.bbl
+>] (./is2008.bbl
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1.
 ) [4] [5
@@ -263,4 +255,4 @@ exmf/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texmf/fonts/type1/bluesky/c
 m/cmsy9.pfb></usr/share/texmf/fonts/type1/urw/times/utmr8a.pfb></usr/share/texm
 f/fonts/type1/urw/times/utmri8a.pfb></usr/share/texmf/fonts/type1/urw/times/utm
 b8a.pfb>
-Output written on is2008.pdf (5 pages, 141383 bytes).
+Output written on is2008.pdf (5 pages, 140822 bytes).

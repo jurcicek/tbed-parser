@@ -111,7 +111,7 @@ In our approach, we adapt transformation-based learning (TBL) \cite{brill95} to 
 % \item Transformations correct errors of the previous transformations.
 % \end{itemize} 
 
-In the next section, we describe previous work on mapping natural language into formal meaning representation. Section \ref{sec:tbl} presents an example of TBL based semantic parsing, discusses templates for transformation rules, and describes the learning process. Section \ref{sec:evaluation} compares TBL parser to the previously developed semantic parsers on the ATIS \cite{atis94} and TownInfo \cite{mairesse09} datasets. Finally, Section \ref{sec:conlusion} conludes this work.
+In the next section, we describe previous work on mapping natural language into formal meaning representation. Section \ref{sec:tbl} presents an example of TBL based semantic parsing, discusses templates for transformation rules, and describes the learning process. Section \ref{sec:evaluation} compares TBL parser to the previously developed semantic parsers on the ATIS \cite{atis94} and TownInfo \cite{mairesse09} datasets. Finally, Section \ref{sec:conlusion} concludes this work.
 
 \begin{table}
 \begin{center}
@@ -154,7 +154,7 @@ This section describes the transformation-based parser.
 First, we give an example of the parsing algorithm. 
 Second, we detail locality constrains for transformation rules.
 Third, we describe templates used to generate rules for the inference process. 
-Fourth, we desribe features capturing long-range deppendecies.
+Fourth, we describe features capturing long-range dependencies.
 Finally, we detail the learning process. 
 
 \subsection{Example of Parsing} \label{sec:tbl:example}
@@ -258,7 +258,7 @@ In the previous sections, we presented several rules which add, substitute, or d
 
 A trigger 
 % controls when a transformation of a semantic hypothesis can be performed and it can 
-questions an input utterance, an output semantics, or both. In our method, a trigger contains one or more conditions as follows: the utterance contains n-gram N, the utterance contains skipping\footnote{In a skipping bigram, one or more words are skipped between two words. For example, ('arrive',*,'Boston') is a skipping bigram which skips one word.} bigram B, the goal equals to G, the semantics contains slot S. If a trigger contains more than one condition, then all conditions must be satisfied. 
+questions an input utterance, an output semantics, or both. In our method, a trigger contains one or more conditions as follows: the utterance contains n-gram N, the utterance contains skipping\footnote{In a skipping bigram, one or more words are skipped between two words. For example, ('arrive',*,'Boston') is a skipping bigram which skips one word.} bigram B, the goal equals to G, the semantics contains slot S. If a trigger contains more than one condition, then all conditions must be satisfied. In our method, we use uni-grams, bi-grams, and tri-grams and skipping bigram can skip up to tree words.
 
 A transformation performs one of the following operations: substitutes a goal to G, adds a slot S, deletes a slot S, substitutes a slot S. A substitution transformation can substitute a whole slot, a slot name, 
 % a slot equal sign, 
@@ -386,7 +386,7 @@ Results on the ATIS dataset show that our method with F-measure 95.74\% is compe
 
 Table \ref{tbl:results:contrast} shows contrast between the full system and the system without features extracted from dependency trees and the system without using locality constrains. Experiments were carried out on the ATIS development dataset. The results show that if the dependency tree features are removed or the locality constraints are not used, the performance of our method degrades.
 
-As is typical for TBL methods, the number of learnt rules is considerably low. There are 17 unique dialogue acts and 66 unigue slots in the ATIS dataset and the total number of learnt rules is 372. This results in 4.5 rules per semantic concept on average. In the TownInfo dataset, we have 14 dialogue acts and 14 slots and the total number of learnt rules is 195. The average number of rules per semantic concept is 6.9.
+As is typical for TBL methods, the number of learnt rules is considerably low. There are 17 unique dialogue acts and 66 unique slots in the ATIS dataset and the total number of learnt rules is 372. This results in 4.5 rules per semantic concept on average. In the TownInfo dataset, we have 14 dialogue acts and 14 slots and the total number of learnt rules is 195. The average number of rules per semantic concept is 6.9.
 
 % Lexical realizations of a slot can overlap with lexical realization of neighbouring slots. It is shows to be important pattern, for example in the trigram (city-0,and,city-1) is very common for sentence including ''between city-0 and city-1``. The lexical realizations city-0, city-1 respectively would be classified as from.city, and city-1 just because we know the  
 
@@ -396,8 +396,8 @@ As is typical for TBL methods, the number of learnt rules is considerably low. T
 \hline \makebox[2.99cm]{\bf Parser} & \makebox[1.1cm]{\bf Prec} & \makebox[1.1cm]{\bf Rec} & \bf F \\ \hline 
 \multicolumn{4}{l}{\textbf{ATIS development dataset:}} \\
 \hline
-Full TBL   & 93.95 & 93.70 & \textbf{93.82} \\
-Without loc. constrains & XX.XX & XX.XX & XX.XX \\
+Full TBL   & 93.95 & 93.70 & 93.82 \\
+Without loc. constrains & 93.38 & 92.64 & 93.01 \\
 Without dep. tree features  & 92.78 & 92.04 & 92.41 \\
 \hline
 \end{tabular}
