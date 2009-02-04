@@ -80,7 +80,7 @@
 \maketitle
 %
 \begin{abstract}
-In this paper, we present a semantic parser that transforms initial naive semantic hypothesis into correct semantics by using an ordered list of rules. These rules are learnt automatically from a training corpus with no prior linguistic knowledge and no alignment between words and semantic concepts is need. We show that TBL parser is competitive with respect to the state-of-the-art semantic parsers on the ATIS and TownInfo tasks.
+In this paper, we present a semantic parser that transforms initial semantic hypothesis into correct semantics by using an ordered list of rules. These rules are learnt automatically from a training corpus with no prior linguistic knowledge and no alignment between words and semantic concepts is needed. We show that TBL parser is competitive with respect to the state-of-the-art semantic parsers on the ATIS and TownInfo tasks.
 \end{abstract}
 \vspace{0.1cm}
 \noindent{\bf Index Terms}: spoken language understanding, semantics, natural language processing
@@ -89,7 +89,7 @@ In this paper, we present a semantic parser that transforms initial naive semant
 % \textbf{Check how you use input, output, hypothesis semantics!}
 
 \section{Introduction}
-Semantic parsing is important part of a spoken dialogue system \cite{williams07}. The goal of semantic parsing is to map natural language to formal meaning representation - semantics. Such semantics can be either defined by a grammar, e.g. LR grammar for GeoQuery domain \cite{kate05} or by frames and slots e.g. TownInfo domain \cite{thomson08}. In Table \ref{tbl:sem:example}, it is shown an example of the frame and slot semantics from the ATIS dataset. Each frame has a goal and set of slots. Each slot is composed of a slot name, e.g. ``from.city'',
+Semantic parsing is important part of a spoken dialogue system \cite{williams07}. The goal of semantic parsing is to map natural language to formal meaning representation - semantics. Such semantics can be either defined by a grammar, e.g. LR grammar for GeoQuery domain \cite{kate05} or by frames and slots e.g. TownInfo domain \cite{thomson08}. In Table \ref{tbl:sem:example}, it is shown an example of the frame and slot semantics from the ATIS dataset \cite{atis94}. Each frame has a goal and set of slots. Each slot is composed of a slot name, e.g. ``from.city'',
 % , a slot equal sign, e.g. ``='' or ``!='', 
 and slot value, e.g. ``Washington''. As dialogue managers commonly use semantics in the form of frames and slots \cite{williams07,thomson08}, our approach learns to map directly from natural language into frame and slot semantics.
 
@@ -100,11 +100,11 @@ A dialogue system needs a semantic parser which is accurate and robust, easy to 
 
 % can be understood as machine translation from a natural language to a formal language. First, we do not not have formal grammar for natural language is ungrammatical, include hesitations, and very often only fragments of complete sentences, e.g. ``Boston to Miami tomorrow''. 
 
-In our approach, we adapt transformation-based learning (TBL) \cite{brill95} to the problem of semantic parsing. We attempt to find an ordered list of transformation rules to improve naive semantic annotation. In addition, we experiment with features extracted from dependency parse trees provided by RASP \cite{rasp06}.
+In our approach, we adapt transformation-based learning (TBL) \cite{brill95} to the problem of semantic parsing. We attempt to find an ordered list of transformation rules to improve initial semantic annotation. In addition, we experiment with features extracted from dependency parse trees provided by RASP \cite{rasp06}.
 
 % A transformation parsing assumes:
 % \begin{itemize}
-% \item Initial annotation is obtained by a naive annotator.
+% \item Initial annotation is obtained by a initial annotator.
 % \item Transformations are applied in sequence. 
 % \item Transformations progressively change from general to specific.
 % \item Results of previous transformations are visible to following transformations.
@@ -134,19 +134,20 @@ In the next section, we describe previous work on mapping natural language into 
 
 \section{Related work}
 
-In Section \ref{sec:evaluation}, we compare performance of our method with the four existing systems that were evaluated on the same dataset we consider. 
-First, Hidden Vector State model \cite{he05,jurcicek08} have been used to model an approximation of a pushdown automaton which has semantic concepts as non-terminal symbols. Consequently, a deterministic algorithm was used to recover slot values.
-Second, automatic induction of combinatory categorical grammar \cite{zettlemoyer07} have been used to map sentences to lambda-calculus. 
+In Section \ref{sec:evaluation}, we compare performance of our method with four existing systems that were evaluated on the same dataset we consider. 
+First, the Hidden Vector State technique \cite{he05,jurcicek08} has been used to model an approximation of a pushdown automaton with semantic concepts as non-terminal symbols. 
+% From the output parse trees, a deterministic algorithm was used to recover slot names and their values.
+Second, automatic induction of combinatory categorical grammar \cite{zettlemoyer07} has been used to map sentences to lambda-calculus. 
 % The combinatory categorical grammar is generalized into probabilistic model by learning log-linear model. An online learning algorithm updates weights of features representing a parse tree of an input sentence. 
-They show that their technique produces the state-of-the-art performance on the Air Travel Information (ATIS) dataset \cite{atis94}. However, apart from using the lexical categories (city names, airport names, etc) readily available from the ATIS corpus, the method also needs considerable number of handcrafted entries in their initial lexicon. 
-Third, Markov logic networks \cite{meza08b} have been used to extract slot values by applying ideas of a Markov network to first-order logic. In this approach, weights are attached to first-order clauses which represent relationship between slot names and their values. Such weighted clauses are used as templates for features of Markov networks.
-Finally, support vector machines \cite{mairesse09} have been used to build a semantic trees by recursive calling classifiers to estimate probabilities of production rules using a linear kernel and word based features.
+This technique produces state-of-the-art performance on the ATIS dataset. However, apart from using the lexical categories (city names, airport names, etc) readily available from the ATIS corpus, the method also needs considerable number of handcrafted entries in their initial lexicon. 
+Third, Markov Logic Networks \cite{meza08b} have been used to extract slot values by combining propabilistic graphical models and first-order logic. In this approach, weights are attached to first-order clauses which represent relationship between slot names and their values. Such weighted clauses are used as templates for features of Markov networks.
+Finally, Support Vector Machines \cite{mairesse09} have been used to build semantic trees by recursive calling of classifiers to estimate probabilities of production rules using a linear kernel and word based features.
 
-There has been also done a large amount of research into mapping natural language to semantics that is not directly comparable because it uses either different corpora or different meaning representation. 
+A large amount of research has been also done into mapping natural language to semantics that is not directly comparable because of either different corpora or different meaning representation. 
 % Machine translation techniques \cite{wong06} have been used with a syntax-based translation model based on the synchronous context-free grammars. 
 % Inductive logic programming \cite{tang01} have been used to incrementally develop a theory including a set of predicates. 
 % In each iteration, the predicates were generalized from predicates in the theory and predicates automatically constructed from examples. 
-Transformation techniques \cite{kate05} have been used to sequentially rewrite an utterance into semantics. However, our approach differs in the way the semantics is constructed. Instead of rewriting an utterance, we transform an initial naive semantic hypothesis. As a result, we can use words in an utterance several times to trigger transformations of the semantics. This extends our ability to handle non-compositionality phenomena in spoken language.
+Transformation techniques \cite{kate05} have been used to sequentially rewrite an utterance into semantics. However, our approach differs in the way the semantics is constructed. Instead of rewriting an utterance, we transform an initial semantic hypothesis. As a result, we can use words in an utterance several times to trigger transformations of the semantics. This extends our ability to handle non-compositionality phenomena in spoken language.
 Support vector machines and tree kernels \cite{kate08} have been used to integrate knowledge contained in the gold standard dependency trees to capture long-range relationship between words. 
 
 \section{Transformation-based parsing} \label{sec:tbl}
@@ -155,10 +156,10 @@ First, we give an example of the parsing algorithm.
 Second, we detail locality constrains for transformation rules.
 Third, we describe templates used to generate rules for the inference process. 
 Fourth, we describe features capturing long-range dependencies.
-Finally, we detail the learning process. 
+Finally, the learning process is detailed. 
 
 \subsection{Example of Parsing} \label{sec:tbl:example}
-The semantic parser transforms an initial naive semantic hypothesis into correct semantics by applying transformations from a list of rules. Each rule is composed of a trigger and a transformation and a trigger initiates transformation of a hypothesis. 
+The semantic parser transforms an initial semantic hypothesis into correct semantics by applying transformations from a list of rules. Each rule is composed of a trigger and a transformation and a trigger initiates transformation of a hypothesis. 
 % The parsing consists of three steps: 
 % \begin{enumerate}
 %   \item initial semantics is assigned as hypothesis
@@ -281,7 +282,7 @@ We however note that RASP was used off-the-shelf and more accurate dependencies 
 % Our motivation was work of \cite{meza08b} who handcrafted features using words ''arrive``, ''arriving``, ''leave``, and ''leaving``. These handcrafted features disambiguate large number of semantic parsing errors in ATIS data because large portion or errors is caused by confusions between concepts ''arrival.time`` and ''departure.time``, ''arrival.day`` and ''departure.day``, etc. We generalized this approach and we automatically find features which  disambiguate semantics of words like ''Monday``, ''7pm``, and ''Boston``. As a result, we generate a new type of bigrams for a word and the nearest verb, preposition, etc. \textbf{We use all parts-of-speech provided by RASP and the learning algorithm chooses the most discriminative features. Among those learned are not only the words used by Meza-Rui but also words like ''stop``, ''reach``, ''buy`` and prepositions like ''at``, ''from``, ''to``, etc.} For example, for the nearest verb for the word ''Morning`` in the sentence from Figure \ref{fig:dep:tree} is ''arrive`` and such bigram would look be written as ('arrive',VV,'Monday') where VV stands for verb. This features assumes that the left-to-right tendency is dominant and the words in vicinity of lexical realization of a slot value affect the meaning the most.
 
 \subsection{Learning} \label{sec:tbl:learning}
-The main idea of transformation-based learning is to learn an ordered list of rules which incrementally improve initially assigned naive semantic hypothesis (see the algorithm in Figure \ref{alg:tbl:learning}). The initial assignment is made based on simple statistics - the most common goal is used as initial semantics. The learning is conducted in a greedy fashion and at each step TBL chooses the transformation rule that reduces the largest number of errors in our hypothesis. Number of errors includes number of goal substitutions, number of slot insertions, number of slot deletions, number of slot substitutions. The learning ends when no rule that improves the hypothesis beyond the pre-set threshold can be found.
+The main idea of transformation-based learning is to learn an ordered list of rules which incrementally improve initially assigned initial semantic hypothesis (see the algorithm in Figure \ref{alg:tbl:learning}). The initial assignment is made based on simple statistics - the most common goal is used as initial semantics. The learning is conducted in a greedy fashion and at each step TBL chooses the transformation rule that reduces the largest number of errors in our hypothesis. Number of errors includes number of goal substitutions, number of slot insertions, number of slot deletions, number of slot substitutions. The learning ends when no rule that improves the hypothesis beyond the pre-set threshold can be found.
 
 % To limit overfitting the training data, we prune some rules which are learned at the end of the learning. We sequentially apply each rule on the development set and we measure the number of errors. At the end, we chose the N first rules for which the parser gets the lowest number of errors.
 
@@ -411,7 +412,7 @@ Without dep. tree features  & 92.78 & 92.04 & 92.41 \\
 
 \section{Conclusion} \label{sec:conlusion}
 
-This paper presents novel application of TBL for semantic parsing. Our method learns sequence of rules which transforms initial naive semantics into correct semantics. It significantly differs from the method presented by Kate et al \cite{kate05} where they were rewriting utterance and replacing its words with semantic concepts. 
+This paper presents novel application of TBL for semantic parsing. Our method learns sequence of rules which transforms initial semantics into correct semantics. It significantly differs from the method presented by Kate et al \cite{kate05} where they were rewriting utterance and replacing its words with semantic concepts. 
 Our method was applied to two very different domains and it was shown that it performs competitive on both datasets with respect to the state-of-the-art semantic parsers. 
 % Results show that our method is competitive with respect to Zettlemoyer \& Collins' PCCG model \cite{zettlemoyer07} on ATIS dataset. In addition, 
 On the ATIS dataset, our method outperforms STC, MLN and HVS by 1.27\%, 2.75\%, and 5.44\% respectively. We also show that our method outperforms the handcrafted Phoenix parser by 3.28\% on ASR output on the TownInfo dataset.
