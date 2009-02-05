@@ -80,15 +80,16 @@ class Slot:
             other.value = self.value
     
     def proximity(self, lexIndex, type):
-        try:
-            if self.settings['testLocality']:
-                pass
-            else:
-                # locality constrain should not be applied
-                return True
-        except KeyError:
-            # if the setting is not provided set it to True
-            self.settings['testLocality'] = True
+        if hasattr(self, "settings"):
+            try:
+                if self.settings['testLocality']:
+                    pass
+                else:
+                    # locality constrain should not be applied
+                    return True
+            except KeyError:
+                # if the setting is not provided set it to True
+                self.settings['testLocality'] = True
         
         prx = 'none'
         if self.leftBorder <= lexIndex[0] and lexIndex[1] <= self.rightBorder:

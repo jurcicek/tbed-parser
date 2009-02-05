@@ -32,6 +32,11 @@ B.~Thomson, M.~Gasic, S.~Keizer, F.~Mairesse, J.~Schatzmann, K.~Yu, and
   S.~Young, ``User study of the bayesian update of dialogue state approach to
   dialogue management,'' in \emph{Proceedings of Interspeech}, 2008.
 
+\bibitem{atis94}
+D.~Dahl, M.~Bates, M.~Brown, W.~Fisher, K.~Hunicke-Smith, D.~Pallett, C.~Pao,
+  A.~Rudnicky, , and E.~Shriberg, ``Expanding the scope of the atis task: The
+  atis-3 corpus,'' in \emph{Proceedings of the ARPA HLT Workshop}, 1994.
+
 \bibitem{brill95}
 E.~Brill, ``Transformation-based error-driven learning and natural language
   processing: A case study in part-of-speech tagging,'' \emph{Computational
@@ -40,11 +45,6 @@ E.~Brill, ``Transformation-based error-driven learning and natural language
 \bibitem{rasp06}
 E.~Briscoe, J.~Carroll, and R.~Watson, ``The second release of the rasp
   system,'' in \emph{Proceedings of COLING/ACL}, 2006.
-
-\bibitem{atis94}
-D.~Dahl, M.~Bates, M.~Brown, W.~Fisher, K.~Hunicke-Smith, D.~Pallett, C.~Pao,
-  A.~Rudnicky, , and E.~Shriberg, ``Expanding the scope of the atis task: The
-  atis-3 corpus,'' in \emph{Proceedings of the ARPA HLT Workshop}, 1994.
 
 \bibitem{mairesse09}
 F.~Mairesse, M.~Gasic, F.~Jurcicek, S.~Keizer, B.~Thomson, K.~Yu, and S.~Young,
@@ -76,5 +76,10 @@ R.~Kate, ``A dependency-based word subsequence kernel,'' in \emph{Proceedings
 \bibitem{ward91}
 W.~Ward, ``The phoenix system: Understanding spontaneous % speech,'' in
   \emph{Proceedings of ICASSP}, 1991.
+
+\bibitem{florian00}
+R.~Florian, J.~C. Henderson, and G.~Ngai, ``Coaxing confidence from an old
+  friend: Probabilistic classifications from transformation rule lists,'' in
+  \emph{Proceedings EMNLP}, 2000.
 
 \end{thebibliography}
