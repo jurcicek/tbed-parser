@@ -18,47 +18,49 @@
 \fi
 #2}}
 
+\bibitem{kate05}
+R.~Kate, Y.~Wong, and R.~Mooney, ``Learning to transform natural to formal
+  languages,'' in \emph{Proceedings of AAAI}, 2005.
+
+\bibitem{mairesse09}
+F.~Mairesse, M.~M. Ga\v{s}i\'{c}, F.~Jur\v{c}\'{i}\v{c}ek, S.~Keizer,
+  B.~Thomson, K.~Yu, and S.~Young, ``Spoken language understanding from
+  unaligned data using discriminative classification models,'' in
+  \emph{Proceedings of ICASSP}, 2009.
+
+\bibitem{atis94}
+D.~Dahl, M.~Bates, M.~Brown, W.~Fisher, K.~Hunicke-Smith, D.~Pallett, C.~Pao,
+  A.~Rudnicky, and E.~Shriberg, ``Expanding the scope of the {ATIS} task: The
+  atis-3 corpus,'' in \emph{Proceedings of the ARPA HLT Workshop}, 1994.
+
 \bibitem{williams07}
 J.~Williams and S.~Young., ``{Partially observable markov decision % processes
   for spoken dialog systems},'' \emph{Computer Speech and Language}, vol.~21,
   no.~2, pp. 231--422, 2007.
 
-\bibitem{kate05}
-R.~Kate, Y.~Wong, and R.~Mooney, ``Learning to transform natural to formal
-  languages,'' in \emph{Proceedings of AAAI}, 2005.
-
 \bibitem{thomson08}
-B.~Thomson, M.~Gasic, S.~Keizer, F.~Mairesse, J.~Schatzmann, K.~Yu, and
-  S.~Young, ``User study of the bayesian update of dialogue state approach to
+B.~Thomson, M.~Ga\v{s}i\'{c}, S.~Keizer, F.~Mairesse, J.~Schatzmann, K.~Yu, and
+  S.~Young, ``User study of the {Bayesian} update of dialogue state approach to
   dialogue management,'' in \emph{Proceedings of Interspeech}, 2008.
 
-\bibitem{atis94}
-D.~Dahl, M.~Bates, M.~Brown, W.~Fisher, K.~Hunicke-Smith, D.~Pallett, C.~Pao,
-  A.~Rudnicky, , and E.~Shriberg, ``Expanding the scope of the atis task: The
-  atis-3 corpus,'' in \emph{Proceedings of the ARPA HLT Workshop}, 1994.
-
 \bibitem{brill95}
-E.~Brill, ``Transformation-based error-driven learning and natural language
-  processing: A case study in part-of-speech tagging,'' \emph{Computational
+E.~Brill, ``{Transformation-Based Error-Driven Learning and Natural Language
+  Processing: A Case Study in Part-of-Speech Tagging},'' \emph{Computational
   Linguistics}, vol.~21, no.~4, pp. 543--565, 1995.
 
 \bibitem{rasp06}
-E.~Briscoe, J.~Carroll, and R.~Watson, ``The second release of the rasp
+E.~Briscoe, J.~Carroll, and R.~Watson, ``The second release of the {RASP}
   system,'' in \emph{Proceedings of COLING/ACL}, 2006.
 
-\bibitem{mairesse09}
-F.~Mairesse, M.~Gasic, F.~Jurcicek, S.~Keizer, B.~Thomson, K.~Yu, and S.~Young,
-  ``Spoken language understanding from unaligned data using discriminative
-  classification models,'' in \emph{Proceedings of ICASSP}, 2009.
-
 \bibitem{he05}
-Y.~He and S.~Young, ``Semantic processing using the hidden vector state
-  model,'' \emph{Computer Speech \& Language}, vol.~19, no.~1, pp. 85--106,
+Y.~He and S.~Young, ``{Semantic processing using the Hidden Vector State
+  model},'' \emph{Computer Speech \& Language}, vol.~19, no.~1, pp. 85--106,
   2005.
 
 \bibitem{jurcicek08}
-F.~Jurcicek, J.~Svec, and L.~Muller, ``{Extension of HVS semantic parser by
-  allowing left-right branching},'' in \emph{Proceedings of ICASSP}, 2008.
+F.~Jur\v{c}\'{i}\v{c}ek, J.~Svec, and L.~Muller, ``{Extension of HVS semantic
+  parser by allowing left-right branching},'' in \emph{Proceedings of ICASSP},
+  2008.
 
 \bibitem{zettlemoyer07}
 L.~Zettlemoyer and M.~Collins, ``Online learning of relaxed ccg grammars for
