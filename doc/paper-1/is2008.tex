@@ -63,7 +63,7 @@
 %   $^2$Department of Linguistics, University of Speechcity, Speechland\\
 % {\small \tt jeg@sci.voice.edu, DBark@ling.speech.edu}}
 
-\address{Engineering Department, Cambridge University, Trumpington Street, Cambridge, CB2 1PZ, UK \\
+\address{Engineering Department, Cambridge University, CB2 1PZ, UK \\
 \\
 {\small \tt \{fj228, mg436, sk561, farm2, brmt2, ky219, sjy\}@eng.cam.ac.uk}
 }
@@ -80,7 +80,7 @@
 \maketitle
 %
 \begin{abstract}
-In this paper, we present a semantic parser that transforms an initial semantic hypothesis into correct semantics by using an ordered list of rules. These rules are learnt automatically from a training corpus with no prior linguistic knowledge and no alignment between words and semantic concepts. We show that this parser is competitive with respect to the state-of-the-art semantic parsers on the ATIS and TownInfo tasks.
+This paper presents a semantic parser that transforms an initial semantic hypothesis into correct semantics by using an ordered list of rules. These rules are learnt automatically from a training corpus with no prior linguistic knowledge and no alignment between words and semantic concepts. The learning algorithm produce a compact set of rules which enables the parser to be very efficient and it runs 30 times faster than one of the previous approaches. We show that this parser is competitive with respect to the state-of-the-art semantic parsers on the ATIS and TownInfo tasks.
 \end{abstract}
 \vspace{0.1cm}
 \noindent{\bf Index Terms}: spoken language understanding, semantics, natural language processing, transformation-based learning
@@ -131,7 +131,7 @@ In the next section, we describe previous work on mapping natural language into 
 \end{tabular} 
 \end{center}
 \vspace{-0.5cm}
-\caption{Example of frame and slot semantics from the ATIS \cite{atis94} dataset.}
+\caption{Example of frame and slot semantics from the ATIS dataset \cite{atis94}.}
 \label{tbl:sem:example}
 \end{table}
 
@@ -159,7 +159,7 @@ Support vector machines and tree kernels \cite{kate08} have been used to integra
 
 The TBL parser transforms an initial semantic hypothesis into correct semantics by applying transformations from a list of rules. Each rule is composed of a trigger and a transformation. A trigger is matched against utterance and semantic hypothesis, and when successfully matched, transformation of a hypothesis is initiated. 
 
-In our method, a trigger contains one or more conditions as follows: the utterance contains n-gram N, the utterance contains skipping bigram B\footnote{In a skipping bigram, one, two or three words are skipped between two words.}, the goal equals to G, and the semantics contains slot S. If a trigger contains more than one condition, then all conditions must be satisfied. In our method, we use unigrams, bigrams, trigrams and skipping bigrams, which can skip up to 3 words.
+In our method, a trigger contains one or more conditions as follows: the utterance contains n-gram N, the utterance contains skipping bigram B\footnote{In a skipping bigram, one, two or three words are skipped between two words.}, the goal equals to G, and the semantics contains slot S. If a trigger contains more than one condition, then all conditions must be satisfied. The TBL parser uses unigrams, bigrams, trigrams and skipping bigrams, which can skip up to 3 words.
 A transformation performs one of the following operations: substitute a goal to G, add a slot S, delete a slot S, and substitute a slot S. A substitution transformation can substitute a whole slot, a slot name, 
 % a slot equal sign, 
 or a slot value. 
@@ -179,7 +179,7 @@ Sample rules with triggers composed of unigrams, skipping bigrams, and goal matc
 \end{tabular} 
 \vspace{.15cm}
 
-The first rule substitutes a goal of a semantics for ``airfare'' if the word ``tickets'' in an utterance. The second rules changes a goal of a semantics from ``airfare'' to ``flight'' if an utterance contains the words ``flights'' and ``from'', which can be up to 3 words apart. The fourth rule adds the slot ``to.city=Seattle'' anytime an utterance contains the word ``Seattle''. Finally, every slot name ``to.city'' is replaced by "stop.city`` if an utterance include the word ''connecting``.
+The first rule substitutes a goal of a semantics for ``airfare'' if the word ``tickets'' is in an utterance. The second rule changes a goal of a semantics from ``airfare'' to ``flight'' if an utterance contains the words ``flights'' and ``from'', which can be up to 3 words apart. The fourth rule adds the slot ``to.city=Seattle'' anytime an utterance contains the word ``Seattle''. Finally, every slot name ``to.city'' is replaced by "stop.city`` if an utterance include the word ''connecting``.
 
 % \subsection{Rule templates}
 % In the previous sections, we presented several rules which add, substitute, or delete slots. 
@@ -313,7 +313,7 @@ We however note that RASP was used off-the-shelf and more accurate dependencies 
 % Our motivation was work of \cite{meza08b} who handcrafted features using words ''arrive``, ''arriving``, ''leave``, and ''leaving``. These handcrafted features disambiguate large number of semantic parsing errors in ATIS data because large portion or errors is caused by confusions between concepts ''arrival.time`` and ''departure.time``, ''arrival.day`` and ''departure.day``, etc. We generalized this approach and we automatically find features which  disambiguate semantics of words like ''Monday``, ''7pm``, and ''Boston``. As a result, we generate a new type of bigrams for a word and the nearest verb, preposition, etc. \textbf{We use all parts-of-speech provided by RASP and the learning algorithm chooses the most discriminative features. Among those learned are not only the words used by Meza-Rui but also words like ''stop``, ''reach``, ''buy`` and prepositions like ''at``, ''from``, ''to``, etc.} For example, for the nearest verb for the word ''Morning`` in the utterance from Figure \ref{fig:dep:tree} is ''arrive`` and such bigram would look be written as ('arrive',VV,'Monday') where VV stands for verb. This features assumes that the left-to-right tendency is dominant and the words in vicinity of lexical realization of a slot value affect the meaning the most.
 
 \subsection{Learning} \label{sec:tbl:learning}
-The main idea behind transformation-based learning is to learn an ordered list of rules which incrementally improve an initial semantic hypothesis (see the algorithm in Figure~\ref{alg:tbl:learning})\footnote{The list of rules must be ordered because each learnt rule corrects errors remaining after application of preceding rules.}. The initial assignment is made based on simple statistics - the most common goal is used as initial semantics. The learning is conducted in a greedy fashion, and at each step the algorithm chooses the transformation rule that reduces the largest number of errors in our hypothesis. Errors include goal substitutions, slot insertions, slot deletions, and slot substitutions. The learning process stops when no rule that improves the hypothesis beyond the pre-set threshold can be found. Note that no alignment between words and semantic concepts is needed.
+The main idea behind transformation-based learning \cite{brill95} is to learn an ordered list of rules which incrementally improve an initial semantic hypothesis (see the algorithm in Figure~\ref{alg:tbl:learning})\footnote{The list of rules must be ordered because each learnt rule corrects errors remaining after application of preceding rules.}. The initial assignment is made based on simple statistics - the most common goal is used as initial semantics. The learning is conducted in a greedy fashion, and at each step the algorithm chooses the transformation rule that reduces the largest number of errors in our hypothesis. Errors include goal substitutions, slot insertions, slot deletions, and slot substitutions. The learning process stops when no rule that improves the hypothesis beyond the pre-set threshold can be found. Note that no alignment between words and semantic concepts is needed.
 
 % To limit overfitting the training data, we prune some rules which are learned at the end of the learning. We sequentially apply each rule on the development set and we measure the number of errors. At the end, we chose the N first rules for which the parser gets the lowest number of errors.
 
@@ -417,9 +417,14 @@ Results on the ATIS dataset show that our method (F-measure = 95.74\% ) is compe
 
 Table \ref{tbl:results:contrast} shows contrast between the full system and the system with no features extracted from dependency trees and the system with no locality constraints. Experiments were carried out on the ATIS development dataset. The results show that if the dependency tree features are removed or the locality constraints are not used, the performance of our method degrades.
 
-The learning time of the TBL parser is acceptable and the parsing process is fast. 
-First, the learning time is about 24 hours on an Intel Pentium 2.8GHz for each dataset. The TBL parser generate up to 1M of transformation rules in each iteration; however, only fraction of rules has to tested because the search space can be efficiently organised \cite{brill95}.
-Second, the TBL method is able to decode an utterance in about 6ms. Because the number of learnt rules is considerably low, a number of operations needed to parse a utterance is limited. There are 17 unique dialogue acts and 66 unique slots in the ATIS dataset and the total number of learnt rules is 372. This results in 4.5 rules per semantic concept on average. In the TownInfo dataset, we have 14 dialogue acts and 14 slots and the total number of learnt rules is 195. The average number of rules per semantic concept is 6.9. The number of semantic concepts per utterance is 5 on average.
+The learning time of the TBL parser is acceptable and the parsing process is efficient. 
+First, the learning time is about 24 hours on an Intel Pentium 2.8GHz for each dataset. The TBL parser generates up to 1M of transformation rules in each iteration; however, only fraction of rules has to tested because the search space can be efficiently organised \cite{brill95}.
+Second, the TBL parser is able to parse an utterance in 6ms while the STC parser needs 200ms on average \cite{mairesse09}. We cannot report on speed of other approaches because such information is not publicly available.
+
+The efficiency of the TBL parser results from a considerably low number of learnt rules.
+% a number of operations needed to parse a utterance is limited because the number of learnt rules is low. 
+There are 17 unique dialogue acts and 66 unique slots in the ATIS dataset and the total number of learnt rules is 372. This results in 4.5 rules per semantic concept on average. In the TownInfo dataset, we have 14 dialogue acts and 14 slots and the total number of learnt rules is 195. The average number of rules per semantic concept is 6.9. The number of semantic concepts per utterance is 5 on average.
+
 
 
 % Lexical realizations of a slot can overlap with lexical realization of neighbouring slots. It is shows to be important pattern, for example in the trigram (city-0,and,city-1) is very common for utterance including ''between city-0 and city-1``. The lexical realizations city-0, city-1 respectively would be classified as from.city, and city-1 just because we know the  
@@ -431,7 +436,7 @@ Second, the TBL method is able to decode an utterance in about 6ms. Because the 
 \multicolumn{4}{|l|}{\textbf{ATIS development dataset:}} \\
 \hline
 TBL   & 93.95 & 93.70 & 93.82 \\
-No locality constrains & 93.38 & 92.64 & 93.01 \\
+No locality constraints & 93.38 & 92.64 & 93.01 \\
 No dependency tree features  & 92.78 & 92.04 & 92.41 \\
 \hline
 \end{tabular}
@@ -451,7 +456,7 @@ Our method was applied to two very different domains and it was shown that its p
 % Results show that our method is competitive with respect to Zettlemoyer \& Collins' PCCG model \cite{zettlemoyer07} on ATIS dataset. In addition, 
 On the ATIS dataset, our method outperforms STC, HVS and MLN parsers by 1.27\%, 2.75\%, and 5.44\% respectively \cite{mairesse09,he05,meza08b}. We also show that our method outperforms the handcrafted Phoenix parser by 3.28\% on ASR output of the TownInfo dataset \cite{mairesse09}.
 
-Although the TBL approach does not directly offer an N-best list of hypotheses with confidence scores, several methods have been developed to alleviate this problem. For example, transformation rules have been converted into decision trees \cite{florian00} from which informative probability distributions on the class labels can be obtained. In future work, we will investigate how to adapt the TBL method to obtain multiple hypotheses and confidence scores.
+Although the TBL approach does not directly offer an N-best list of hypotheses with confidence scores, several methods have been developed to alleviate this problem. For example, transformation rules have been converted into decision trees from which informative probability distributions on the class labels can be obtained \cite{florian00}. In future work, we will investigate how to adapt the TBL method to obtain multiple hypotheses and confidence scores.
 
 % \section{Acknowledgments}
 % We would like to thank to Luke Zettlemoyer and I.V. Meza-Ruiz for valuable discussions about their methods.
