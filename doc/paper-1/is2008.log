@@ -1,4 +1,4 @@
-This is pdfeTeX, Version 3.141592-1.30.5-2.2 (Web2C 7.5.5) (format=pdflatex 2009.2.6)  11 FEB 2009 10:58
+This is pdfeTeX, Version 3.141592-1.30.5-2.2 (Web2C 7.5.5) (format=pdflatex 2009.2.6)  11 FEB 2009 12:21
 entering extended mode
 **is2008.tex
 (./is2008.tex
@@ -219,31 +219,34 @@ Underfull \vbox (badness 5008) has occurred while \output is active []
 
 
 ]
-Overfull \hbox (2.40108pt too wide) in paragraph at lines 187--195
+Overfull \hbox (2.40108pt too wide) in paragraph at lines 222--230
 [][]
  []
 
 <./fig/words-slots-alignment.pdf, id=20, 600.2425pt x 347.2975pt>
 File: ./fig/words-slots-alignment.pdf Graphic file (type pdf)
 
-<use ./fig/words-slots-alignment.pdf>
-<./fig/dep-tree.pdf, id=21, 447.6725pt x 230.8625pt>
-File: ./fig/dep-tree.pdf Graphic file (type pdf)
- <use ./fig/dep-tree.pdf>
-[2 <./fig/words-slots-alignment.pdf
+<use ./fig/words-slots-alignment.pdf> [2 <./fig/words-slots-alignment.pdf
 Warning: pdflatex (file ./fig/words-slots-alignment.pdf): pdf inclusion: Page G
 roup detected which pdfTeX can't handle. Ignoring it.
->] [3 <./fig/dep-tree.pdf
+>] <./fig/dep-tree.pdf, id=36, 447.6725pt x 230.8625pt>
+File: ./fig/dep-tree.pdf Graphic file (type pdf)
+
+<use ./fig/dep-tree.pdf> [3 <./fig/dep-tree.pdf
 Warning: pdflatex (file ./fig/dep-tree.pdf): pdf inclusion: Page Group detected
  which pdfTeX can't handle. Ignoring it.
->] (./is2008.bbl
+>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+(./is2008.bbl
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1.
 ) [4] (./is2008.aux) ) 
 Here is how much of TeX's memory you used:
  2081 strings out of 94432
  23966 string characters out of 1175567
- 79542 words of memory out of 1000000
+ 80542 words of memory out of 1000000
  5258 multiletter control sequences out of 10000+50000
  29521 words of font info for 66 fonts, out of 500000 for 2000
  580 hyphenation exceptions out of 1000
@@ -257,4 +260,4 @@ re/texmf/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texmf/fonts/type1/blues
 ky/cm/cmsy9.pfb></usr/share/texmf/fonts/type1/urw/times/utmr8a.pfb></usr/share/
 texmf/fonts/type1/urw/times/utmri8a.pfb></usr/share/texmf/fonts/type1/urw/times
 /utmb8a.pfb>
-Output written on is2008.pdf (4 pages, 137532 bytes).
+Output written on is2008.pdf (4 pages, 137808 bytes).

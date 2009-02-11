@@ -155,15 +155,49 @@ Transformation techniques have been used to sequentially rewrite an utterance in
 Support vector machines and tree kernels \cite{kate08} have been used to integrate knowledge contained in the manually annotated dependency trees to capture long-range relationships between words.
 
 \section{Transformation-based parsing} \label{sec:tbl}
-This section describes the transformation-based parser. 
-First, we give an example how the parsing algorithm works. 
-Second, we detail locality constraints on the transformation rules.
-Third, we describe the templates used to generate rules for the learning process. 
-Fourth, we describe features capturing long-range dependencies.
-Finally, the learning process is detailed. 
+% This section describes the transformation-based parser. 
+
+The TBL parser transforms an initial semantic hypothesis into correct semantics by applying transformations from a list of rules. Each rule is composed of a trigger and a transformation. A trigger is matched against utterance and semantic hypothesis, and when successfully matched, transformation of a hypothesis is initiated. 
+
+In our method, a trigger contains one or more conditions as follows: the utterance contains n-gram N, the utterance contains skipping bigram B\footnote{In a skipping bigram, one, two or three words are skipped between two words.}, the goal equals to G, and the semantics contains slot S. If a trigger contains more than one condition, then all conditions must be satisfied. In our method, we use unigrams, bigrams, trigrams and skipping bigrams, which can skip up to 3 words.
+A transformation performs one of the following operations: substitute a goal to G, add a slot S, delete a slot S, and substitute a slot S. A substitution transformation can substitute a whole slot, a slot name, 
+% a slot equal sign, 
+or a slot value. 
+
+Sample rules with triggers composed of unigrams, skipping bigrams, and goal matching are provided below:
+
+\vspace{.15cm}
+\begin{tabular}{ll}
+  trigger & transformation \\
+  \hline 
+  ``tickets''        & substitute a goal for ``airfare''\\
+  ``flights * from'' & substitute a goal for ``flight'' \\
+  \& GOAL=airfare     & \\
+  ``Seattle''         & add slot ``to.city=Seattle'' \\
+  ``connecting''     & substitute slot from\\
+                     & ``to.city=*'' to ``stop.city=*'' \\
+\end{tabular} 
+\vspace{.15cm}
+
+The first rule substitutes a goal of a semantics for ``airfare'' if the word ``tickets'' in an utterance. The second rules changes a goal of a semantics from ``airfare'' to ``flight'' if an utterance contains the words ``flights'' and ``from'', which can be up to 3 words apart. The fourth rule adds the slot ``to.city=Seattle'' anytime an utterance contains the word ``Seattle''. Finally, every slot name ``to.city'' is replaced by "stop.city`` if an utterance include the word ''connecting``.
+
+% \subsection{Rule templates}
+% In the previous sections, we presented several rules which add, substitute, or delete slots. 
+% The templates define what types of rules can be used for parsing. 
+% A trigger 
+% controls when a transformation of a semantic hypothesis can be performed and it can 
+% tries to match an input utterance, an output semantics, or both. 
+% For example, ('arrive',*,'Boston') is a skipping bigram which skips one word.
+
+
+In the next section, we give an example how the parsing algorithm works. Then, we detail locality constraints on the transformation rules.
+Next, we describe features capturing long-range dependencies.
+Finally, the automatic learning process is detailed. 
+
+% These rules were selected by a learning algorithm from a large set of potential rules. Such rules are generated from a set of templates for triggers and transformations. 
 
 \subsection{Example of Parsing} \label{sec:example}
-The semantic parser transforms an initial semantic hypothesis into correct semantics by applying transformations from a list of rules. Each rule is composed of a trigger and a transformation and a trigger initiates transformation of a hypothesis. 
+
 % The parsing consists of three steps: 
 % \begin{enumerate}
 %   \item initial semantics is assigned as hypothesis
@@ -180,7 +214,8 @@ First, the goal ``flight'' is used as the initial semantics because it is the mo
 \end{tabular} 
 \vspace{.15cm}
 
-Second, the rules which triggers match the utterance and the hypothesis are sequentially applied. Generally, the rules can add, delete, or substitute slots. 
+Second, the rules which triggers match the utterance and the hypothesis are sequentially applied. 
+% Generally, the rules can add, delete, or substitute slots. 
 % However, in this example the matching rules are only those which add slots.
 
 \vspace{.15cm}
@@ -257,19 +292,7 @@ In Figure \ref{fig:alignment} (a), the phrase ``find all the flights'' can be al
 
 In Figure \ref{fig:alignment} (b), we see the alignment after applying the substitution from Section \ref{sec:example}. We can see a change in the alignment of the phrase ``that arrive on''. First, the word ``arrive'' is aligned to the slot ``arrival.day=Saturday''. Second, the word ``on'' must be aligned to the same slot as the word ``arrive''. There is no change in the alignment of the word ``that''.
 
-\subsection{Rule templates}
-In the previous sections, we presented several rules which add, substitute, or delete slots. These rules were selected by a learning algorithm from a large set of potential rules. Such rules are generated from a set of templates for triggers and transformations. 
-% The templates define what types of rules can be used for parsing. 
 
-A trigger 
-% controls when a transformation of a semantic hypothesis can be performed and it can 
-tries to match an input utterance, an output semantics, or both. In our method, a trigger contains one or more conditions as follows: the utterance contains n-gram N, the utterance contains skipping bigram B\footnote{In a skipping bigram, one, two or three words are skipped between two words. 
-% For example, ('arrive',*,'Boston') is a skipping bigram which skips one word.
-}, the goal equals to G, and the semantics contains slot S. If a trigger contains more than one condition, then all conditions must be satisfied. In our method, we use unigrams, bigrams, trigrams and skipping bigrams, which can skip up to 3 words.
-
-A transformation performs one of the following operations: substitute a goal to G, add a slot S, delete a slot S, and substitute a slot S. A substitution transformation can substitute a whole slot, a slot name, 
-% a slot equal sign, 
-or a slot value.
 
 \subsection{Improving the disambiguation of long-range dependencies}
 \label{sec:dep:trees}
