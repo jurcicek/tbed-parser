@@ -96,7 +96,7 @@ and slot value, e.g. ``Washington''. As dialogue managers commonly use semantics
 
 % The semantics, which is designed by a domain expert, is directly executable by a question answering system \cite{wong06} or by a dialogue manager in a spoken dialogue system.
 
-A dialogue system needs a semantic parser which is accurate and robust, easy to build, and fast. First, this paper presents a parsing technique that performs comparably to state-of-the-art semantics parsers and it can handle ill formed utterances. Second, it does not need any handcrafted linguistic knowledge. Third, it can learn from data which is not semantically annotated at the word-level. Finally, it learns a compact set of rules that can be used for realtime semantic parsing.
+A dialogue system needs a semantic parser which is accurate and robust, easy to build, and fast. First, this paper presents a parsing technique that performs comparably to state-of-the-art semantics parsers and it can handle ill formed utterances. Second, it does not need any handcrafted linguistic knowledge. Third, it can learn from data which is not semantically annotated at the word-level. Finally, it learns a compact set of rules that can be used for real-time semantic parsing.
 
 % can be understood as machine translation from a natural language to a formal language. First, we do not not have formal grammar for natural language is ungrammatical, include hesitations, and very often only fragments of complete utterances, e.g. ``Boston to Miami tomorrow''. 
 
@@ -144,7 +144,7 @@ Second, Probabilistic parser using Combinatory Categorical Grammar   (PCCG) has 
 % The combinatory categorical grammar is generalized into probabilistic model by learning log-linear model. An online learning algorithm updates weights of features representing a parse tree of an input utterance. 
 This technique produces state-of-the-art performance on the ATIS dataset. However, apart from using the lexical categories (city names, airport names, etc) readily available from the ATIS corpus, this method also needs a considerable number of handcrafted entries in their initial lexicon. 
 Third, Markov Logic Networks (MLN) have been used to extract slot values by combining probabilistic graphical models and first-order logic \cite{meza08b}. In this approach, weights are attached to first-order clauses which represent the relationship between slot names and their values. Such weighted clauses are used as templates for features of Markov networks.
-Finally, in Semantic Tuple Clasifier (STC) support vector machines have been used to build semantic trees by recursively calling classifiers that predict fragments of the semantic representation from n-gram features \cite{mairesse09}.
+Finally, in Semantic Tuple Classifier (STC) support vector machines have been used to build semantic trees by recursively calling classifiers that predict fragments of the semantic representation from n-gram features \cite{mairesse09}.
 
 Also, there is a large amount of research that is not directly comparable because of either different corpora or different meaning representation. 
 % Machine translation techniques \cite{wong06} have been used with a syntax-based translation model based on the synchronous context-free grammars. 
@@ -152,7 +152,7 @@ Also, there is a large amount of research that is not directly comparable becaus
 % In each iteration, the predicates were generalized from predicates in the theory and predicates automatically constructed from examples. 
 Transformation techniques have been used to sequentially rewrite an utterance into semantics \cite{kate05}. However, our approach differs in the way the semantics is constructed. Instead of rewriting an utterance, we transform an initial semantic hypothesis. As a result, the words in the utterance can be used several times to trigger transformations of the semantics. 
 % This extends our ability to handle non-compositionality phenomena in spoken language.
-Support vector machines and tree kernels \cite{kate08} have been used to integrate knowledge contained in the manualy annotated dependency trees to capture long-range relationships between words.
+Support vector machines and tree kernels \cite{kate08} have been used to integrate knowledge contained in the manually annotated dependency trees to capture long-range relationships between words.
 
 \section{Transformation-based parsing} \label{sec:tbl}
 This section describes the transformation-based parser. 
@@ -246,7 +246,7 @@ So far no relationship between slots and their lexical realisation was considere
 
 % \textbf{XXX: I mentioned delete transformation but never defined.}
 
-One way to handle this problem is to constrain triggers performing substitution to be activated only if they are in the vicinity of the slot's lexical realisation. We track the words from the utterance that were used in triggers. Every time we apply a transformation of a slot, we store links between the words which triggered the transformation and the target slot. Such links are refered as ``direct alignment''. 
+One way to handle this problem is to constrain triggers performing substitution to be activated only if they are in the vicinity of the slot's lexical realisation. We track the words from the utterance that were used in triggers. Every time we apply a transformation of a slot, we store links between the words which triggered the transformation and the target slot. Such links are referred as ``direct alignment''. 
 
 % For the delete transformation no tracking information is kept because a slot is removed from hypothesis and never used again.
 
@@ -276,10 +276,10 @@ or a slot value.
 
 \fgrparam{width=6cm}{./fig/dep-tree.pdf}{fig:dep:tree}{Dependency tree of the utterance ''show the cheapest flights from Boston to Miami arriving before 7pm on Monday``.}
 
-Besides simple n-grams and skipping bigrams, more complex lexical features can be used. Kate \citep{kate08} used manualy annotated dependecy trees to capture long-range relationships between words. In a dependecy tree, each word is viewed as the dependant of one other word, with the exception of the root. Dependecy links represents gramatical relationships between words.
+Besides simple n-grams and skipping bigrams, more complex lexical features can be used. Kate \citep{kate08} used manually annotated dependency trees to capture long-range relationships between words. In a dependency tree, each word is viewed as the dependant of one other word, with the exception of the root. Dependency links represents grammatical relationships between words.
 Kate showed that word dependencies significantly improve semantic parsing because long-range dependencies from an utterance tend to be local in a dependency tree. For example, the words ''arriving`` and ''Monday`` are neighbours in the dependency tree but they are four words apart in the utterance (see Figure \ref{fig:dep:tree}).
 
-Instead of using manualy annotated word dependencies \cite{kate08}, we used dependencies provided by the RASP dependency parser \cite{rasp06}. 
+Instead of using manually annotated word dependencies \cite{kate08}, we used dependencies provided by the RASP dependency parser \cite{rasp06}. 
 % First, some pre-processing had to be done so that the RASP parser was able to accurately parse utterances with unknown named entities such as ''New York``. 
 % First of all, we had to add capitalization and punctuation into the ATIS data to be able to use the RASP parser. The RASP parser without proper capitalization fails to tag ''new`` and ''york`` as NP and instead of this it tags ''new`` as ''JJ`` and 'york' as NP and the dependencies generated by the parser are unsatisfactory. 
 New n-gram features were generated in which a word history is given by links between words. For example, the algorithm would generate bi-gram ('arriving','Monday') for the word ''Monday``.
@@ -395,7 +395,7 @@ Results on the ATIS dataset show that our method (F-measure = 95.74\% ) is compe
 Table \ref{tbl:results:contrast} shows contrast between the full system and the system with no features extracted from dependency trees and the system with no locality constraints. Experiments were carried out on the ATIS development dataset. The results show that if the dependency tree features are removed or the locality constraints are not used, the performance of our method degrades.
 
 The learning time of the TBL parser is acceptable and the parsing process is fast. 
-First, the learning time is about 24 hours on an Intel Pentium 2.8GHz for each dataset. The TBL parser generate up to 1M of transformation rules in each iteration; however, only fraction of rules has to tested because the search space can be eficiently organized \cite{brill95}.
+First, the learning time is about 24 hours on an Intel Pentium 2.8GHz for each dataset. The TBL parser generate up to 1M of transformation rules in each iteration; however, only fraction of rules has to tested because the search space can be efficiently organised \cite{brill95}.
 Second, the TBL method is able to decode an utterance in about 6ms. Because the number of learnt rules is considerably low, a number of operations needed to parse a utterance is limited. There are 17 unique dialogue acts and 66 unique slots in the ATIS dataset and the total number of learnt rules is 372. This results in 4.5 rules per semantic concept on average. In the TownInfo dataset, we have 14 dialogue acts and 14 slots and the total number of learnt rules is 195. The average number of rules per semantic concept is 6.9. The number of semantic concepts per utterance is 5 on average.
 
 
@@ -428,7 +428,7 @@ Our method was applied to two very different domains and it was shown that its p
 % Results show that our method is competitive with respect to Zettlemoyer \& Collins' PCCG model \cite{zettlemoyer07} on ATIS dataset. In addition, 
 On the ATIS dataset, our method outperforms STC, HVS and MLN parsers by 1.27\%, 2.75\%, and 5.44\% respectively \cite{mairesse09,he05,meza08b}. We also show that our method outperforms the handcrafted Phoenix parser by 3.28\% on ASR output of the TownInfo dataset \cite{mairesse09}.
 
-Although the TBL approach does not directly offer an N-best list of hypotheses with confidece scores, several methods have been developed to alleviate this problem. For example, transformation rules have been converted into decision trees \cite{florian00} from which informative probability distributions on the class labels can be obtained. In future work, we will investigate how to adapt the TBL method to obtain multiple hypotheses and confidence scores.
+Although the TBL approach does not directly offer an N-best list of hypotheses with confidence scores, several methods have been developed to alleviate this problem. For example, transformation rules have been converted into decision trees \cite{florian00} from which informative probability distributions on the class labels can be obtained. In future work, we will investigate how to adapt the TBL method to obtain multiple hypotheses and confidence scores.
 
 % \section{Acknowledgments}
 % We would like to thank to Luke Zettlemoyer and I.V. Meza-Ruiz for valuable discussions about their methods.
