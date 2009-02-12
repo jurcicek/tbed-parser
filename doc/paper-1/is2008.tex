@@ -80,7 +80,7 @@
 \maketitle
 %
 \begin{abstract}
-This paper presents a semantic parser that transforms an initial semantic hypothesis into correct semantics by using an ordered list of rules. These rules are learnt automatically from a training corpus with no prior linguistic knowledge and no alignment between words and semantic concepts. The learning algorithm produce a compact set of rules which enables the parser to be very efficient and it runs 30 times faster than one of the previous approaches. We show that this parser is competitive with respect to the state-of-the-art semantic parsers on the ATIS and TownInfo tasks.
+This paper presents a semantic parser that transforms an initial semantic hypothesis into correct semantics by using an ordered list of rules. These rules are learnt automatically from a training corpus with no prior linguistic knowledge and no alignment between words and semantic concepts. The learning algorithm produces a compact set of rules which enables the parser to be very efficient and it runs considerably faster than one of the previous approaches. We show that this parser is competitive with respect to the state-of-the-art semantic parsers on the ATIS and TownInfo tasks.
 \end{abstract}
 \vspace{0.1cm}
 \noindent{\bf Index Terms}: spoken language understanding, semantics, natural language processing, transformation-based learning
@@ -144,7 +144,7 @@ Second, Probabilistic parser using Combinatory Categorical Grammar   (PCCG) has 
 % The combinatory categorical grammar is generalized into probabilistic model by learning log-linear model. An online learning algorithm updates weights of features representing a parse tree of an input utterance. 
 This technique produces state-of-the-art performance on the ATIS dataset. However, apart from using the lexical categories (city names, airport names, etc) readily available from the ATIS corpus, this method also needs a considerable number of handcrafted entries in their initial lexicon. 
 Third, Markov Logic Networks (MLN) have been used to extract slot values by combining probabilistic graphical models and first-order logic \cite{meza08b}. In this approach, weights are attached to first-order clauses which represent the relationship between slot names and their values. Such weighted clauses are used as templates for features of Markov networks.
-Finally, in Semantic Tuple Classifier (STC) support vector machines have been used to build semantic trees by recursively calling classifiers that predict fragments of the semantic representation from n-gram features \cite{mairesse09}.
+Finally, Semantic Tuple Classifiers (STC) based on support vector machines have been used to build semantic trees by recursively calling classifiers that predict fragments of the semantic representation from n-gram features \cite{mairesse09}.
 
 Also, there is a large amount of research that is not directly comparable because of either different corpora or different meaning representation. 
 % Machine translation techniques \cite{wong06} have been used with a syntax-based translation model based on the synchronous context-free grammars. 
