@@ -65,7 +65,7 @@
 
 \address{Engineering Department, Cambridge University, CB2 1PZ, UK \\
 \\
-{\small \tt \{fj228, mg436, sk561, farm2, brmt2, ky219, sjy\}@eng.cam.ac.uk}
+{\small \tt \{fj228, mg436, sk561, f.mairesse, brmt2, ky219, sjy\}@eng.cam.ac.uk}
 }
 
 %\twoauthors{John E. Grunt Jr.}{Department of Speech and Hearing \\
@@ -80,7 +80,7 @@
 \maketitle
 %
 \begin{abstract}
-This paper presents a semantic parser that transforms an initial semantic hypothesis into correct semantics by using an ordered list of rules. These rules are learnt automatically from a training corpus with no prior linguistic knowledge and no alignment between words and semantic concepts. The learning algorithm produces a compact set of rules which enables the parser to be very efficient and it runs considerably faster than one of the previous approaches. We show that this parser is competitive with respect to the state-of-the-art semantic parsers on the ATIS and TownInfo tasks.
+This paper presents a semantic parser that transforms an initial semantic hypothesis into the correct semantics by applying an ordered list of transformation rules. These rules are learnt automatically from a training corpus with no prior linguistic knowledge and no alignment between words and semantic concepts. The learning algorithm produces a compact set of rules which enables the parser to be very efficient while retaining high accuracy. We show that this parser is competitive with respect to the state-of-the-art semantic parsers on the ATIS and TownInfo tasks.
 \end{abstract}
 \vspace{0.1cm}
 \noindent{\bf Index Terms}: spoken language understanding, semantics, natural language processing, transformation-based learning
@@ -90,13 +90,13 @@ This paper presents a semantic parser that transforms an initial semantic hypoth
 
 \section{Introduction}
 % Semantic parsing is an important part of a spoken dialogue system \cite{williams07}. 
-The goal of semantic parsing is to map natural language to a formal meaning representation - semantics. Such semantics can be either defined by a grammar, e.g. LR grammar for GeoQuery domain \cite{kate05}, or by frames and slots, e.g. TownInfo domain \cite{mairesse09}. Table \ref{tbl:sem:example} shows an example of the frame and slot semantics from the ATIS dataset \cite{atis94}. Each frame has a goal and set of slots. Each slot is composed of a slot name, e.g. ``from.city'',
+The goal of semantic parsing is to map natural language to a formal meaning representation - semantics. Such semantics can be either defined by a grammar, e.g. LR grammar for the GeoQuery domain \cite{kate05}, or by frames and slots, e.g. the TownInfo domain \cite{mairesse09}. Table \ref{tbl:sem:example} shows an example of the frame and slot semantics from the ATIS dataset \cite{atis94}. Each frame has a goal and set of slots. Each slot is composed of a slot name, e.g. ``from.city'',
 % , a slot equal sign, e.g. ``='' or ``!='', 
-and slot value, e.g. ``Washington''. As dialogue managers commonly use semantics in the form of frames and slots \cite{williams07,thomson08}, our approach learns to map directly from natural language into frame and slot semantics.
+and a slot value, e.g. ``Washington''. As dialogue managers commonly use semantics in the form of frames and slots \cite{williams07,thomson08}, our approach learns to map directly from natural language into frame and slot semantics.
 
 % The semantics, which is designed by a domain expert, is directly executable by a question answering system \cite{wong06} or by a dialogue manager in a spoken dialogue system.
 
-A dialogue system needs a semantic parser which is accurate and robust, easy to build, and fast. First, this paper presents a parsing technique that performs comparably to state-of-the-art semantics parsers and it can handle ill formed utterances. Second, it does not need any handcrafted linguistic knowledge. Third, it can learn from data which is not semantically annotated at the word-level. Finally, it learns a compact set of rules that can be used for real-time semantic parsing.
+A dialogue system needs a semantic parser which is accurate and robust, easy to build, and fast. This paper presents a parsing technique which provides state-of-the-art performance and robustness to ill formed utterances. The parser does not need any handcrafted linguistic knowledge and it can learn from data which is not semantically annotated at the word-level. Finally, it learns a compact set of rules that allow it to perform real-time semantic parsing. Note that modern statistical dialogue systems typically exploit multiple ASR hypotheses. Hence, the semantic parser has to process an N-best list of user utterances every turn where N$\sim$10 to 100.
 
 % can be understood as machine translation from a natural language to a formal language. First, we do not not have formal grammar for natural language is ungrammatical, include hesitations, and very often only fragments of complete utterances, e.g. ``Boston to Miami tomorrow''. 
 
@@ -140,46 +140,47 @@ In the next section, we describe previous work on mapping natural language into 
 In Section \ref{sec:evaluation}, we compare the performance of our method with four existing systems that were evaluated on the same dataset. 
 First, the Hidden Vector State (HVS) technique has been used to model an approximation of a pushdown automaton with semantic concepts as non-terminal symbols \cite{he05,jurcicek08}. 
 % From the output parse trees, a deterministic algorithm was used to recover slot names and their values.
-Second, Probabilistic parser using Combinatory Categorical Grammar   (PCCG) has been used to map utterances to lambda-calculus \cite{zettlemoyer07}. 
+Second, a Probabilistic parser using Combinatory Categorical Grammar   (PCCG) has been used to map utterances to lambda-calculus \cite{zettlemoyer07}. 
 % The combinatory categorical grammar is generalized into probabilistic model by learning log-linear model. An online learning algorithm updates weights of features representing a parse tree of an input utterance. 
-This technique produces state-of-the-art performance on the ATIS dataset. However, apart from using the lexical categories (city names, airport names, etc) readily available from the ATIS corpus, this method also needs a considerable number of handcrafted entries in their initial lexicon. 
+This technique produces state-of-the-art performance on the ATIS dataset. However, apart from using the lexical categories (city names, airport names, etc) readily available from the ATIS corpus, this method also needs a considerable number of handcrafted entries in its initial lexicon. 
 Third, Markov Logic Networks (MLN) have been used to extract slot values by combining probabilistic graphical models and first-order logic \cite{meza08b}. In this approach, weights are attached to first-order clauses which represent the relationship between slot names and their values. Such weighted clauses are used as templates for features of Markov networks.
 Finally, Semantic Tuple Classifiers (STC) based on support vector machines have been used to build semantic trees by recursively calling classifiers that predict fragments of the semantic representation from n-gram features \cite{mairesse09}.
 
-Also, there is a large amount of research that is not directly comparable because of either different corpora or different meaning representation. 
+In addition to the above, there is a large amount of research that is related but not directly comparable because of different in corpora or meaning representation. 
 % Machine translation techniques \cite{wong06} have been used with a syntax-based translation model based on the synchronous context-free grammars. 
 % Inductive logic programming \cite{tang01} have been used to incrementally develop a theory including a set of predicates. 
 % In each iteration, the predicates were generalized from predicates in the theory and predicates automatically constructed from examples. 
-Transformation techniques have been used to sequentially rewrite an utterance into semantics \cite{kate05}. However, our approach differs in the way the semantics is constructed. Instead of rewriting an utterance, we transform an initial semantic hypothesis. As a result, the words in the utterance can be used several times to trigger transformations of the semantics. 
+For example, transformation techniques have been previously used to sequentially rewrite an utterance into semantics \cite{kate05}. However, our approach differs in the way the semantics is constructed. Instead of rewriting an utterance, we transform an initial semantic hypothesis. As a result, the words in the utterance can be used several times to trigger transformations of the semantics. 
 % This extends our ability to handle non-compositionality phenomena in spoken language.
-Support vector machines and tree kernels \cite{kate08} have been used to integrate knowledge contained in the manually annotated dependency trees to capture long-range relationships between words.
 
 \section{Transformation-based parsing} \label{sec:tbl}
 % This section describes the transformation-based parser. 
 
-The TBL parser transforms an initial semantic hypothesis into correct semantics by applying transformations from a list of rules. Each rule is composed of a trigger and a transformation. A trigger is matched against utterance and semantic hypothesis, and when successfully matched, transformation of a hypothesis is initiated. 
+The TBL parser transforms an initial semantic hypothesis into the correct semantics by applying transformations from a list of rules. Each rule is composed of a trigger and a transformation. The trigger is matched against both the utterance and the semantic hypothesis, and when successfully matched, the transformation is applied to the current hypothesis. 
 
-In our method, a trigger contains one or more conditions as follows: the utterance contains n-gram N, the utterance contains skipping bigram B\footnote{In a skipping bigram, one, two or three words are skipped between two words.}, the goal equals to G, and the semantics contains slot S. If a trigger contains more than one condition, then all conditions must be satisfied. The TBL parser uses unigrams, bigrams, trigrams and skipping bigrams, which can skip up to 3 words.
-A transformation performs one of the following operations: substitute a goal to G, add a slot S, delete a slot S, and substitute a slot S. A substitution transformation can substitute a whole slot, a slot name, 
+In the TBL parser, a trigger contains one or more conditions as follows: the utterance contains N-gram N, the goal equals G, and the semantics contains slot S. If a trigger contains more than one condition, then all conditions must be satisfied. N-gram triggers can be unigrams, bigrams, trigrams or skipping bigrams
+% \footnote{In a skipping bigram, one, two or three words are skipped between two words.}
+which can skip up to 3 words.
+A transformation performs one of the following operations: replace the goal, add a slot, delete a slot, and replace a slot. A replacement transformation can replace a whole slot, a slot name, 
 % a slot equal sign, 
 or a slot value. 
 
-Sample rules with triggers composed of unigrams, skipping bigrams, and goal matching are provided below:
+Some example rules with triggers composed of unigrams, skipping bigrams, and goal matching are:
 
 \vspace{.15cm}
 \begin{tabular}{ll}
   trigger & transformation \\
   \hline 
-  ``tickets''        & substitute a goal for ``airfare''\\
-  ``flights * from'' & substitute a goal for ``flight'' \\
-  \& GOAL=airfare     & \\
-  ``Seattle''         & add slot ``to.city=Seattle'' \\
-  ``connecting''     & substitute slot from\\
-                     & ``to.city=*'' to ``stop.city=*'' \\
+  ``tickets''        & replace the goal by ``airfare''\\
+  ``flights * from'' & replace the goal by ``flight'' \\
+  \& GOAL=airfare    & \\
+  ``Seattle''        & add the slot ``to.city=Seattle'' \\
+  ``connecting''     & replace the slot \\
+                     & ``to.city=*'' by ``stop.city=*'' \\
 \end{tabular} 
 \vspace{.15cm}
 
-The first rule substitutes a goal of a semantics for ``airfare'' if the word ``tickets'' is in an utterance. The second rule changes a goal of a semantics from ``airfare'' to ``flight'' if an utterance contains the words ``flights'' and ``from'', which can be up to 3 words apart. The fourth rule adds the slot ``to.city=Seattle'' anytime an utterance contains the word ``Seattle''. Finally, every slot name ``to.city'' is replaced by "stop.city`` if an utterance include the word ''connecting``.
+The first rule replaces the goal by ``airfare'' if the word ``tickets'' is in the utterance. The second rule changes the goal from ``airfare'' to ``flight'' if the utterance contains the words ``flights'' and ``from'', which can be up to 3 words apart. The fourth rule adds the slot ``to.city=Seattle'' whenever the utterance contains the word ``Seattle''. Finally, every slot name ``to.city'' is replaced by "stop.city`` if the utterance includes the word ''connecting``.
 
 % \subsection{Rule templates}
 % In the previous sections, we presented several rules which add, substitute, or delete slots. 
@@ -190,9 +191,9 @@ The first rule substitutes a goal of a semantics for ``airfare'' if the word ``t
 % For example, ('arrive',*,'Boston') is a skipping bigram which skips one word.
 
 
-In the next section, we give an example how the parsing algorithm works. Then, we detail locality constraints on the transformation rules.
+In the next section, we give an example of how the parsing algorithm works. Then, we detail locality constraints on the transformation rules.
 Next, we describe features capturing long-range dependencies.
-Finally, the automatic learning process is detailed. 
+Finally, the automatic learning process is described. 
 
 % These rules were selected by a learning algorithm from a large set of potential rules. Such rules are generated from a set of templates for triggers and transformations. 
 
@@ -206,7 +207,7 @@ Finally, the automatic learning process is detailed.
 % \end{enumerate}
 This section demonstrates the parsing process on the example: \textit{``find all the flights between Toronto and San Diego that arrive on Saturday''} 
 
-First, the goal ``flight'' is used as the initial semantics because it is the most common goal in the ATIS dataset. As a result, the initial semantics is as follows:
+First, the goal ``flight'' with no slots is used as the initial semantics because it is the most common goal in the ATIS dataset. As a result, the initial semantics is as follows:
 
 \vspace{.15cm}
 \begin{tabular}{lll}
@@ -214,7 +215,7 @@ First, the goal ``flight'' is used as the initial semantics because it is the mo
 \end{tabular} 
 \vspace{.15cm}
 
-Second, the rules which triggers match the utterance and the hypothesis are sequentially applied. 
+Second, the rules, whose triggers match the utterance and the hypothesised semantics, are sequentially applied. 
 % Generally, the rules can add, delete, or substitute slots. 
 % However, in this example the matching rules are only those which add slots.
 
@@ -222,9 +223,9 @@ Second, the rules which triggers match the utterance and the hypothesis are sequ
 \begin{tabular}{ll}
   trigger & transformation \\
   \hline 
-  ``between toronto''     & add slot ``from.city=Toronto'' \\
-  ``and san diego''       & add slot ``to.city=San Diego'' \\
-  ``saturday''            & add slot ``departure.day=Saturday'' \\
+  ``between toronto''     & add the slot ``from.city=Toronto'' \\
+  ``and san diego''       & add the slot ``to.city=San Diego'' \\
+  ``saturday''            & add the slot ``departure.day=Saturday'' \\
 \end{tabular} 
 \vspace{.15cm}
 
@@ -251,8 +252,8 @@ However, the TBL method learns to correct its errors. Therefore, the parser also
 \begin{tabular}{ll}
   trigger & transformation \\
   \hline 
-  ``arrive''            & substitute slot from\\
-                        & ``departure.day=*'' to ``arrival.day=*'' \\
+  ``arrive''            & replace the slot ``departure.day=*'' \\
+                        & by ``arrival.day=*'' \\
 \end{tabular} 
 \vspace{.15cm}
 
@@ -263,43 +264,41 @@ In this case, we substitute the slot name with the correct name, to produce the 
   GOAL          & = & flight \\
   from.city     & = & Toronto \\
   to.city       & = & San Diego \\
-  arrival.day    & = & Saturday \\
+  arrival.day   & = & Saturday \\
 \end{tabular} 
 
 \subsection{Locality constraints} \label{sec:locality:constrain}
-So far no relationship between slots and their lexical realisation was considered. For example, before we perform the substitution of the slot ``departure.day'' to ``arrival.day'', we should test whether the word ``arrive'' is near the slot's lexical realisation. The reason is that we do not want to trigger the substitution of the slot ``from.city=Toronto'' to ``to.city=Toronto''. This could happen  because the parser has also learnt the following rule:
+So far the relationship between slots and their lexical realisation has not been considered. For example, before we replace the slot ``departure.day'' by ``arrival.day'', we should test whether the word ``arrive'' is near the slot's lexical realisation. Otherwise we may accidentally trigger the substitution of the slot ``from.city=Toronto'' by ``to.city=Toronto''. This could happen if the parser had also learnt the following rule:
 
 \vspace{.15cm}
 \begin{tabular}{ll}
   trigger & transformation \\
   \hline 
-  ``arrive''            & substitute slot from\\
-                        & ``from.city=*'' to ``to.city=*'' \\
+  ``arrive''            & replace the slot \\
+                        & ``from.city=*'' by ``to.city=*'' \\
 \end{tabular} 
 \vspace{.15cm}
 \fgrparam{width=8cm}{./fig/words-slots-alignment.pdf}{fig:alignment}{Alignment between the words and the slots in the example utterance.}
 
 % \textbf{XXX: I mentioned delete transformation but never defined.}
 
-One way to handle this problem is to constrain triggers performing substitution to be activated only if they are in the vicinity of the slot's lexical realisation. We track the words from the utterance that were used in triggers. Every time we apply a transformation of a slot, we store links between the words which triggered the transformation and the target slot. Such links are referred as ``direct alignment''. 
+One way to handle this problem is to constrain triggers performing substitutions to be activated only if they are in the vicinity of the slot's lexical realisation. To do this; we track the words from the utterance that were used in triggers. Every time we apply a transformation of a slot, we store links between the words which triggered the transformation and the target slot. Such links are referred to as ``direct alignment''. 
 
 % For the delete transformation no tracking information is kept because a slot is removed from hypothesis and never used again.
 
-In Figure \ref{fig:alignment} (a), we see the alignment between the words and the slots in the example utterance after applying the first set of rules. The full arrows denote direct alignment created by the add-transformations. Because no rules were triggered by the words ``find all the flights'' and ``that arrive on'', those words could not be aligned directly to any of the slots. Therefore, we have to derive such alignment (see Figure \ref{fig:alignment} (a) dashed arrows). A word is aligned to a slot if the alignment does not cross any direct alignment.
+In Figure \ref{fig:alignment} (a), we see the alignment between the words and the slots in the example utterance after applying the first set of rules. The full arrows denote direct alignment created by the add-transformations. Because no rules were triggered by the words ``find all the flights'' and ``that arrive on'', those words could not be aligned directly to any of the slots. Therefore, we have to infer an appropriate alignment (see Figure \ref{fig:alignment} (a) dashed arrows). A word is aligned to a slot if the alignment does not cross any direct alignment.
 % To compute derived alignment, first we order the slots so that the slot aligned with the left-most word is the first and the ordering results in minimum instances of direct alignment crossing. Then, every unaligned word is aligned with the nearest left and the right slot. 
 % The dashed lines denote derived alignment - alignment computed from the direct alignment. 
 In Figure \ref{fig:alignment} (a), the phrase ``find all the flights'' can be aligned to the slot ``from.city=Toronto'' only (dashed arrows). The phrase ``that arrive on'' can be aligned to two slots ``to.city=San Diego'' and ``departure.day=Saturday''. 
 
-In Figure \ref{fig:alignment} (b), we see the alignment after applying the substitution from Section \ref{sec:example}. We can see a change in the alignment of the phrase ``that arrive on''. First, the word ``arrive'' is aligned to the slot ``arrival.day=Saturday''. Second, the word ``on'' must be aligned to the same slot as the word ``arrive''. There is no change in the alignment of the word ``that''.
-
-
+In Figure \ref{fig:alignment} (a), we see that the rule given in Section \ref{sec:example} meets the locality constraint. We can see the alignment of the phrase ``that arrive on'' has changed as a result of applying it. First, the word ``arrive'' is aligned to the slot ``arrival.day=Saturday''. Second, the word ``on'' must be aligned to the same slot as the word ``arrive''. There is no change in the alignment of the word ``that''.
 
 \subsection{Improving the disambiguation of long-range dependencies}
 \label{sec:dep:trees}
 
 \fgrparam{width=6cm}{./fig/dep-tree.pdf}{fig:dep:tree}{Dependency tree of the utterance ''show the cheapest flights from Boston to Miami arriving before 7pm on Monday``.}
 
-Besides simple n-grams and skipping bigrams, more complex lexical features can be used. Kate \citep{kate08} used manually annotated dependency trees to capture long-range relationships between words. In a dependency tree, each word is viewed as the dependant of one other word, with the exception of the root. Dependency links represents grammatical relationships between words.
+Besides simple n-grams and skipping bigrams, more complex lexical features can be used. Kate \citep{kate08} used manually annotated dependency trees to capture long-range relationships between words. In a dependency tree, each word is viewed as the dependant of one other word, with the exception of the root. Dependency links represent grammatical relationships between words.
 Kate showed that word dependencies significantly improve semantic parsing because long-range dependencies from an utterance tend to be local in a dependency tree. For example, the words ''arriving`` and ''Monday`` are neighbours in the dependency tree but they are four words apart in the utterance (see Figure \ref{fig:dep:tree}).
 
 Instead of using manually annotated word dependencies \cite{kate08}, we used dependencies provided by the RASP dependency parser \cite{rasp06}. 
@@ -307,13 +306,13 @@ Instead of using manually annotated word dependencies \cite{kate08}, we used dep
 % First of all, we had to add capitalization and punctuation into the ATIS data to be able to use the RASP parser. The RASP parser without proper capitalization fails to tag ''new`` and ''york`` as NP and instead of this it tags ''new`` as ''JJ`` and 'york' as NP and the dependencies generated by the parser are unsatisfactory. 
 New n-gram features were generated in which a word history is given by links between words. For example, the algorithm would generate bi-gram ('arriving','Monday') for the word ''Monday``.
 % Even though the dependencies generated the RASP parser are not perfect, the new features increase performance in F-measure on ATIS data. 
-We however note that RASP was used off-the-shelf and more accurate dependencies should be obtained by adapting the RASP parser to the ATIS and TownInfo domains.
+Note however that RASP was used ''off-the-shelf`` and more accurate dependencies could be obtained by adapting it to the target domain.
 
 % Secondly, we generated long-range features by using POS tags\footnote{We used POS tags provided by the RASP parser; however, any POS tagger can be used instead.}. 
 % Our motivation was work of \cite{meza08b} who handcrafted features using words ''arrive``, ''arriving``, ''leave``, and ''leaving``. These handcrafted features disambiguate large number of semantic parsing errors in ATIS data because large portion or errors is caused by confusions between concepts ''arrival.time`` and ''departure.time``, ''arrival.day`` and ''departure.day``, etc. We generalized this approach and we automatically find features which  disambiguate semantics of words like ''Monday``, ''7pm``, and ''Boston``. As a result, we generate a new type of bigrams for a word and the nearest verb, preposition, etc. \textbf{We use all parts-of-speech provided by RASP and the learning algorithm chooses the most discriminative features. Among those learned are not only the words used by Meza-Rui but also words like ''stop``, ''reach``, ''buy`` and prepositions like ''at``, ''from``, ''to``, etc.} For example, for the nearest verb for the word ''Morning`` in the utterance from Figure \ref{fig:dep:tree} is ''arrive`` and such bigram would look be written as ('arrive',VV,'Monday') where VV stands for verb. This features assumes that the left-to-right tendency is dominant and the words in vicinity of lexical realization of a slot value affect the meaning the most.
 
 \subsection{Learning} \label{sec:tbl:learning}
-The main idea behind transformation-based learning \cite{brill95} is to learn an ordered list of rules which incrementally improve an initial semantic hypothesis (see the algorithm in Figure~\ref{alg:tbl:learning})\footnote{The list of rules must be ordered because each learnt rule corrects errors remaining after application of preceding rules.}. The initial assignment is made based on simple statistics - the most common goal is used as initial semantics. The learning is conducted in a greedy fashion, and at each step the algorithm chooses the transformation rule that reduces the largest number of errors in our hypothesis. Errors include goal substitutions, slot insertions, slot deletions, and slot substitutions. The learning process stops when no rule that improves the hypothesis beyond the pre-set threshold can be found. Note that no alignment between words and semantic concepts is needed.
+The main idea behind transformation-based learning \cite{brill95} is to learn an ordered list of rules which incrementally improve an initial semantic hypotheses (see the algorithm in Figure~\ref{alg:tbl:learning})\footnote{The list of rules must be ordered because each learnt rule corrects the errors remaining after applying the preceding rules.}. The initial assignment is made based on simple statistics - the most common goal is used as initial semantics. The learning is conducted in a greedy fashion, and at each step the algorithm chooses the transformation rule that reduces the largest number of errors in hypotheses. Errors include goal substitutions, slot insertions, slot deletions, and slot substitutions. The learning process stops when the algorithm cannot find a rule that improves the hypotheses beyond some pre-set threshold. Note that no prir alignment between words and semantic concepts is needed.
 
 % To limit overfitting the training data, we prune some rules which are learned at the end of the learning. We sequentially apply each rule on the development set and we measure the number of errors. At the end, we chose the N first rules for which the parser gets the lowest number of errors.
 
@@ -405,7 +404,7 @@ Phoenix  & 90.28 & 79.49 & 84.54 \\
 The results for both datasets are shown in Table \ref{tbl:results-final}.
 The model accuracy is measured in terms of precision, recall, and F-measure (harmonic mean of precision and recall) of the slot/value pairs. Both slot and value must be correct to count as a correct classification.
 
-Results on the ATIS dataset show that our method (F-measure = 95.74\% ) is competitive with respect to the Zettlemoyer \& Collins' PCCG model \cite{zettlemoyer07} (95.9\%). Note that this PCCG model makes use of a considerably large number of handcrafted entries in their initial lexicon. In addition, our method outperforms the STC \cite{mairesse09}, HVS \cite{he05} and MLN \cite{meza08b} parsers. Concerning the TownInfo dataset, Table \ref{tbl:results-final} shows that TBL produces 87.82\% of F-measure, which represents a 3.28\% improvement over the handcrafted Phoenix parser, while being competitive with the STC model - TBL's performance is only 0.76\% lower.
+Results on the ATIS dataset show that the TBL parser (F-measure = 95.74\% ) is competitive with respect to the Zettlemoyer \& Collins' PCCG model \cite{zettlemoyer07} (95.9\%). Note that this PCCG model makes use of a considerably large number of handcrafted entries in their initial lexicon. In addition, TBL outperforms the STC \cite{mairesse09}, HVS \cite{he05} and MLN \cite{meza08b} parsers. Concerning the TownInfo dataset, Table \ref{tbl:results-final} shows that TBL produces 87.82\% of F-measure, which represents a 3.28\% improvement over the handcrafted Phoenix parser, while being competitive with the STC model - TBL's performance is only 0.76\% lower.
 
 % We believe that STC is performs better because it consider the STC classifier use all features at one time. STC makes decision in one step using all the features rather than making several decisions by several rules as STEP.
 % We found that the dialogue act type recognition accuracy of the STEP parser is lower than STC's; as a result, we tried to use SVM as STC does to classify dialogue act types. 
@@ -415,13 +414,14 @@ Results on the ATIS dataset show that our method (F-measure = 95.74\% ) is compe
 
 % As is shown in the figure \ref{fig:learning:curve}, learning curves for both training data and development data are very steep. Although our current strategy for choosing the final number of rules for decoding is to keep only the rules for which we obtain highest F-measure on the development data, we could use much less rules without scarifying accuracy. For example, we accepted 0.1\% lower F-measure on the development data than we would need only YYY rules in comparison with XXX rules if select the number of rules based in the highest F-measure. In contrast, the initial lexicon the CCG parser \cite{zettlemoyer07} contains about 180 complex entries for general English words or phrases and yet additional lexical entries must be learned. \textbf{explain better}
 
-Table \ref{tbl:results:contrast} shows contrast between the full system and the system with no features extracted from dependency trees and the system with no locality constraints. Experiments were carried out on the ATIS development dataset. The results show that if the dependency tree features are removed or the locality constraints are not used, the performance of our method degrades.
+Table \ref{tbl:results:contrast} shows a contrast between the full system and the system with no features extracted from dependency trees and the system with no locality constraints. Experiments were carried out on the ATIS development dataset. The results show that if the dependency tree features are removed or the locality constraints are not used, the performance degrades.
 
 The learning time of the TBL parser is acceptable and the parsing process is efficient. 
-First, the learning time is about 24 hours on an Intel Pentium 2.8GHz for each dataset. The TBL parser generates up to 1M of transformation rules in each iteration; however, only fraction of rules has to tested because the search space can be efficiently organised \cite{brill95}.
-Second, the TBL parser is able to parse an utterance in 6ms while the STC parser needs 200ms on average \cite{mairesse09}. We cannot report on speed of other approaches because such information is not publicly available.
+First, the learning time is about 24 hours on an Intel Pentium 2.8GHz for each dataset. The TBL parser generates up to 1M potential transformation rules in each iteration; however, only a fraction of these rules have to be tested because the search space can be efficiently organised \cite{brill95}.
+Second, the TBL parser is able to parse an utterance in 6ms while the STC parser needs 200ms on average \cite{mairesse09}. We cannot report on speed the other approaches because such information is not publicly available.
 
-The efficiency of the TBL parser results from a considerably low number of learnt rules.
+% The efficiency of the TBL parser results from a considerably low number of learnt rules.
+The TBL parser is very efficient on domains such as ATIS and TownInfo because the final list of learnt rules is small.
 % a number of operations needed to parse a utterance is limited because the number of learnt rules is low. 
 There are 17 unique dialogue acts and 66 unique slots in the ATIS dataset and the total number of learnt rules is 372. This results in 4.5 rules per semantic concept on average. In the TownInfo dataset, we have 14 dialogue acts and 14 slots and the total number of learnt rules is 195. The average number of rules per semantic concept is 6.9. The number of semantic concepts per utterance is 5 on average.
 
@@ -450,13 +450,13 @@ No dependency tree features  & 92.78 & 92.04 & 92.41 \\
 
 \section{Conclusion} \label{sec:conlusion}
 
-This paper presents a novel application of TBL for semantic parsing. Our method learns a sequence of rules which iteratively transforms initial semantics into correct semantics.
+This paper presents a novel application of TBL for semantic parsing. Our method learns a sequence of rules which iteratively transforms the initial semantics into the correct semantics.
 % It significantly differs from the method presented by Kate et al \cite{kate05} where they were rewriting utterances and replacing words with semantic concepts. 
-Our method was applied to two very different domains and it was shown that its performance is competitive with respect to the state-of-the-art semantic parsers on both datasets. 
+The TBL parser was applied to two very different domains and it was shown that its performance is competitive with respect to the state-of-the-art semantic parsers on both datasets. 
 % Results show that our method is competitive with respect to Zettlemoyer \& Collins' PCCG model \cite{zettlemoyer07} on ATIS dataset. In addition, 
-On the ATIS dataset, our method outperforms STC, HVS and MLN parsers by 1.27\%, 2.75\%, and 5.44\% respectively \cite{mairesse09,he05,meza08b}. We also show that our method outperforms the handcrafted Phoenix parser by 3.28\% on ASR output of the TownInfo dataset \cite{mairesse09}.
+On the ATIS dataset, TBL outperforms STC, HVS and MLN parsers by 1.27\%, 2.75\%, and 5.44\% respectively \cite{mairesse09,he05,meza08b}. We also show that TBL outperforms the handcrafted Phoenix parser by 3.28\% on ASR output of the TownInfo dataset \cite{mairesse09}.
 
-Although the TBL approach does not directly offer an N-best list of hypotheses with confidence scores, several methods have been developed to alleviate this problem. For example, transformation rules have been converted into decision trees from which informative probability distributions on the class labels can be obtained \cite{florian00}. In future work, we will investigate how to adapt the TBL method to obtain multiple hypotheses and confidence scores.
+Although the TBL approach cannot directly generate an N-best list of hypotheses with confidence scores, several methods have been developed to alleviate this problem. For example, transformation rules can be converted into decision trees from which informative probability distributions on the class labels can be obtained \cite{florian00}. In future work, we plan to investigate how to adapt the TBL method to obtain multiple hypotheses and confidence scores, and extend the model to richer domains where the ability to model long-range dependecies might be more important.
 
 % \section{Acknowledgments}
 % We would like to thank to Luke Zettlemoyer and I.V. Meza-Ruiz for valuable discussions about their methods.
