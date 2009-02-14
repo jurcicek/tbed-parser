@@ -90,7 +90,7 @@ This paper presents a semantic parser that transforms an initial semantic hypoth
 
 \section{Introduction}
 % Semantic parsing is an important part of a spoken dialogue system \cite{williams07}. 
-The goal of semantic parsing is to map natural language to a formal meaning representation - semantics. Such semantics can be either defined by a grammar, e.g. LR grammar for the GeoQuery domain \cite{kate05}, or by frames and slots, e.g. the TownInfo domain \cite{mairesse09}. Table \ref{tbl:sem:example} shows an example of the frame and slot semantics from the ATIS dataset \cite{atis94}. Each frame has a goal and set of slots. Each slot is composed of a slot name, e.g. ``from.city'',
+The goal of semantic parsing is to map natural language to a formal meaning representation - semantics. Such semantics can be either defined by a grammar, e.g. LR grammar for the GeoQuery domain \cite{kate05}, or by frames and slots, e.g. the TownInfo domain \cite{mairesse09}. Table \ref{tbl:sem:example} shows an example of the frame and slot semantics from the ATIS dataset \cite{atis94}. Each frame has a goal and a set of slots. Each slot is composed of a slot name, e.g. ``from.city'',
 % , a slot equal sign, e.g. ``='' or ``!='', 
 and a slot value, e.g. ``Washington''. As dialogue managers commonly use semantics in the form of frames and slots \cite{williams07,thomson08}, our approach learns to map directly from natural language into frame and slot semantics.
 
@@ -282,7 +282,7 @@ So far the relationship between slots and their lexical realisation has not been
 
 % \textbf{XXX: I mentioned delete transformation but never defined.}
 
-One way to handle this problem is to constrain triggers performing substitutions to be activated only if they are in the vicinity of the slot's lexical realisation. To do this; we track the words from the utterance that were used in triggers. Every time we apply a transformation of a slot, we store links between the words which triggered the transformation and the target slot. Such links are referred to as ``direct alignment''. 
+One way to handle this problem is to constrain triggers performing substitutions to be activated only if they are near the slot's lexical realisation. To do this; we track the words from the utterance that were used in triggers. Every time we apply a transformation of a slot, we store links between the words which triggered the transformation and the target slot. Such links are referred to as ``direct alignment''. 
 
 % For the delete transformation no tracking information is kept because a slot is removed from hypothesis and never used again.
 
@@ -404,7 +404,7 @@ Phoenix  & 90.28 & 79.49 & 84.54 \\
 The results for both datasets are shown in Table \ref{tbl:results-final}.
 The model accuracy is measured in terms of precision, recall, and F-measure (harmonic mean of precision and recall) of the slot/value pairs. Both slot and value must be correct to count as a correct classification.
 
-Results on the ATIS dataset show that the TBL parser (F-measure = 95.74\% ) is competitive with respect to the Zettlemoyer \& Collins' PCCG model \cite{zettlemoyer07} (95.9\%). Note that this PCCG model makes use of a considerably large number of handcrafted entries in their initial lexicon. In addition, TBL outperforms the STC \cite{mairesse09}, HVS \cite{he05} and MLN \cite{meza08b} parsers. Concerning the TownInfo dataset, Table \ref{tbl:results-final} shows that TBL produces 87.82\% of F-measure, which represents a 3.28\% improvement over the handcrafted Phoenix parser, while being competitive with the STC model - TBL's performance is only 0.76\% lower.
+Results on the ATIS dataset show that the TBL parser (F-measure = 95.74\%) is competitive with respect to the Zettlemoyer \& Collins' PCCG model \cite{zettlemoyer07} (95.9\%). Note that this PCCG model makes use of a considerably large number of handcrafted entries in their initial lexicon. In addition, TBL outperforms the STC \cite{mairesse09}, HVS \cite{he05} and MLN \cite{meza08b} parsers. Concerning the TownInfo dataset, Table \ref{tbl:results-final} shows that TBL produces 87.82\% of F-measure, which represents a 3.28\% improvement over the handcrafted Phoenix parser, while being competitive with the STC model - TBL's performance is only 0.76\% lower.
 
 % We believe that STC is performs better because it consider the STC classifier use all features at one time. STC makes decision in one step using all the features rather than making several decisions by several rules as STEP.
 % We found that the dialogue act type recognition accuracy of the STEP parser is lower than STC's; as a result, we tried to use SVM as STC does to classify dialogue act types. 

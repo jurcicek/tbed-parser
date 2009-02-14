@@ -23,18 +23,18 @@ R.~Kate, Y.~Wong, and R.~Mooney, ``Learning to transform natural to formal
   languages,'' in \emph{Proceedings of AAAI}, 2005.
 
 \bibitem{mairesse09}
-F.~Mairesse, M.~M. Ga\v{s}i\'{c}, F.~Jur\v{c}\'{i}\v{c}ek, S.~Keizer,
-  B.~Thomson, K.~Yu, and S.~Young, ``Spoken language understanding from
-  unaligned data using discriminative classification models,'' in
-  \emph{Proceedings of ICASSP}, 2009.
+F.~Mairesse, M.~Ga\v{s}i\'{c}, F.~Jur\v{c}\'{i}\v{c}ek, S.~Keizer, B.~Thomson,
+  K.~Yu, and S.~Young, ``Spoken language understanding from unaligned data
+  using discriminative classification models,'' in \emph{Proceedings of
+  ICASSP}, 2009.
 
 \bibitem{atis94}
 D.~Dahl, M.~Bates, M.~Brown, W.~Fisher, K.~Hunicke-Smith, D.~Pallett, C.~Pao,
   A.~Rudnicky, and E.~Shriberg, ``Expanding the scope of the {ATIS} task: The
-  atis-3 corpus,'' in \emph{Proceedings of the ARPA HLT Workshop}, 1994.
+  {ATIS}-3 corpus,'' in \emph{Proceedings of the ARPA HLT Workshop}, 1994.
 
 \bibitem{williams07}
-J.~Williams and S.~Young., ``{Partially observable markov decision % processes
+J.~Williams and S.~Young., ``{Partially observable Markov decision processes
   for spoken dialog systems},'' \emph{Computer Speech and Language}, vol.~21,
   no.~2, pp. 231--422, 2007.
 
@@ -44,8 +44,8 @@ B.~Thomson, M.~Ga\v{s}i\'{c}, S.~Keizer, F.~Mairesse, J.~Schatzmann, K.~Yu, and
   dialogue management,'' in \emph{Proceedings of Interspeech}, 2008.
 
 \bibitem{brill95}
-E.~Brill, ``{Transformation-Based Error-Driven Learning and Natural Language
-  Processing: A Case Study in Part-of-Speech Tagging},'' \emph{Computational
+E.~Brill, ``{Transformation-based Error-driven Learning and natural language
+  processing: A case study in Part-of-Speech Tagging},'' \emph{Computational
   Linguistics}, vol.~21, no.~4, pp. 543--565, 1995.
 
 \bibitem{rasp06}
@@ -63,13 +63,13 @@ F.~Jur\v{c}\'{i}\v{c}ek, J.~Svec, and L.~Muller, ``{Extension of HVS semantic
   2008.
 
 \bibitem{zettlemoyer07}
-L.~Zettlemoyer and M.~Collins, ``Online learning of relaxed ccg grammars for
-  parsing to logical form,'' in \emph{Proceedings of EMNLP-CoNLL}, 2005.
+L.~Zettlemoyer and M.~Collins, ``Online learning of relaxed {CCG} grammars for
+  parsing to logical form,'' in \emph{Proceedings of EMNLP-CoNLL}, 2007.
 
 \bibitem{meza08b}
-I.~Meza-Ruiz, S.~Riedel, and O.~Lemon, ``Spoken language understanding in
-  dialogue systems, using a 2-layer markov logic network: improving semantic
-  accuracy,'' in \emph{Proceedings of Londial}, 2008.
+I.~Meza-Ruiz, S.~Riedel, and O.~Lemon, ``{Spoken Language Understanding in
+  dialogue systems, using a 2-layer Markov Logic Network: Improving semantic
+  accuracy},'' in \emph{Proceedings of Londial}, 2008.
 
 \bibitem{kate08}
 R.~Kate, ``A dependency-based word subsequence kernel,'' in \emph{Proceedings
