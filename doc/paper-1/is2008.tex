@@ -92,7 +92,7 @@ This paper presents a semantic parser that transforms an initial semantic hypoth
 % Semantic parsing is an important part of a spoken dialogue system \cite{williams07}. 
 The goal of semantic parsing is to map natural language to a formal meaning representation - semantics. Such semantics can be either defined by a grammar, e.g. LR grammar for the GeoQuery domain \cite{kate05}, or by frames and slots, e.g. the TownInfo domain \cite{mairesse09}. Table \ref{tbl:sem:example} shows an example of the frame and slot semantics from the ATIS dataset \cite{atis94}. Each frame has a goal and a set of slots. Each slot is composed of a slot name, e.g. ``from.city'',
 % , a slot equal sign, e.g. ``='' or ``!='', 
-and a slot value, e.g. ``Washington''. As dialogue managers commonly use semantics in the form of frames and slots \cite{williams07,thomson08}, our approach learns to map directly from natural language into frame and slot semantics.
+and a slot value, e.g. ``Washington''. As dialogue managers commonly use semantics in the form of frames and slots \cite{williams07,thomson08}, our approach learns to map directly from natural language into the frame and slot semantics.
 
 % The semantics, which is designed by a domain expert, is directly executable by a question answering system \cite{wong06} or by a dialogue manager in a spoken dialogue system.
 
@@ -102,7 +102,7 @@ A dialogue system needs a semantic parser which is accurate and robust, easy to 
 
 In our approach, we adapt Transformation-Based Learning (TBL) \cite{brill95} to the problem of semantic parsing. We attempt to find an ordered list of transformation rules which iteratively improve the initial semantic annotation. 
 % During parsing, transformation rules are sequentially applied and
-In each iteration, a transformation rule corrects some of remaining errors in the semantics.
+In each iteration, a transformation rule corrects some of the remaining errors in the semantics.
 To handle long-range dependencies between words, we experiment with features extracted from dependency parse trees provided by the RASP syntactic parser \cite{rasp06}.
 
 % A transformation parsing assumes:
@@ -114,7 +114,7 @@ To handle long-range dependencies between words, we experiment with features ext
 % \item Transformations correct errors of the previous transformations.
 % \end{itemize} 
 
-In the next section, we describe previous work on mapping natural language into a formal meaning representation. Section \ref{sec:tbl} presents an example of TBL semantic parsing, discusses templates for transformation rules, and describes the learning process. Section \ref{sec:evaluation} compares the TBL parser to the previously developed semantic parsers on the ATIS \cite{atis94} and TownInfo \cite{mairesse09} domains. Finally, Section \ref{sec:conlusion} concludes this work.
+In the next section, we describe previous work on mapping natural language into a formal meaning representation. Section \ref{sec:tbl} presents an example of TBL semantic parsing and describes the learning process. Section \ref{sec:evaluation} compares the TBL parser to the previously developed semantic parsers on the ATIS \cite{atis94} and TownInfo \cite{mairesse09} domains. Finally, Section \ref{sec:conlusion} concludes this work.
 
 \begin{table}
 \begin{center}
@@ -146,7 +146,7 @@ This technique produces state-of-the-art performance on the ATIS dataset. Howeve
 Third, Markov Logic Networks (MLN) have been used to extract slot values by combining probabilistic graphical models and first-order logic \cite{meza08b}. In this approach, weights are attached to first-order clauses which represent the relationship between slot names and their values. Such weighted clauses are used as templates for features of Markov networks.
 Finally, Semantic Tuple Classifiers (STC) based on support vector machines have been used to build semantic trees by recursively calling classifiers that predict fragments of the semantic representation from n-gram features \cite{mairesse09}.
 
-In addition to the above, there is a large amount of research that is related but not directly comparable because of different in corpora or meaning representation. 
+In addition to the above, there is a large amount of research that is related but not directly comparable because of difference in corpora or meaning representation. 
 % Machine translation techniques \cite{wong06} have been used with a syntax-based translation model based on the synchronous context-free grammars. 
 % Inductive logic programming \cite{tang01} have been used to incrementally develop a theory including a set of predicates. 
 % In each iteration, the predicates were generalized from predicates in the theory and predicates automatically constructed from examples. 
@@ -220,12 +220,14 @@ Second, the rules, whose triggers match the utterance and the hypothesised seman
 % However, in this example the matching rules are only those which add slots.
 
 \vspace{.15cm}
-\begin{tabular}{ll}
-  trigger & transformation \\
+\begin{tabular}{lll}
+  \# & trigger & transformation \\
   \hline 
-  ``between toronto''     & add the slot ``from.city=Toronto'' \\
-  ``and san diego''       & add the slot ``to.city=San Diego'' \\
-  ``saturday''            & add the slot ``departure.day=Saturday'' \\
+  1 & ``between toronto''     & add the slot \\ 
+    &                         & ``from.city=Toronto'' \\
+  2 & ``and san diego''       & add the slot ``to.city=San Diego'' \\
+  3 & ``saturday''            & add the slot \\
+    &                         &   ``departure.day=Saturday'' \\
 \end{tabular} 
 \vspace{.15cm}
 
@@ -249,11 +251,11 @@ the parser learns to associate them with the ``departure.*'' slots. The incorrec
 However, the TBL method learns to correct its errors. Therefore, the parser also applies the error correcting rules at a later stage. For example, the following rule corrects the slot name of the slot value ``Saturday''.
 
 \vspace{.15cm}
-\begin{tabular}{ll}
-  trigger & transformation \\
+\begin{tabular}{lll}
+  \# & trigger & transformation \\
   \hline 
-  ``arrive''            & replace the slot ``departure.day=*'' \\
-                        & by ``arrival.day=*'' \\
+  4 & ``arrive''            & replace the slot ``departure.day=*'' \\
+    &                       & by ``arrival.day=*'' \\
 \end{tabular} 
 \vspace{.15cm}
 
@@ -271,27 +273,29 @@ In this case, we substitute the slot name with the correct name, to produce the 
 So far the relationship between slots and their lexical realisation has not been considered. For example, before we replace the slot ``departure.day'' by ``arrival.day'', we should test whether the word ``arrive'' is near the slot's lexical realisation. Otherwise we may accidentally trigger the substitution of the slot ``from.city=Toronto'' by ``to.city=Toronto''. This could happen if the parser had also learnt the following rule:
 
 \vspace{.15cm}
-\begin{tabular}{ll}
-  trigger & transformation \\
+\begin{tabular}{lll}
+  \# & trigger & transformation \\
   \hline 
-  ``arrive''            & replace the slot \\
-                        & ``from.city=*'' by ``to.city=*'' \\
+  5 & ``arrive''   & replace the slot \\
+    &              & ``from.city=*'' by ``to.city=*'' \\
 \end{tabular} 
 \vspace{.15cm}
 \fgrparam{width=8cm}{./fig/words-slots-alignment.pdf}{fig:alignment}{Alignment between the words and the slots in the example utterance.}
 
 % \textbf{XXX: I mentioned delete transformation but never defined.}
 
-One way to handle this problem is to constrain triggers performing substitutions to be activated only if they are near the slot's lexical realisation. To do this; we track the words from the utterance that were used in triggers. Every time we apply a transformation of a slot, we store links between the words which triggered the transformation and the target slot. Such links are referred to as ``direct alignment''. 
+One way to handle this problem is to constrain triggers of rules performing substitutions to be activated only by the words aligned to the replaced slot. To do this; we track the words from the utterance that were used in triggers. Every time we apply a transformation of a slot, we store links between the words which triggered the transformation and the target slot. Such links are referred to as ``direct alignment''. 
 
 % For the delete transformation no tracking information is kept because a slot is removed from hypothesis and never used again.
 
-In Figure \ref{fig:alignment} (a), we see the alignment between the words and the slots in the example utterance after applying the first set of rules. The full arrows denote direct alignment created by the add-transformations. Because no rules were triggered by the words ``find all the flights'' and ``that arrive on'', those words could not be aligned directly to any of the slots. Therefore, we have to infer an appropriate alignment (see Figure \ref{fig:alignment} (a) dashed arrows). A word is aligned to a slot if the alignment does not cross any direct alignment.
+In Figure \ref{fig:alignment} (a), we see the alignment between the words and the slots in the example utterance after applying the rules \#1,2, and 3. The full arrows denote direct alignment. Because no rules were triggered by the words ``find all the flights'' and ``that arrive on'', those words could not be aligned directly to any of the slots. Therefore, we have to infer an appropriate alignment (see Figure \ref{fig:alignment} (a) dashed arrows). A word is aligned to a slot if the alignment does not cross any direct alignment.
 % To compute derived alignment, first we order the slots so that the slot aligned with the left-most word is the first and the ordering results in minimum instances of direct alignment crossing. Then, every unaligned word is aligned with the nearest left and the right slot. 
 % The dashed lines denote derived alignment - alignment computed from the direct alignment. 
 In Figure \ref{fig:alignment} (a), the phrase ``find all the flights'' can be aligned to the slot ``from.city=Toronto'' only (dashed arrows). The phrase ``that arrive on'' can be aligned to two slots ``to.city=San Diego'' and ``departure.day=Saturday''. 
 
-In Figure \ref{fig:alignment} (a), we see that the rule given in Section \ref{sec:example} meets the locality constraint. We can see the alignment of the phrase ``that arrive on'' has changed as a result of applying it. First, the word ``arrive'' is aligned to the slot ``arrival.day=Saturday''. Second, the word ``on'' must be aligned to the same slot as the word ``arrive''. There is no change in the alignment of the word ``that''.
+In Figure \ref{fig:alignment} (a), we see that the rule \#4 meets the locality constraint because the word ``arrive'' is aligned to the slot ``departure.day''. As a result of applying the rule, the slot and the alignment of the phrase ``that arrive on'' have changed (see Figure \ref{fig:alignment} (b)). 
+% First, the word ``arrive'' is aligned to the slot ``arrival.day=Saturday''. Second, the word ``on'' must be aligned to the same slot as the word ``arrive''. There is no change in the alignment of the word ``that''.
+The rule \#5 is not triggered because the word ``arrive'' is not aligned to the slot ``from.city''.
 
 \subsection{Improving the disambiguation of long-range dependencies}
 \label{sec:dep:trees}
@@ -312,7 +316,7 @@ Note however that RASP was used ''off-the-shelf`` and more accurate dependencies
 % Our motivation was work of \cite{meza08b} who handcrafted features using words ''arrive``, ''arriving``, ''leave``, and ''leaving``. These handcrafted features disambiguate large number of semantic parsing errors in ATIS data because large portion or errors is caused by confusions between concepts ''arrival.time`` and ''departure.time``, ''arrival.day`` and ''departure.day``, etc. We generalized this approach and we automatically find features which  disambiguate semantics of words like ''Monday``, ''7pm``, and ''Boston``. As a result, we generate a new type of bigrams for a word and the nearest verb, preposition, etc. \textbf{We use all parts-of-speech provided by RASP and the learning algorithm chooses the most discriminative features. Among those learned are not only the words used by Meza-Rui but also words like ''stop``, ''reach``, ''buy`` and prepositions like ''at``, ''from``, ''to``, etc.} For example, for the nearest verb for the word ''Morning`` in the utterance from Figure \ref{fig:dep:tree} is ''arrive`` and such bigram would look be written as ('arrive',VV,'Monday') where VV stands for verb. This features assumes that the left-to-right tendency is dominant and the words in vicinity of lexical realization of a slot value affect the meaning the most.
 
 \subsection{Learning} \label{sec:tbl:learning}
-The main idea behind transformation-based learning \cite{brill95} is to learn an ordered list of rules which incrementally improve an initial semantic hypotheses (see the algorithm in Figure~\ref{alg:tbl:learning})\footnote{The list of rules must be ordered because each learnt rule corrects the errors remaining after applying the preceding rules.}. The initial assignment is made based on simple statistics - the most common goal is used as initial semantics. The learning is conducted in a greedy fashion, and at each step the algorithm chooses the transformation rule that reduces the largest number of errors in hypotheses. Errors include goal substitutions, slot insertions, slot deletions, and slot substitutions. The learning process stops when the algorithm cannot find a rule that improves the hypotheses beyond some pre-set threshold. Note that no prir alignment between words and semantic concepts is needed.
+The main idea behind transformation-based learning \cite{brill95} is to learn an ordered list of rules which incrementally improve an initial semantic hypotheses (see the algorithm in Figure~\ref{alg:tbl:learning})\footnote{The list of rules must be ordered because each learnt rule corrects some of the remaining errors after applying the preceding rules.}. The initial assignment is made based on simple statistics - the most common goal is used as initial semantics. The learning is conducted in a greedy fashion, and at each step the algorithm chooses the transformation rule that reduces the largest number of errors in hypotheses. Errors include goal substitutions, slot insertions, slot deletions, and slot substitutions. The learning process stops when the algorithm cannot find a rule that improves the hypotheses beyond some pre-set threshold. Note that no prior alignment between words and semantic concepts is needed.
 
 % To limit overfitting the training data, we prune some rules which are learned at the end of the learning. We sequentially apply each rule on the development set and we measure the number of errors. At the end, we chose the N first rules for which the parser gets the lowest number of errors.
 
@@ -456,7 +460,7 @@ The TBL parser was applied to two very different domains and it was shown that i
 % Results show that our method is competitive with respect to Zettlemoyer \& Collins' PCCG model \cite{zettlemoyer07} on ATIS dataset. In addition, 
 On the ATIS dataset, TBL outperforms STC, HVS and MLN parsers by 1.27\%, 2.75\%, and 5.44\% respectively \cite{mairesse09,he05,meza08b}. We also show that TBL outperforms the handcrafted Phoenix parser by 3.28\% on ASR output of the TownInfo dataset \cite{mairesse09}.
 
-Although the TBL approach cannot directly generate an N-best list of hypotheses with confidence scores, several methods have been developed to alleviate this problem. For example, transformation rules can be converted into decision trees from which informative probability distributions on the class labels can be obtained \cite{florian00}. In future work, we plan to investigate how to adapt the TBL method to obtain multiple hypotheses and confidence scores, and extend the model to richer domains where the ability to model long-range dependecies might be more important.
+Although the TBL approach cannot directly generate an N-best list of hypotheses with confidence scores, several methods have been developed to alleviate this problem. For example, transformation rules can be converted into decision trees from which informative probability distributions on the class labels can be obtained \cite{florian00}. In future work, we plan to investigate how to adapt the TBL method to obtain multiple hypotheses and confidence scores, and extend the model to richer domains where the ability to model long-range dependencies might be more important.
 
 % \section{Acknowledgments}
 % We would like to thank to Luke Zettlemoyer and I.V. Meza-Ruiz for valuable discussions about their methods.

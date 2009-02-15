@@ -1,4 +1,4 @@
-This is pdfeTeX, Version 3.141592-1.30.5-2.2 (Web2C 7.5.5) (format=pdflatex 2009.2.6)  14 FEB 2009 20:01
+This is pdfeTeX, Version 3.141592-1.30.5-2.2 (Web2C 7.5.5) (format=pdflatex 2009.2.6)  15 FEB 2009 19:56
 entering extended mode
 **is2008.tex
 (./is2008.tex
@@ -216,7 +216,7 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
 
 
 ]
-Overfull \hbox (15.64893pt too wide) in paragraph at lines 223--231
+Overfull \hbox (11.2871pt too wide) in paragraph at lines 223--233
 [][]
  []
 
@@ -232,18 +232,14 @@ File: ./fig/dep-tree.pdf Graphic file (type pdf)
 <use ./fig/dep-tree.pdf> [3 <./fig/dep-tree.pdf
 Warning: pdflatex (file ./fig/dep-tree.pdf): pdf inclusion: Page Group detected
  which pdfTeX can't handle. Ignoring it.
->]
-Underfull \vbox (badness 6510) has occurred while \output is active []
-
-
-(./is2008.bbl
+>] (./is2008.bbl
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1.
 ) [4] (./is2008.aux) ) 
 Here is how much of TeX's memory you used:
  2081 strings out of 94432
  23966 string characters out of 1175567
- 80516 words of memory out of 1000000
+ 79516 words of memory out of 1000000
  5258 multiletter control sequences out of 10000+50000
  29521 words of font info for 66 fonts, out of 500000 for 2000
  580 hyphenation exceptions out of 1000
@@ -257,4 +253,4 @@ re/texmf/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texmf/fonts/type1/blues
 ky/cm/cmsy9.pfb></usr/share/texmf/fonts/type1/urw/times/utmr8a.pfb></usr/share/
 texmf/fonts/type1/urw/times/utmri8a.pfb></usr/share/texmf/fonts/type1/urw/times
 /utmb8a.pfb>
-Output written on is2008.pdf (4 pages, 138498 bytes).
+Output written on is2008.pdf (4 pages, 140343 bytes).
