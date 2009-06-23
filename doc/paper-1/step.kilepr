@@ -26,19 +26,19 @@ order=-1
 
 [item:is2008.tex]
 archive=true
-column=9
+column=71
 encoding=ISO 8859-2
 highlight=LaTeX
-line=318
+line=423
 open=true
 order=0
 
 [item:my.bib]
 archive=true
-column=23
+column=51
 encoding=ISO 8859-2
 highlight=BibTeX
-line=128
+line=125
 open=true
 order=1
 

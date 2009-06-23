@@ -1,6 +1,6 @@
 \documentclass{article}
 \usepackage{interspeech2008,amssymb,amsmath,epsfig}
-\usepackage{epsfig}
+\usepackage{url,hyperref}
 \setcounter{page}{1}
 \sloppy   % better line breaks
 \ninept
@@ -37,6 +37,7 @@
   \end{figure}
 }
 
+\linespread{0.93}
 
 \title{Transformation-based Learning for Semantic parsing}
 
@@ -96,7 +97,7 @@ and a slot value, e.g. ``Washington''. As dialogue managers commonly use semanti
 
 % The semantics, which is designed by a domain expert, is directly executable by a question answering system \cite{wong06} or by a dialogue manager in a spoken dialogue system.
 
-A dialogue system needs a semantic parser which is accurate and robust, easy to build, and fast. This paper presents a parsing technique which provides state-of-the-art performance and robustness to ill formed utterances. The parser does not need any handcrafted linguistic knowledge and it can learn from data which is not semantically annotated at the word-level. Finally, it learns a compact set of rules that allow it to perform real-time semantic parsing. Note that modern statistical dialogue systems typically exploit multiple ASR hypotheses. Hence, the semantic parser has to process an N-best list of user utterances every turn where N$\sim$10 to 100.
+A dialogue system needs a semantic parser which is accurate and robust, easy to build, and fast. This paper presents a parsing technique which provides state-of-the-art performance and robustness to ill formed utterances. The parser does not need any handcrafted linguistic knowledge and it learns from data which has no alignment between words and semantic concepts. Finally, it learns a compact set of rules that allow it to perform real-time semantic parsing. Note that modern statistical dialogue systems typically exploit multiple ASR hypotheses. Hence, the semantic parser has to process an N-best list of user utterances every turn where N$\sim$10 to 100.
 
 % can be understood as machine translation from a natural language to a formal language. First, we do not not have formal grammar for natural language is ungrammatical, include hesitations, and very often only fragments of complete utterances, e.g. ``Boston to Miami tomorrow''. 
 
@@ -420,7 +421,7 @@ Results on the ATIS dataset show that the TBL parser (F-measure = 95.74\%) is co
 
 Table \ref{tbl:results:contrast} shows a contrast between the full system and the system with no features extracted from dependency trees and the system with no locality constraints. Experiments were carried out on the ATIS development dataset. The results show that if the dependency tree features are removed or the locality constraints are not used, the performance degrades.
 
-The learning time of the TBL parser is acceptable and the parsing process is efficient. 
+The learning time of the TBL parser\footnote{The source code is available under GNU GPL at \url{http://code.google.com/p/tbed-parser/}.} is acceptable and the parsing process is efficient. 
 First, the learning time is about 24 hours on an Intel Pentium 2.8GHz for each dataset. The TBL parser generates up to 1M potential transformation rules in each iteration; however, only a fraction of these rules have to be tested because the search space can be efficiently organised \cite{brill95}.
 Second, the TBL parser is able to parse an utterance in 6ms while the STC parser needs 200ms on average \cite{mairesse09}. We cannot report on speed the other approaches because such information is not publicly available.
 
@@ -462,8 +463,11 @@ On the ATIS dataset, TBL outperforms STC, HVS and MLN parsers by 1.27\%, 2.75\%,
 
 Although the TBL approach cannot directly generate an N-best list of hypotheses with confidence scores, several methods have been developed to alleviate this problem. For example, transformation rules can be converted into decision trees from which informative probability distributions on the class labels can be obtained \cite{florian00}. In future work, we plan to investigate how to adapt the TBL method to obtain multiple hypotheses and confidence scores, and extend the model to richer domains where the ability to model long-range dependencies might be more important.
 
-% \section{Acknowledgments}
-% We would like to thank to Luke Zettlemoyer and I.V. Meza-Ruiz for valuable discussions about their methods.
+\section{Acknowledgments}
+This research was partly funded by the UK EPSRC
+under grant agreement EP/F013930/1 and by the
+EU FP7 Programme under grant agreement 216594
+(CLASSIC project: www.classic-project.org).
 
 \eightpt
 \bibliographystyle{IEEEtran}
