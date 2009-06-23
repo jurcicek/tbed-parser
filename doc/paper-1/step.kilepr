@@ -26,10 +26,10 @@ order=-1
 
 [item:is2008.tex]
 archive=true
-column=71
+column=23
 encoding=ISO 8859-2
 highlight=LaTeX
-line=423
+line=465
 open=true
 order=0
 
